@@ -16,16 +16,20 @@ class DataHandler(tornado.web.RequestHandler):
         count = int(self.get_argument('count'))#Number of People
         gateID = int(self.get_argument('gateID'))#GateID
         eventCode = int(self.get_argument('eventCode'))#Event Code
-        times = int(time.time())#Unix Timestamp
+        times = int(self.get_argument('time'), None, time.time())#Unix Timestamp
+        lat = float(self.get_argument('lat'), None, 0)
+        lon = float(self.get_argument('lon'), None, 0)
         apiPOST = Item(ashiotoTable, data={
             'gateID' : gateID,
             'timestamp' : times,
-            'latitude' : 0,
-            'longitude' : 0,
+            'latitude' : lat,
+            'longitude' : lon,
             'outcount' : count,
-            'plotted' : 0
+            'plotted' : 0,
+            'eventCode' : eventCode
         })
         apiPOST.save()
+        print(times)
         self.write('Data Saved')
     
 if __name__ == '__main__':
