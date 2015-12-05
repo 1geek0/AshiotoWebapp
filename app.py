@@ -11,34 +11,63 @@ from boto.dynamodb2.table import *
 #DynamoDb Init
 ashiotoTable = Table('ashioto2')
 
-class DataHandler(tornado.web.RequestHandler):
+#api keys
+api_keys = ['geeKey4096', 'rajeKey2048', 'virajKey1024', 'mat']
+
+class CountHandler(tornado.web.RequestHandler):
+    @tornado.gen.coroutine
+    def post(self):
+        key = str(self.get_argument('key'))
+        if key in api_keys:
+            count = int(self.get_argument('count'))#Number of People
+            gateID = int(self.get_argument('gateID'))#GateID
+            eventCode = int(self.get_argument('eventCode'))#Event Code
+            times = int(self.get_argument('time',default=time.time()))#Unix Timestamp
+            lat = float(self.get_argument('lat', default=0))
+            lon = float(self.get_argument('lon', default=0))
+            apiPOST = Item(ashiotoTable, data={
+                'gateID' : gateID,
+                'timestamp' : times,
+                'latitude' : lat,
+                'longitude' : lon,
+                'outcount' : count,
+                'plotted' : 0,
+                'eventCode' : eventCode
+            })
+            #esponse = self.save_to_DB(apiPOST)
+            serve = {
+                "Count" : count,
+                "GateID" : gateID,
+                "Event Code" : eventCode,
+                "Timestamp" : times,
+                "Lat" : lat,
+                "Long" : lon
+            }
+            self.write(serve)
+            self.finish()
+        else:
+            self.write('Unable to authenticate. Check your api key')
+            
+    def save_to_DB(self, dbItem):
+        dbItem.save()
+class GetLastHandler(tornado.web.RequestHandler):
+    @tornado.gen.coroutine
     def get(self):
-        count = int(self.get_argument('count'))#Number of People
-        gateID = int(self.get_argument('gateID'))#GateID
-        eventCode = int(self.get_argument('eventCode'))#Event Code
-        times = int(self.get_argument('time'), None, time.time())#Unix Timestamp
-        lat = float(self.get_argument('lat'), None, 0)
-        lon = float(self.get_argument('lon'), None, 0)
-        apiPOST = Item(ashiotoTable, data={
-            'gateID' : gateID,
-            'timestamp' : times,
-            'latitude' : lat,
-            'longitude' : lon,
-            'outcount' : count,
-            'plotted' : 0,
-            'eventCode' : eventCode
-        })
-        apiPOST.save()
-        print(times)
-        self.write('Data Saved')
+        key = str(self.get_argument('key'))
+        if key in api_keys:
+            self.write('hey')
+    
+
     
 if __name__ == '__main__':
     tornado.options.parse_command_line()
     app = tornado.web.Application(
         handlers=[
-            (r"/put", DataHandler),
+            (r"/count_update", CountHandler),
         ]
     )
     http_server = tornado.httpserver.HTTPServer(app)
+    #http_server.start(0)
+    #http_server.bind(8888)
     http_server.listen(8888)
     tornado.ioloop.IOLoop.instance().start()
