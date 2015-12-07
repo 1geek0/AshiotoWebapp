@@ -60,9 +60,15 @@ class EventCodeConfirmHandler(tornado.web.RequestHandler):
     def get(self):
         event_request = str(self.get_argument('event'))
         if event_request in event_codes:
-            self.write('Event confirmed')
+            response = {
+                'exists' : True
+            }
+            self.write(response)
         else:
-            self.write('Event code not found')
+            response = {
+                'exists' : False
+            }
+            self.write(response)
 
 class NewApiKeyHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
