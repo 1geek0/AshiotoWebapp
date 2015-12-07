@@ -1,4 +1,7 @@
 import time
+
+import pickledb
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
@@ -11,8 +14,11 @@ from boto.dynamodb2.table import *
 #DynamoDb Init
 ashiotoTable = Table('ashioto2')
 
+#PickleDB
+keysDB = pickledb.load('api_keys.db', False)
+
 #api keys
-api_keys = ['geeKey4096', 'rajeKey2048', 'virajKey1024', 'mat']
+event_codes = ['test_event', 'ca_demo', 'sulafest_15']
 
 class CountHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
@@ -35,14 +41,7 @@ class CountHandler(tornado.web.RequestHandler):
                 'eventCode' : eventCode
             })
             #esponse = self.save_to_DB(apiPOST)
-            serve = {
-                "Count" : count,
-                "GateID" : gateID,
-                "Event Code" : eventCode,
-                "Timestamp" : times,
-                "Lat" : lat,
-                "Long" : lon
-            }
+            serve = 'Success'
             self.write(serve)
             self.finish()
         else:
@@ -56,14 +55,41 @@ class GetLastHandler(tornado.web.RequestHandler):
         key = str(self.get_argument('key'))
         if key in api_keys:
             self.write('hey')
-    
+class EventCodeConfirmHandler(tornado.web.RequestHandler):
+    @tornado.gen.coroutine
+    def get(self):
+        event_request = str(self.get_argument('event'))
+        if event_request in event_codes:
+            self.write('Event confirmed')
+        else:
+            self.write('Event code not found')
 
+class NewApiKeyHandler(tornado.web.RequestHandler):
+    @tornado.gen.coroutine
+    def get(self):
+        email_id = str(self.get_argument('emailid'))
+        try:
+            encoded = keysDB.dget('api_keys', email_id)
+            encoded_json_old = {
+                'key' : encoded
+            }
+            self.write(encoded_json_old)
+        except KeyError as error:
+            email_encoded = email_id.encode('rot13')
+            keysDB.dadd('api_keys', (email_id, email_encoded))
+            keysDB.dump()
+            encoded_json_new = {
+                'key' : email_encoded
+            }
+            self.write(encoded_json_new)
     
 if __name__ == '__main__':
     tornado.options.parse_command_line()
     app = tornado.web.Application(
         handlers=[
             (r"/count_update", CountHandler),
+            (r"/event_confirm", EventCodeConfirmHandler),
+            (r"/newkey", NewApiKeyHandler)
         ]
     )
     http_server = tornado.httpserver.HTTPServer(app)
