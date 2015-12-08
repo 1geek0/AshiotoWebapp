@@ -58,7 +58,7 @@ class GetLastHandler(tornado.web.RequestHandler):
             self.write('hey')
 class EventCodeConfirmHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
-    def get(self):
+    def post(self):
         body_json = tornado.escape.json_decode(self.request.body)
         event_requested = body_json['event']
         if event_requested in event_codes:
