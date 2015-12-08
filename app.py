@@ -75,6 +75,7 @@ class EventCodeConfirmHandler(tornado.web.RequestHandler):
 class NewApiKeyHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def post(self):
+        print(self.request.body)
         req_body_json = tornado.escape.json_decode(self.request.body)
         email_id = req_body_json['emailid']
         try:
