@@ -6,6 +6,7 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.options
 import tornado.web
+import tornado.escape
 from tornado.options import define, options
 define("port", default=8000, help="run on the given port", type=int)
 
@@ -58,8 +59,9 @@ class GetLastHandler(tornado.web.RequestHandler):
 class EventCodeConfirmHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def post(self):
-        event_request = str(self.get_argument('event'))
-        if event_request in event_codes:
+        body_json = tornado.escape.json_decode(self.request.body)
+        event_requested = body_json['event']
+        if event_requested in event_codes:
             response = {
                 'exists' : True
             }
