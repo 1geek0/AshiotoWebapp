@@ -74,14 +74,9 @@ class EventCodeConfirmHandler(tornado.web.RequestHandler):
 
 class NewApiKeyHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
-<<<<<<< HEAD
     def post(self):
-        email_id = str(self.get_argument('emailid'))
-=======
-    def get(self):
         req_body_json = tornado.escape.json_decode(self.request.body)
         email_id = req_body_json['emailid']
->>>>>>> eventcode
         try:
             encoded = keysDB.dget('api_keys', email_id)
             encoded_json_old = {
