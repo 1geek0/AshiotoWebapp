@@ -92,6 +92,13 @@ class NewApiKeyHandler(tornado.web.RequestHandler):
                 'key' : email_encoded
             }
             self.write(encoded_json_new)
+
+class PerGate_DataProvider(tornado.web.RequestHandler):
+    @tornado.gen.coroutine
+    def post(self):
+        request_body = tornado.escape.json_decode(self.request.body)
+        event_codes = request_body['event_code']
+
     
 if __name__ == '__main__':
     tornado.options.parse_command_line()
