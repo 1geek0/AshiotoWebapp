@@ -47,7 +47,7 @@ class CountHandler(tornado.web.RequestHandler):
                 'plotted' : 0,
                 'eventCode' : eventCode
             })
-            #esponse = self.save_to_DB(apiPOST)
+            response = self.save_to_DB(apiPOST)
             serve = 'Success'
             self.write(serve)
             self.finish()
