@@ -19,7 +19,13 @@ ashiotoTable = Table('ashioto2')
 keysDB = pickledb.load('api_keys.db', False)
 
 #api keys
-event_codes = ['test_event', 'ca_demo', 'sulafest_15']
+event_codes = {'test_event', 'ca_demo', 'sulafest_15'}
+events = {
+    'test_event' : {
+        'gates' : 4,
+        
+    }
+}
 
 class CountHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
