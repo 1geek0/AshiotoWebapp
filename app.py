@@ -81,18 +81,18 @@ class EventCodeConfirmHandler(tornado.web.RequestHandler):
 class NewApiKeyHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def post(self):
-        print(self.request.body)
         req_body_json = tornado.escape.json_decode(self.request.body)
         email_id = req_body_json['emailid']
         try:
-            encoded = keysDB.dget('api_keys', email_id)
+            encoded_email = email_id.encode('rot13')
+            encoded = keysDB.lget('keys', encoded_email)
             encoded_json_old = {
-                'key' : encoded
+                'key' : encoded_email
             }
             self.write(encoded_json_old)
         except KeyError as error:
             email_encoded = email_id.encode('rot13')
-            keysDB.dadd('api_keys', (email_id, email_encoded))
+            keysDB.ladd('keys', email_encoded)
             keysDB.dump()
             encoded_json_new = {
                 'key' : email_encoded
