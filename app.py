@@ -19,25 +19,31 @@ ashiotoTable = Table('ashioto2')
 keysDB = pickledb.load('api_keys.db', False)
 
 #api keys
-event_codes = {'test_event', 'ca_demo', 'sulafest_15'}
+event_codes = {'test_event', 'ca_demo', 'sulafest_15' 'express_tower'}
 events = {
-    'test_event' : {
-        'gates' : 4,
-        
+    'express_tower' : {
+        'gates' : {
+            {
+                'name' : "Express Tower"
+            }
+        }
     }
 }
 
 class CountHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def post(self):
-        key = str(self.get_argument('key'))
+        req_body = tornado.escape.json_decode(self.request.body)
+        dict_body = dict(req_body)
+        key = req_body['key']
+        api_keys = keysDB.lgetall('keys')
         if key in api_keys:
-            count = int(self.get_argument('count'))#Number of People
-            gateID = int(self.get_argument('gateID'))#GateID
-            eventCode = int(self.get_argument('eventCode'))#Event Code
-            times = int(self.get_argument('time',default=time.time()))#Unix Timestamp
-            lat = float(self.get_argument('lat', default=0))
-            lon = float(self.get_argument('lon', default=0))
+            count = dict_body.get('count') #Number of People
+            gateID = dict_body.get('gateID')#GateID
+            eventCode = dict_body.get('eventCode') #Event Code
+            times = dict_body.get('timestamp', time.time()) #Unix Timestamp
+            lat = dict_body.get('lat', 0.0)
+            lon = dict_body.get('long', 0.0)
             apiPOST = Item(ashiotoTable, data={
                 'gateID' : gateID,
                 'timestamp' : times,
@@ -45,17 +51,19 @@ class CountHandler(tornado.web.RequestHandler):
                 'longitude' : lon,
                 'outcount' : count,
                 'plotted' : 0,
-                'eventCode' : eventCode
-            })
+                'event_code' : eventCode
+            },)
             response = self.save_to_DB(apiPOST)
-            serve = 'Success'
+            serve = {
+                'error' : False
+            }
             self.write(serve)
             self.finish()
         else:
-            self.write('Unable to authenticate. Check your api key')
-            
+            self.write({ 'error' : 'API'})        
     def save_to_DB(self, dbItem):
         dbItem.save()
+        
 class GetLastHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
