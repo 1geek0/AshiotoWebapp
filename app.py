@@ -23,8 +23,8 @@ event_codes = {'test_event', 'ca_demo', 'sulafest_15' 'express_tower'}
 events = {
     'express_tower' : {
         'gates' : {
-            {
-                'name' : "Express Tower"
+            0 : {
+                'name' : 'Express Towers'
             }
         }
     }
@@ -111,7 +111,34 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def post(self):
         request_body = tornado.escape.json_decode(self.request.body)
-        event_codes = request_body['event_code']
+        event_code = request_body['event_code']
+        event_request = events[event_code]
+        gates_number = len(event_request['gates'])
+        gates = {}
+        i = 1
+        while i <= gates_number:
+            query = ashiotoTable.query_2(index="event_code-timestamp-index", reverse=True, limit=1,event_code__eq=event_code, timestamp__gt=1)
+            count = 0
+            last = 0
+            for item in query:
+                count = item['outcount']
+                last = item['timestamp']
+            
+            index = i-1
+            
+            gates[index] = {
+                "name" : str(events['express_tower']['gates'][index]['name']),
+                "count" : int(count),
+                "last_sync" : int(last)
+            }
+            i+=1
+        
+        query = ashiotoTable.query2(index="event_code-timestamp-index")
+        response = {
+            'number' : gates_number,
+            'Gates' : json.dumps(gates)
+        }
+        self.write(response)
 
     
 if __name__ == '__main__':
@@ -120,7 +147,8 @@ if __name__ == '__main__':
         handlers=[
             (r"/count_update", CountHandler),
             (r"/event_confirm", EventCodeConfirmHandler),
-            (r"/newkey", NewApiKeyHandler)
+            (r"/newkey", NewApiKeyHandler),
+            (r"/per_gate", PerGate_DataProvider)
         ]
     )
     http_server = tornado.httpserver.HTTPServer(app)
