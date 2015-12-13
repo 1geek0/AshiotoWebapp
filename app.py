@@ -2,6 +2,8 @@ import time
 
 import pickledb
 
+import json
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
@@ -132,8 +134,6 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
                 "last_sync" : int(last)
             }
             i+=1
-        
-        query = ashiotoTable.query2(index="event_code-timestamp-index")
         response = {
             'number' : gates_number,
             'Gates' : json.dumps(gates)
