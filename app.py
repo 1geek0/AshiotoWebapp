@@ -24,11 +24,24 @@ keysDB = pickledb.load('api_keys.db', False)
 event_codes = {'test_event', 'ca_demo', 'sulafest_15' 'express_tower'}
 events = {
     'express_tower' : {
-        'gates' : {
-            0 : {
+        'gates' : [
+            {
                 'name' : 'Express Towers'
+            },
+            {
+                'name' : 'Exit'
             }
-        }
+        ]
+    },
+    'test_event' : {
+        'gates' : [
+            {
+                'name' : "Entry"
+            },
+            {
+                'name' : 'Exit'
+            }
+        ]
     }
 }
 
