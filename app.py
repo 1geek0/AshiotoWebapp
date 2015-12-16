@@ -12,7 +12,7 @@ import tornado.escape
 from tornado.options import define, options
 define("port", default=8000, help="run on the given port", type=int)
 
-from boto.dynamodb2.table import *
+from boto.dynamodb2.table import * 
 
 #DynamoDb Init
 ashiotoTable = Table('ashioto2')
@@ -37,6 +37,16 @@ events = {
         'gates' : [
             {
                 'name' : "Entry"
+            },
+            {
+                'name' : 'Exit'
+            }
+        ]
+    },
+    'sulafest' : {
+        'gates' : [
+            {
+                'name' : 'Entry'
             },
             {
                 'name' : 'Exit'
@@ -129,26 +139,33 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
         event_code = request_body['event_code']
         event_request = events[event_code]
         gates_number = len(event_request['gates'])
-        gates = {}
+        gates = []
         i = 1
         while i <= gates_number:
-            query = ashiotoTable.query_2(index="event_code-timestamp-index", reverse=True, limit=1,event_code__eq=event_code, timestamp__gt=1)
+            query = ashiotoTable.query_2(
+                index="event_code-timestamp-index",
+                reverse=True,
+                limit=1,
+                event_code__eq=event_code,
+                timestamp__gt=1,
+                query_filter={"gateID__eq":i})
             count = 0
             last = 0
             for item in query:
                 count = item['outcount']
+                print(count)
                 last = item['timestamp']
+                print(last)
             
             index = i-1
             
-            gates[index] = {
-                "name" : str(events['express_tower']['gates'][index]['name']),
+            gates.append({
+                "name" : str(events[event_code]['gates'][index]['name']),
                 "count" : int(count),
                 "last_sync" : int(last)
-            }
+            })
             i+=1
         response = {
-            'number' : gates_number,
             'Gates' : json.dumps(gates)
         }
         self.write(response)
