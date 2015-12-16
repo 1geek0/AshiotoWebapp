@@ -88,13 +88,7 @@ class CountHandler(tornado.web.RequestHandler):
             self.write({ 'error' : 'API'})        
     def save_to_DB(self, dbItem):
         dbItem.save()
-        
-class GetLastHandler(tornado.web.RequestHandler):
-    @tornado.gen.coroutine
-    def get(self):
-        key = str(self.get_argument('key'))
-        if key in api_keys:
-            self.write('hey')
+
 class EventCodeConfirmHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def post(self):
@@ -110,27 +104,6 @@ class EventCodeConfirmHandler(tornado.web.RequestHandler):
                 'exists' : False
             }
             self.write(response)
-
-class NewApiKeyHandler(tornado.web.RequestHandler):
-    @tornado.gen.coroutine
-    def post(self):
-        req_body_json = tornado.escape.json_decode(self.request.body)
-        email_id = req_body_json['emailid']
-        try:
-            encoded_email = email_id.encode('rot13')
-            encoded = keysDB.lget('keys', encoded_email)
-            encoded_json_old = {
-                'key' : encoded_email
-            }
-            self.write(encoded_json_old)
-        except KeyError as error:
-            email_encoded = email_id.encode('rot13')
-            keysDB.ladd('keys', email_encoded)
-            keysDB.dump()
-            encoded_json_new = {
-                'key' : email_encoded
-            }
-            self.write(encoded_json_new)
 
 class PerGate_DataProvider(tornado.web.RequestHandler):
     @tornado.gen.coroutine
@@ -177,7 +150,6 @@ if __name__ == '__main__':
         handlers=[
             (r"/count_update", CountHandler),
             (r"/event_confirm", EventCodeConfirmHandler),
-            (r"/newkey", NewApiKeyHandler),
             (r"/per_gate", PerGate_DataProvider)
         ]
     )
