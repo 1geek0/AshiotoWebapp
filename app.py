@@ -60,12 +60,12 @@ class CountHandler(tornado.web.RequestHandler):
     def post(self):
         req_body = tornado.escape.json_decode(self.request.body)
         dict_body = dict(req_body)
-        count = dict_body.get('count') #Number of People
-        gateID = dict_body.get('gateID')#GateID
+        count = int(dict_body.get('count')) #Number of People
+        gateID = int(dict_body.get('gateID'))#GateID
         eventCode = dict_body.get('eventCode') #Event Code
-        times = dict_body.get('timestamp', time.time()) #Unix Timestamp
-        lat = dict_body.get('lat', 0.0)
-        lon = dict_body.get('long', 0.0)
+        times = int(dict_body.get('timestamp', time.time())) #Unix Timestamp
+        lat = float(dict_body.get('lat', 0.0))
+        lon = float(dict_body.get('long', 0.0))
         apiPOST = Item(ashiotoTable, data={
             'gateID' : gateID,
             'timestamp' : times,
