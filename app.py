@@ -6,6 +6,8 @@ import os
 import json
 import urllib3
 
+import datetime
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
@@ -118,6 +120,7 @@ def pull_gates(event_code):
     event_request = events[event_code]
     gates_number = len(event_request['gates'])
     gates = []
+    mega = 0
     i = 1
     while i <= gates_number:
         query = ashiotoTable.query_2(
@@ -132,6 +135,7 @@ def pull_gates(event_code):
         for item in query:
             count = item['outcount']
             print(count)
+            mega += count
             last = item['timestamp']
             print(last)
         
@@ -144,7 +148,7 @@ def pull_gates(event_code):
         })
         i+=1
     response = {
-        'Gates' : json.dumps(gates)
+        'Gates' : gates
     }
     return response
 
@@ -171,13 +175,26 @@ def mega_count(event_code):
     print("Count: " + str(response))
     return response
 
+def total(gates):
+    total_counts = 0
+    for gate in gates:
+        total_counts += int(gate['count'])
+    return total_counts
+
 
 class DashboardHandler(tornado.web.RequestHandler):
     def get(self, event):
         if event in event_codes:
             name = events[event]['event_name']
-            total_count = mega_count(event)
-            self.render("templates/template_dashboard.html", event_title=name, total_count=total_count)
+            call = pull_gates(event)
+            all_gates = call['Gates']
+            total_count = total(all_gates)
+            print(all_gates)
+            self.render(
+                "templates/template_dashboard.html",
+                event_title=name,
+                total_count=total_count,
+                gates=all_gates)
         else:
             self.write("error")
     
@@ -190,10 +207,11 @@ if __name__ == '__main__':
             (r"/per_gate", PerGate_DataProvider),
             (r"/dashboard/([a-zA-Z_0-9]+)", DashboardHandler)
         ],
-        static_path=os.path.join(os.path.dirname(__file__), "materialize_files")
+        static_path=os.path.join(os.path.dirname(__file__), "materialize_files"),
+        debug = True
     )
     http_server = tornado.httpserver.HTTPServer(app)
     #http_server.start(0)
     #http_server.bind(8888)
-    http_server.listen(8888)
+    http_server.listen(80)
     tornado.ioloop.IOLoop.instance().start()
