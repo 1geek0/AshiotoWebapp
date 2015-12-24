@@ -3,6 +3,7 @@ import time
 import pickledb
 
 import json
+import urllib3
 
 import tornado.httpserver
 import tornado.ioloop
@@ -21,7 +22,7 @@ ashiotoTable = Table('ashioto2')
 keysDB = pickledb.load('api_keys.db', False)
 
 #api keys
-event_codes = {'test_event', 'ca_demo', 'sulafest_15' 'express_tower'}
+event_codes = ['test_event', 'ca_demo', 'sulafest_15' 'express_tower']
 events = {
     'express_tower' : {
         'gates' : [
@@ -138,6 +139,10 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
         }
         self.write(response)
 
+class DashboardHandler(tornado.web.RequestHandler):
+    def get(self, event):
+        self.write("Success for %s" % event)
+
     
 if __name__ == '__main__':
     tornado.options.parse_command_line()
@@ -145,7 +150,8 @@ if __name__ == '__main__':
         handlers=[
             (r"/count_update", CountHandler),
             (r"/event_confirm", EventCodeConfirmHandler),
-            (r"/per_gate", PerGate_DataProvider)
+            (r"/per_gate", PerGate_DataProvider),
+            (r"/dashboard/([a-zA-Z]+)", DashboardHandler)
         ]
     )
     http_server = tornado.httpserver.HTTPServer(app)
