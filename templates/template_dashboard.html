@@ -14,8 +14,14 @@
         
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        
+        <title>{% block title %}Default title{% end %}</title>
     </head>
     <body>
-        
+        <nav>
+            <div class="nav-wrapper teal">
+                <a href="#" class="brand-logo center">{(event_title)}</a>
+            </div>
+        </nav>
     </body>
 </html>
