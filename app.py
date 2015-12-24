@@ -1,6 +1,7 @@
 import time
 
 import pickledb
+import os
 
 import json
 import urllib3
@@ -10,6 +11,7 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 import tornado.escape
+import tornado.template
 from tornado.options import define, options
 define("port", default=8000, help="run on the given port", type=int)
 
@@ -22,9 +24,10 @@ ashiotoTable = Table('ashioto2')
 keysDB = pickledb.load('api_keys.db', False)
 
 #api keys
-event_codes = ['test_event', 'ca_demo', 'sulafest_15' 'express_tower']
+event_codes = ['test_event', 'sulafest_16', 'express_tower']
 events = {
     'express_tower' : {
+        'event_name' : "Indian Express Demo",
         'gates' : [
             {
                 'name' : 'Express Towers'
@@ -35,6 +38,7 @@ events = {
         ]
     },
     'test_event' : {
+        'event_name' : "Test Event",
         'gates' : [
             {
                 'name' : "Entry"
@@ -44,7 +48,8 @@ events = {
             }
         ]
     },
-    'sulafest' : {
+    'sulafest_16' : {
+        'event_name' : "SulaFest 2016",
         'gates' : [
             {
                 'name' : 'Entry'
@@ -106,43 +111,75 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
     def post(self):
         request_body = tornado.escape.json_decode(self.request.body)
         event_code = request_body['event_code']
-        event_request = events[event_code]
-        gates_number = len(event_request['gates'])
-        gates = []
-        i = 1
-        while i <= gates_number:
-            query = ashiotoTable.query_2(
-                index="event_code-timestamp-index",
-                reverse=True,
-                limit=1,
-                event_code__eq=event_code,
-                timestamp__gt=1,
-                query_filter={"gateID__eq":i})
-            count = 0
-            last = 0
-            for item in query:
-                count = item['outcount']
-                print(count)
-                last = item['timestamp']
-                print(last)
-            
-            index = i-1
-            
-            gates.append({
-                "name" : str(events[event_code]['gates'][index]['name']),
-                "count" : int(count),
-                "last_sync" : int(last)
-            })
-            i+=1
-        response = {
-            'Gates' : json.dumps(gates)
-        }
+        gates_data = pull_gates(event_code)
         self.write(response)
+        
+def pull_gates(event_code):
+    event_request = events[event_code]
+    gates_number = len(event_request['gates'])
+    gates = []
+    i = 1
+    while i <= gates_number:
+        query = ashiotoTable.query_2(
+            index="event_code-timestamp-index",
+            reverse=True,
+            limit=1,
+            event_code__eq=event_code,
+            timestamp__gt=1,
+            query_filter={"gateID__eq":i})
+        count = 0
+        last = 0
+        for item in query:
+            count = item['outcount']
+            print(count)
+            last = item['timestamp']
+            print(last)
+        
+        index = i-1
+        
+        gates.append({
+            "name" : str(events[event_code]['gates'][index]['name']),
+            "count" : int(count),
+            "last_sync" : int(last)
+        })
+        i+=1
+    response = {
+        'Gates' : json.dumps(gates)
+    }
+    return response
+
+def mega_count(event_code):
+    event_request = events[event_code]
+    gates_number = len(event_request['gates'])
+    count_mega = 0
+    i = 1
+    while i <= gates_number:
+        query = ashiotoTable.query_2(
+            index="event_code-timestamp-index",
+            reverse=True,
+            limit=1,
+            event_code__eq=event_code,
+            timestamp__gt=1,
+            query_filter={"gateID__eq":i})
+        count = 0
+        for item in query:
+            count = item['outcount']
+        count_mega += count
+        
+        i+=1
+    response = count_mega
+    print("Count: " + str(response))
+    return response
+
 
 class DashboardHandler(tornado.web.RequestHandler):
     def get(self, event):
-        self.write("Success for %s" % event)
-
+        if event in event_codes:
+            name = events[event]['event_name']
+            total_count = mega_count(event)
+            self.render("templates/template_dashboard.html", event_title=name, total_count=total_count)
+        else:
+            self.write("error")
     
 if __name__ == '__main__':
     tornado.options.parse_command_line()
@@ -151,8 +188,9 @@ if __name__ == '__main__':
             (r"/count_update", CountHandler),
             (r"/event_confirm", EventCodeConfirmHandler),
             (r"/per_gate", PerGate_DataProvider),
-            (r"/dashboard/([a-zA-Z]+)", DashboardHandler)
-        ]
+            (r"/dashboard/([a-zA-Z_0-9]+)", DashboardHandler)
+        ],
+        static_path=os.path.join(os.path.dirname(__file__), "materialize_files")
     )
     http_server = tornado.httpserver.HTTPServer(app)
     #http_server.start(0)
