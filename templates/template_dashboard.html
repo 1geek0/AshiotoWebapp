@@ -19,19 +19,38 @@
     <body>
         <nav>
             <div class="nav-wrapper teal">
-                <a href="#" class="brand-logo center">{{event_title}}</a>
+                <a href="#" class="brand-logo center" style="font-weight: 500; font-size: 38px;">{{event_title}}</a>
             </div>
         </nav>
         
         <div class="row" id="cards_head">
-            <div class="col s12 m6">
-                <div class="card teal z-depth-3">
-                    <div class="card-content white-text center">
-                        <span id="totalCountTitle" class="card-title" style="font-weight: 500; font-size: 38px;">Total Count</span>
-                        <h1 id="megaCountText" style="height: 72px; margin-left: -17px; margin-top: 29px;"><font face="font/roboto/Shivaji02">{{total_count}}</font></h1>
-                    </div>
-                </div>
+            <div class="col m12">
+                <ul class="collection -depth-3 teal">
+                    <li class="collection-item card teal z-depth-3">
+                        <div class="card-content white-text center">
+                            <span id="totalCountTitle" class="card-title center" style="font-size: 30px;">Total Count</span>
+                            <h1 id="megaCountText" style="font-size:30px" class="card-title">{{total_count}}</h1>
+                        </div>
+                    </li>
+                </ul>
             </div>
+        </div>
+        <div class="row">
+            <ul class="collection">
+                {% for gate in gates %}
+                    {% block gates %}
+                        <div class="col m5">
+                            <li class="collection-item card teal center z-depth-2">
+                                <div class="card-content white-text center">
+                                    <span class="card-title center" style="font-size:30px">{{ escape(gate['name']) }}</span><br>
+                                    <span class="card-title center" style="font-size:21px">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
+                                    <span class="card-title center" style="font-size:30px">{{ escape(str(gate['count'])) }}</span><br>
+                                </div>
+                            </li>
+                        </div>
+                    {% end %}
+                {% end %}
+            </ul>
         </div>
     </body>
 </html>
