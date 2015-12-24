@@ -1,5 +1,6 @@
 <html>
     <head>
+        <link rel="shortcut icon" href="ashioto.ico">
         <!--Import Google Icon Font-->
         <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         
@@ -39,7 +40,7 @@
             <ul class="collection">
                 {% for gate in gates %}
                     {% block gates %}
-                        <div class="col m5">
+                        <div class="col m6">
                             <li class="collection-item card teal center z-depth-2">
                                 <div class="card-content white-text center">
                                     <span class="card-title center" style="font-size:30px">{{ escape(gate['name']) }}</span><br>
