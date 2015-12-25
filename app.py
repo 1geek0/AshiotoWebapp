@@ -114,7 +114,7 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
         request_body = tornado.escape.json_decode(self.request.body)
         event_code = request_body['event_code']
         gates_data = pull_gates(event_code)
-        self.write(response)
+        self.write(gates_data)
         
 def pull_gates(event_code):
     event_request = events[event_code]
