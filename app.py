@@ -152,29 +152,6 @@ def pull_gates(event_code):
     }
     return response
 
-def mega_count(event_code):
-    event_request = events[event_code]
-    gates_number = len(event_request['gates'])
-    count_mega = 0
-    i = 1
-    while i <= gates_number:
-        query = ashiotoTable.query_2(
-            index="event_code-timestamp-index",
-            reverse=True,
-            limit=1,
-            event_code__eq=event_code,
-            timestamp__gt=1,
-            query_filter={"gateID__eq":i})
-        count = 0
-        for item in query:
-            count = item['outcount']
-        count_mega += count
-        
-        i+=1
-    response = count_mega
-    print("Count: " + str(response))
-    return response
-
 def total(gates):
     total_counts = 0
     for gate in gates:
