@@ -160,6 +160,7 @@ def total(gates):
 
 
 class DashboardHandler(tornado.web.RequestHandler):
+    @tornado.web.asynchronous
     def get(self, event):
         if event in event_codes:
             name = events[event]['event_name']
