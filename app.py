@@ -71,17 +71,12 @@ class CountHandler(tornado.web.RequestHandler):
         gateID = int(dict_body.get('gateID'))#GateID
         eventCode = dict_body.get('eventCode') #Event Code
         times = int(dict_body.get('timestamp', time.time())) #Unix Timestamp
-        lat = float(dict_body.get('lat', 0.0))
-        lon = float(dict_body.get('long', 0.0))
-        apiPOST = Item(ashiotoTable, data={
+        count_item = {
             'gateID' : gateID,
             'timestamp' : times,
-            'latitude' : lat,
-            'longitude' : lon,
             'outcount' : count,
-            'plotted' : 0,
             'event_code' : eventCode
-        },)
+        }
         response = self.save_to_DB(apiPOST)
         serve = {
             'error' : False
