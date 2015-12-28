@@ -43,6 +43,7 @@ events = {
     },
     'test_event' : {
         'event_name' : "Test Event",
+        'timezone' : 'Asia/Calcutta',
         'gates' : [
             {
                 'name' : "Entry"
@@ -136,7 +137,7 @@ def gates_top(event_code):
         gates.append({
             "name" : str(events[event_code]['gates'][index]['name']),
             "count" : int(count),
-            "last_sync" : int(last)
+            "last_sync" : int(last)+19800
         })
         i+=1
     response = {
@@ -163,7 +164,7 @@ class DashboardHandler(tornado.web.RequestHandler):
     def gen_website(self, call, name):
         print(call)
         all_gates = call['Gates']
-        total_count = str(total(all_gates))
+        total_count = total(all_gates)
         self.render(
                 "templates/template_dashboard.html",
                 event_title=name,
