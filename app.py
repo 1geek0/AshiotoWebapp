@@ -4,6 +4,8 @@ import pickledb
 
 import json
 
+from pymongo import MongoClient
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
@@ -19,6 +21,11 @@ ashiotoTable = Table('ashioto2')
 
 #PickleDB
 keysDB = pickledb.load('api_keys.db', False)
+
+#MongoDB init
+client = MongoClient()
+client.ashioto_data.authenticate("rest_user", "Ashioto_8192")
+db = client.ashioto_data
 
 #api keys
 event_codes = {'test_event', 'ca_demo', 'sulafest_15' 'express_tower'}
