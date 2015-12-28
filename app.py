@@ -77,14 +77,11 @@ class CountHandler(tornado.web.RequestHandler):
             'outcount' : count,
             'event_code' : eventCode
         }
-        response = self.save_to_DB(apiPOST)
         serve = {
             'error' : False
         }
         self.write(serve)
-        self.finish()      
-    def save_to_DB(self, dbItem):
-        dbItem.save()
+        self.finish()
 
 class EventCodeConfirmHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
