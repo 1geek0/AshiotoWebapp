@@ -83,7 +83,7 @@ class CountHandler(tornado.web.RequestHandler):
             'gateID' : gateID,
             'timestamp' : times,
             'outcount' : count,
-            'event_code' : eventCode
+            'eventCode' : eventCode
         }
         db.ashioto_data.insert(count_item)
         serve = {
