@@ -177,8 +177,9 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
         print("Socket Opened")
     
     def on_message(self, message):
-        print(message)
-        self.write_message(u"Message: " + message, False)
+        if message == "Refresh":
+            print("Refresh")
+            self.write_message("Reload", False)
         
     def on_close(self):
         print("Socket Closed")
