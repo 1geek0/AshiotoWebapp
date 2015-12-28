@@ -77,6 +77,7 @@ class CountHandler(tornado.web.RequestHandler):
             'outcount' : count,
             'event_code' : eventCode
         }
+        db.ashioto_data.insert(count_item)
         serve = {
             'error' : False
         }
