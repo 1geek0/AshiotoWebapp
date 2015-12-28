@@ -8,6 +8,8 @@ import urllib3
 
 import datetime
 
+from pymongo import MongoClient
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
@@ -24,6 +26,11 @@ ashiotoTable = Table('ashioto2')
 
 #PickleDB
 keysDB = pickledb.load('api_keys.db', False)
+
+#MongoDB init
+client = MongoClient()
+client.ashioto_data.authenticate("rest_user", "Ashioto_8192")
+db = client.ashioto_data
 
 #api keys
 event_codes = ['test_event', 'sulafest_16', 'express_tower']
@@ -72,25 +79,18 @@ class CountHandler(tornado.web.RequestHandler):
         gateID = int(dict_body.get('gateID'))#GateID
         eventCode = dict_body.get('eventCode') #Event Code
         times = int(dict_body.get('timestamp', time.time())) #Unix Timestamp
-        lat = float(dict_body.get('lat', 0.0))
-        lon = float(dict_body.get('long', 0.0))
-        apiPOST = Item(ashiotoTable, data={
+        count_item = {
             'gateID' : gateID,
             'timestamp' : times,
-            'latitude' : lat,
-            'longitude' : lon,
             'outcount' : count,
-            'plotted' : 0,
             'event_code' : eventCode
-        },)
-        response = self.save_to_DB(apiPOST)
+        }
+        db.ashioto_data.insert(count_item)
         serve = {
             'error' : False
         }
         self.write(serve)
-        self.finish()      
-    def save_to_DB(self, dbItem):
-        dbItem.save()
+        self.finish()
 
 class EventCodeConfirmHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
