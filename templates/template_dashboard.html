@@ -15,9 +15,6 @@
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         
-        <!--Ashioto scripts-->
-        <script type="text/javascript" src="{{ static_url("js_dashboard/websocket.js")}}"></script>
-        
         <title>{{event_title}}</title>
     </head>
     <body>
@@ -56,5 +53,7 @@
                 {% end %}
             </ul>
         </div>
+        <!--Ashioto scripts-->
+        <script type="text/javascript" src="{{ static_url("js_dashboard/websocket.js")}}"></script>
     </body>
 </html>

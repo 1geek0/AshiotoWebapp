@@ -67,6 +67,8 @@ events = {
     }
 }
 
+client_list = [] #Browser clients
+
 class CountHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def post(self):
@@ -175,6 +177,7 @@ class DashboardHandler(tornado.web.RequestHandler):
 class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print("Socket Opened")
+        client_list.append(self)
     
     def on_message(self, message):
         if message == "Refresh":
