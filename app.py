@@ -192,7 +192,7 @@ if __name__ == '__main__':
             (r"/per_gate", PerGate_DataProvider),
             (r"/dashboard/([a-zA-Z_0-9]+)", DashboardHandler)
         ],
-        static_path=os.path.join(os.path.dirname(__file__), "materialize_files")
+        static_path=os.path.join(os.path.dirname(__file__), "static_files")
     )
     http_server = tornado.httpserver.HTTPServer(app)
     #http_server.start(0)
