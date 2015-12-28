@@ -166,6 +166,7 @@ class DashboardHandler(tornado.web.RequestHandler):
         else:
             self.write("error")
     def gen_website(self, call, name):
+        print(call)
         all_gates = call['Gates']
         total_count = total(all_gates)
         self.render(
@@ -173,7 +174,6 @@ class DashboardHandler(tornado.web.RequestHandler):
                 event_title=name,
                 total_count=total_count,
                 gates=all_gates)
-        self.finish()
     
 if __name__ == '__main__':
     tornado.options.parse_command_line()
