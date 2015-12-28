@@ -19,11 +19,6 @@ import tornado.template
 from tornado.options import define, options
 define("port", default=8000, help="run on the given port", type=int)
 
-from boto.dynamodb2.table import * 
-
-#DynamoDb Init
-ashiotoTable = Table('ashioto2')
-
 #PickleDB
 keysDB = pickledb.load('api_keys.db', False)
 
