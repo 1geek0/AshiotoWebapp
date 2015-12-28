@@ -161,7 +161,7 @@ class DashboardHandler(tornado.web.RequestHandler):
     def get(self, event):
         if event in event_codes:
             name = events[event]['event_name']
-            call = pull_gates(event)
+            call = gates_top(event)
             self.gen_website(call, name)
         else:
             self.write("error")
