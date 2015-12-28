@@ -190,7 +190,8 @@ if __name__ == '__main__':
             (r"/count_update", CountHandler),
             (r"/event_confirm", EventCodeConfirmHandler),
             (r"/per_gate", PerGate_DataProvider),
-            (r"/dashboard/([a-zA-Z_0-9]+)", DashboardHandler)
+            (r"/dashboard/([a-zA-Z_0-9]+)", DashboardHandler),
+            (r"/websock", AshiotoWebSocketHandler),
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files")
     )
