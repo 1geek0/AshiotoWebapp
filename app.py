@@ -113,7 +113,7 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
     def post(self):
         request_body = tornado.escape.json_decode(self.request.body)
         event_code = request_body['event_code']
-        gates_data = pull_gates(event_code)
+        gates_data = gates_top(event_code)
         self.write(gates_data)
         
 def gates_top(event_code):
@@ -124,11 +124,12 @@ def gates_top(event_code):
     i = 1
     while i <= gates_number:
         query = db.ashioto_data.find(
-            {"eventCode":event_request,
+            {"eventCode":event_code,
              "gateID":i}).sort([("timestamp",-1)]).limit(1)
         count = 0
         last = 0
         for item in query:
+            print(item)
             count = item['outcount']
             print(count)
             mega += count
