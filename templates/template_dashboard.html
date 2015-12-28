@@ -30,7 +30,7 @@
                     <li class="collection-item card teal z-depth-3">
                         <div class="card-content white-text center">
                             <span id="totalCountTitle" class="card-title center" style="font-size: 30px;">Total Count</span>
-                            <h1 id="megaCountText" style="font-size:30px" class="card-title">{{total_count}}</h1>
+                            <h1 id="megaCountText" style="font-size:30px" class="card-title">{{"{:,}".format(int(total_count))}}</h1>
                         </div>
                     </li>
                 </ul>
@@ -45,7 +45,7 @@
                                 <div class="card-content white-text center">
                                     <span class="card-title center" style="font-size:30px">{{ escape(gate['name']) }}</span><br>
                                     <span class="card-title center" style="font-size:21px">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
-                                    <span class="card-title center" style="font-size:30px">{{ escape(str(gate['count'])) }}</span><br>
+                                    <span class="card-title center" style="font-size:30px">{{ "{:,}".format(int(escape((str(gate['count']))))) }}</span><br>
                                 </div>
                             </li>
                         </div>
