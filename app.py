@@ -16,6 +16,8 @@ import tornado.options
 import tornado.web
 import tornado.escape
 import tornado.template
+import tornado.websocket
+
 from tornado.options import define, options
 define("port", default=8000, help="run on the given port", type=int)
 
@@ -169,6 +171,17 @@ class DashboardHandler(tornado.web.RequestHandler):
                 event_title=name,
                 total_count=total_count,
                 gates=all_gates)
+
+class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
+    def open(self):
+        print("Socket Opened")
+    
+    def on_message(self, message):
+        self.write_message(u"Message: ", message)
+        
+    def on_close(self):
+        print("Socket Closed")
+    
     
 if __name__ == '__main__':
     tornado.options.parse_command_line()
