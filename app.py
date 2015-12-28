@@ -124,7 +124,7 @@ def gates_top(event_code):
     i = 1
     while i <= gates_number:
         query = db.ashioto_data.find(
-            {"event_code":event_request,
+            {"eventCode":event_request,
              "gateID":i}).sort([("timestamp",-1)]).limit(1)
         count = 0
         last = 0
