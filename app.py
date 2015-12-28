@@ -163,7 +163,7 @@ class DashboardHandler(tornado.web.RequestHandler):
     def gen_website(self, call, name):
         print(call)
         all_gates = call['Gates']
-        total_count = total(all_gates)
+        total_count = str(total(all_gates))
         self.render(
                 "templates/template_dashboard.html",
                 event_title=name,
