@@ -123,13 +123,7 @@ def pull_gates(event_code):
     mega = 0
     i = 1
     while i <= gates_number:
-        query = ashiotoTable.query_2(
-            index="event_code-timestamp-index",
-            reverse=True,
-            limit=1,
-            event_code__eq=event_code,
-            timestamp__gt=1,
-            query_filter={"gateID__eq":i})
+        query = db.ashioto_data.find({"event_code":event_request, "gateID":i})
         count = 0
         last = 0
         for item in query:
