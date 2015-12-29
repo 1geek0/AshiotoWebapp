@@ -18,6 +18,9 @@ import tornado.escape
 import tornado.template
 import tornado.websocket
 
+import Image
+import io
+
 from tornado.options import define, options
 define("port", default=8000, help="run on the given port", type=int)
 
@@ -58,7 +61,10 @@ events = {
     },
     'sulafest_16' : {
         'event_name' : "SulaFest 2016",
-        'theme' : 'cyan',
+        'theme_primary' : 'white',
+        'theme_accent' : "deep-purple",
+        "theme_text" : "white",
+        'logo_name' : 'sulafest_logo.jpg',
         'gates' : [
             {
                 'name' : 'Entry'
@@ -172,7 +178,10 @@ class DashboardHandler(tornado.web.RequestHandler):
     def get(self, event):
         if event in event_codes:
             name = events[event]['event_name']
-            event_theme = events[event]['theme']
+            theme_primary = events[event]['theme_primary']
+            theme_accent = events[event]['theme_accent']
+            theme_text = events[event]['theme_text']
+            logo = events[event]['logo_name']
             call = gates_top(event)
             all_gates = call['Gates']
             total_count = total(all_gates)
@@ -181,10 +190,26 @@ class DashboardHandler(tornado.web.RequestHandler):
                 event_title=name,
                 total_count=total_count,
                 gates=all_gates,
-                theme=event_theme,
-                eventCode=event)
+                theme_primary=theme_primary,
+                theme_accent=theme_accent,
+                theme_text=theme_text,
+                eventCode=event,
+                logo_name=logo)
         else:
             self.write("error")
+            
+class LogoHandler(tornado.web.RequestHandler):
+    #code
+    def get(self, filename):
+        print("\n\nFile: " +filename)
+        image_file = Image.open("static_files/images/" + filename)
+        image_io = io.BytesIO()
+        image_file.save(image_io, format="JPEG")
+        image_value = image_io.getvalue()
+        self.set_header('Content-type', 'image/jpg')
+        self.set_header('Content-Length', len(image_value))
+        self.write(image_value)
+
 
 class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
     def open(self):
@@ -211,6 +236,7 @@ if __name__ == '__main__':
             (r"/per_gate", PerGate_DataProvider),
             (r"/dashboard/([a-zA-Z_0-9]+)", DashboardHandler),
             (r"/websock", AshiotoWebSocketHandler),
+            (r"/img/(?P<filename>.+\.jpg)?", LogoHandler),
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files")
     )
