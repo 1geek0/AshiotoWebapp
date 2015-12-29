@@ -32,6 +32,7 @@ event_codes = ['test_event', 'sulafest_16', 'express_tower']
 events = {
     'express_tower' : {
         'event_name' : "Indian Express Demo",
+        'theme' : 'black',
         'gates' : [
             {
                 'name' : 'Express Towers'
@@ -43,7 +44,7 @@ events = {
     },
     'test_event' : {
         'event_name' : "Test Event",
-        'timezone' : 'Asia/Calcutta',
+        'theme' : 'teal',
         'gates' : [
             {
                 'name' : "Entry"
@@ -55,6 +56,7 @@ events = {
     },
     'sulafest_16' : {
         'event_name' : "SulaFest 2016",
+        'theme' : 'cyan',
         'gates' : [
             {
                 'name' : 'Entry'
@@ -157,19 +159,21 @@ class DashboardHandler(tornado.web.RequestHandler):
     def get(self, event):
         if event in event_codes:
             name = events[event]['event_name']
+            event_theme = events[event]['theme']
             call = gates_top(event)
-            self.gen_website(call, name)
+            all_gates = call['Gates']
+            total_count = total(all_gates)
+            self.render(
+                "templates/template_dashboard.html",
+                event_title=name,
+                total_count=total_count,
+                gates=all_gates,
+                theme=event_theme,
+                event_code = event)
         else:
             self.write("error")
     def gen_website(self, call, name):
         print(call)
-        all_gates = call['Gates']
-        total_count = total(all_gates)
-        self.render(
-                "templates/template_dashboard.html",
-                event_title=name,
-                total_count=total_count,
-                gates=all_gates)
     
 if __name__ == '__main__':
     tornado.options.parse_command_line()
