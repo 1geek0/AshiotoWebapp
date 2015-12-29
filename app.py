@@ -218,7 +218,7 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
     
     def on_message(self, message):
         if message in event_codes:
-            eventCode = message
+            self.eventCode = message
             try:
                 client_dict[message].append(self)
             except KeyError as ke:
@@ -228,7 +228,7 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
         
     def on_close(self):
         print("Socket Closed")
-        client_dict[eventCode].remove(self)
+        client_dict[self.eventCode].remove(self)
         
 if __name__ == '__main__':
     tornado.options.parse_command_line()
