@@ -1,7 +1,8 @@
 var socket = new WebSocket("ws://localhost/websock");
 
 socket.onopen = function(){
-    socket.send("{{event_code}}");
+    console.log("Event: ",eventCode);
+    socket.send(eventCode);
 };
 
 function commaSeparateNumber(val){
