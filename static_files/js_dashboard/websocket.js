@@ -2,7 +2,7 @@ var socket = new WebSocket("ws://localhost/websock");
 
 socket.onopen = function(){
     socket.send("{{event_code}}");
-}
+};
 
 function commaSeparateNumber(val){
     while (/(\d+)(\d{3})/.test(val.toString())){
