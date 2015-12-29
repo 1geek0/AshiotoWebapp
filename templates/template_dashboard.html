@@ -15,6 +15,9 @@
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         
+        <!--Ashioto scripts-->
+        <script type="text/javascript" src="{{static_url("js_dashboard/dateformat.js")}}"></script>
+        
         <title>{{event_title}}</title>
     </head>
     <body>
@@ -30,7 +33,7 @@
                     <li class="collection-item card {{theme}} z-depth-3">
                         <div class="card-content white-text center">
                             <span id="totalCountTitle" class="card-title center" style="font-size: 30px;">Total Count</span>
-                            <h1 id="megaCountText" style="font-size:30px" class="card-title">{{"{:,}".format(int(total_count))}}</h1>
+                            <h1 style="font-size:30px" class="card-title" id="totalCount">{{"{:,}".format(int(total_count))}}</h1>
                         </div>
                     </li>
                 </ul>
@@ -43,9 +46,9 @@
                         <div class="col m6">
                             <li class="collection-item card {{theme}} center z-depth-2">
                                 <div class="card-content white-text center">
-                                    <span class="card-title center" style="font-size:30px" id="{{escape( str(gates.index(gate)) )}}">{{ escape(gate['name']) }}</span><br>
-                                    <span class="card-title center" style="font-size:21px">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
-                                    <span class="card-title center" style="font-size:30px">{{ "{:,}".format(int(escape((str(gate['count']))))) }}</span><br>
+                                    <span class="card-title center" style="font-size:30px">{{ escape(gate['name']) }}</span><br>
+                                    <span class="card-title center" style="font-size:21px" id="{{escape("timestamp"+str(gates.index(gate)+1))}}">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
+                                    <span class="card-title center" style="font-size:30px" id="{{escape("count"+str(gates.index(gate)+1))}}">{{ "{:,}".format(int(escape((str(gate['count']))))) }}</span><br>
                                 </div>
                             </li>
                         </div>
@@ -53,15 +56,15 @@
                 {% end %}
             </ul>
         </div>
-<<<<<<< HEAD
+
         <!--Ashioto scripts-->
         <script type="text/javascript" src="{{ static_url("js_dashboard/websocket.js")}}"></script>
-=======
+
         <script type="application/javascript">
             /*setTimeout(function(){
                 location.reload(true);
             },10000);*/
         </script>
->>>>>>> template_dashboard
+
     </body>
 </html>
