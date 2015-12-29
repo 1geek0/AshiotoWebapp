@@ -22,15 +22,15 @@
     </head>
     <body>
         <nav>
-            <div class="nav-wrapper {{theme}}">
-                <a href="#" class="brand-logo center" style="font-weight: 500; font-size: 38px;">{{event_title}}</a>
+            <div class="nav-wrapper {{theme_primary}} z-depth-3">
+                <a href="#" class="brand-logo center"><img src="/img/{{logo_name}}" style="width:300px;height:63px;"/></a>
             </div>
-        </nav>
+        </nav><br>
         
         <div class="row" id="cards_head">
             <div class="col m12">
-                <ul class="collection z-depth-3 {{theme}}">
-                    <li class="collection-item card {{theme}} z-depth-3">
+                <ul class="collection z-depth-3">
+                    <li class="collection-item card {{theme_accent}} z-depth-3">
                         <div class="card-content white-text center">
                             <span id="totalCountTitle" class="card-title center" style="font-size: 30px;">Total Count</span>
                             <h1 style="font-size:30px" class="card-title" id="totalCount">{{"{:,}".format(int(total_count))}}</h1>
@@ -44,8 +44,8 @@
                 {% for gate in gates %}
                     {% block gates %}
                         <div class="col m6">
-                            <li class="collection-item card {{theme}} center z-depth-2">
-                                <div class="card-content white-text center">
+                            <li class="collection-item card {{theme_accent}} center z-depth-3">
+                                <div class="card-content {{theme_text}}-text center">
                                     <span class="card-title center" style="font-size:30px">{{ escape(gate['name']) }}</span><br>
                                     <span class="card-title center" style="font-size:21px" id="{{escape("timestamp"+str(gates.index(gate)+1))}}">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
                                     <span class="card-title center" style="font-size:30px" id="{{escape("count"+str(gates.index(gate)+1))}}">{{ "{:,}".format(int(escape((str(gate['count']))))) }}</span><br>
@@ -54,6 +54,7 @@
                         </div>
                     {% end %}
                 {% end %}
+                <br><br>
             </ul>
         </div>
 
