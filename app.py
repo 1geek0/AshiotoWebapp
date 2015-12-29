@@ -212,11 +212,13 @@ class LogoHandler(tornado.web.RequestHandler):
 
 
 class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
+    eventCode = ""
     def open(self):
         print("Socket Opened")
     
     def on_message(self, message):
         if message in event_codes:
+            eventCode = message
             try:
                 client_dict[message].append(self)
             except KeyError as ke:
@@ -226,6 +228,7 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
         
     def on_close(self):
         print("Socket Closed")
+        client_dict[eventCode].remove(self)
         
 if __name__ == '__main__':
     tornado.options.parse_command_line()
