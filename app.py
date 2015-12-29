@@ -182,7 +182,7 @@ class DashboardHandler(tornado.web.RequestHandler):
                 total_count=total_count,
                 gates=all_gates,
                 theme=event_theme,
-                event_code = event)
+                eventCode=event)
         else:
             self.write("error")
 
