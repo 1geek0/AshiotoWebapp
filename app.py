@@ -70,7 +70,7 @@ events = {
     }
 }
 
-client_list = [] #Browser clients
+client_dict = {} #Browser clients
 
 class CountHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
@@ -91,6 +91,15 @@ class CountHandler(tornado.web.RequestHandler):
         serve = {
             'error' : False
         }
+        try:
+            for user in client_dict[eventCode]:
+                user.write_message({
+                    'gateID' : gateID,
+                    'timestamp' : times,
+                    'count' : count
+                    })
+        except KeyError as ke:
+            print("No Clients")
         self.write(serve)
         self.finish()
 
@@ -180,12 +189,15 @@ class DashboardHandler(tornado.web.RequestHandler):
 class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print("Socket Opened")
-        client_list.append(self)
     
     def on_message(self, message):
-        if message == "Refresh":
-            print("Refresh")
-            self.write_message("Reload", False)
+        if message in event_codes:
+            try:
+                client_dict[message].append(self)
+            except KeyError as ke:
+                client_dict[message] = []
+                client_dict[message].append(self)
+            print(client_dict)
         
     def on_close(self):
         print("Socket Closed")
