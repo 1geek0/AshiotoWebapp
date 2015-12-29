@@ -1,4 +1,4 @@
-var socket = new WebSocket("ws://localhost/websock");
+var socket = new WebSocket("ws://ashioto.in/websock");
 
 socket.onopen = function(){
     console.log("Event: ",eventCode);
