@@ -18,7 +18,7 @@ import tornado.escape
 import tornado.template
 import tornado.websocket
 
-import Image
+from PIL import Image
 import io
 
 from tornado.options import define, options
