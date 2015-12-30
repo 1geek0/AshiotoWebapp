@@ -1,8 +1,8 @@
-var socket = new WebSocket("ws://ashioto.in/websock");
+var socket = new WebSocket("ws://localhost/websock");
 
 socket.onopen = function(){
-    console.log("Event: ",eventCode);
-    socket.send(eventCode);
+    socket.send(JSON.stringify({type : "browserClient_register", event_code : eventCode}));
+    socket.send(JSON.stringify({type : "browserClient_data", event_code : eventCode}));
 };
 
 function commaSeparateNumber(val){
