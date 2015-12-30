@@ -62,7 +62,7 @@ events = {
     'sulafest_16' : {
         'event_name' : "SulaFest 2016",
         'theme_primary' : 'white',
-        'theme_accent' : "deep-purple",
+        'theme_accent' : "purple darken-2",
         "theme_text" : "white",
         'logo_name' : 'sulafest_logo.jpg',
         'background' : 'sulafest_background.jpg',
