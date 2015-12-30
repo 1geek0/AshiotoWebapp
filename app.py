@@ -65,6 +65,7 @@ events = {
         'theme_accent' : "deep-purple",
         "theme_text" : "white",
         'logo_name' : 'sulafest_logo.jpg',
+        'background' : 'sulafest_background.jpg',
         'gates' : [
             {
                 'name' : 'Entry'
@@ -182,6 +183,7 @@ class DashboardHandler(tornado.web.RequestHandler):
             theme_accent = events[event]['theme_accent']
             theme_text = events[event]['theme_text']
             logo = events[event]['logo_name']
+            background = events[event]['background']
             call = gates_top(event)
             all_gates = call['Gates']
             total_count = total(all_gates)
@@ -194,7 +196,8 @@ class DashboardHandler(tornado.web.RequestHandler):
                 theme_accent=theme_accent,
                 theme_text=theme_text,
                 eventCode=event,
-                logo_name=logo)
+                logo_name=logo,
+                background=background)
         else:
             self.write("error")
             
