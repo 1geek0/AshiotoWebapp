@@ -78,6 +78,7 @@ events = {
 }
 
 client_dict = {} #Browser clients
+bar_clients_dict = {} #Graph Clients
 
 class CountHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
@@ -216,18 +217,39 @@ class LogoHandler(tornado.web.RequestHandler):
 
 class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
     eventCode = ""
+    event_type = ""
+    
     def open(self):
         print("Socket Opened")
     
-    def on_message(self, message):
-        if message in event_codes:
-            self.eventCode = message
+    def on_message(self, msg):
+        message = json.loads(msg)
+        print(message)
+        self.event_type = message['type']
+        self.eventCode = message['event_code']
+        if self.event_type == "browserClient_register":
             try:
-                client_dict[message].append(self)
+                client_dict[self.eventCode].append(self)
             except KeyError as ke:
-                client_dict[message] = []
-                client_dict[message].append(self)
-            print(client_dict)
+                client_dict[self.eventCode] = []
+                client_dict[self.eventCode].append(self)
+        elif self.event_type == "browserClient_data":
+            try:
+                client_dict[self.eventCode].append(self)
+            except KeyError as ke:
+                client_dict[self.eventCode] = []
+                client_dict[self.eventCode].append(self)
+            
+            x = 1
+            gates_length = len(events[self.eventCode]['gates'])
+            print(gates_length)
+            while x <= gates_length:
+                data = db.ashioto_data.find(
+                {"eventCode":self.eventCode,
+                 "gateID" : x}).sort([("timestamp",-1)]).limit(2)
+                for item in data:
+                    print(item)
+                x += 1
         
     def on_close(self):
         print("Socket Closed")
