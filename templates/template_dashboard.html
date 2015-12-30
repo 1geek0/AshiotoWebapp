@@ -20,27 +20,32 @@
         
         <title>{{event_title}}</title>
     </head>
-    <body background="/img/{{background}}">
+    <body>
+        <style>
+            { margin: 0; padding: 0; }
+            html { 
+                background: url('/img/{{background}}') no-repeat center center fixed;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;
+            }
+            </style>
         <nav>
             <div class="nav-wrapper {{theme_primary}} z-depth-3">
                 <a href="#" class="brand-logo center"><img src="/img/{{logo_name}}" style="width:300px;height:63px;"/></a>
             </div>
         </nav><br>
-        
+        <div class="container">
         <div class="row" id="cards_head">
-            <div class="col m12">
-                <ul class="collection z-depth-3">
                     <li class="collection-item card {{theme_accent}} z-depth-3">
                         <div class="card-content white-text center">
                             <span id="totalCountTitle" class="card-title center" style="font-size: 30px;">Total Count</span>
                             <h1 style="font-size:30px" class="card-title" id="totalCount">{{"{:,}".format(int(total_count))}}</h1>
                         </div>
                     </li>
-                </ul>
-            </div>
         </div>
         <div class="row">
-            <ul class="collection">
                 {% for gate in gates %}
                     {% block gates %}
                         <div class="col m6">
@@ -54,8 +59,6 @@
                         </div>
                     {% end %}
                 {% end %}
-                <br><br>
-            </ul>
         </div>
 
         <!--Ashioto scripts-->
@@ -69,6 +72,6 @@
                 location.reload(true);
             },10000);*/
         </script>
-
+        </div>
     </body>
 </html>
