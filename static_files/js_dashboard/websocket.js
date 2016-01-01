@@ -1,4 +1,4 @@
-var socket = new WebSocket("ws://localhost/websock");
+var socket = new WebSocket("ws://ashioto.in/websock");
 var delay_list = [];
 socket.onopen = function(){
     socket.send(JSON.stringify({
@@ -7,13 +7,19 @@ socket.onopen = function(){
     delay_list.forEach(function(range){
         var ranges = range.split("-");
         socket.send(JSON.stringify({
-            type : "barchart_register",
+            type : "bar_range_register",
             event_code : eventCode,
             delay1 : ranges[0],
             delay2 : ranges[1],
         }));
         console.log("SENDING REQ");
     });
+    socket.send(JSON.stringify({
+        type : "bar_overall_register",
+        event_code : eventCode,
+        time_step : 15,
+        time_range : 2
+    }));
 };
 
 function commaSeparateNumber(val){
@@ -45,6 +51,14 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function getColorString(){
+    var colorString = "rgba("+
+                getRandomInt(0,255).toString()+","+
+                getRandomInt(0,255).toString()+","+
+                getRandomInt(0,255).toString();
+    return colorString;
+}
+
 
 var rightNow = new Date();
 var jan1 = new Date(rightNow.getFullYear(), 0, 1, 0, 0, 0, 0);
@@ -52,15 +66,18 @@ var temp = jan1.toGMTString();
 var jan2 = new Date(temp.substring(0, temp.lastIndexOf(" ")-1));
 var std_time_offset = (jan1 - jan2) / (1000 * 60 * 60);
 
-data = {
+data_range = {
     labels : [],
-    datasets: [
-    ]
+    datasets: []
+}
+data_overall = {
+    labels : [],
+    datasets: []
 }
 
 socket.onmessage = function(evt){
     var message = jQuery.parseJSON(evt.data);
-    
+    console.log("TYPE: ", message.type);    
     //If message is count update
     switch(message.type){
         case "count_update":
@@ -77,9 +94,9 @@ socket.onmessage = function(evt){
             var currentTotal = parseInt(removeCommas($("#totalCount").text()));
             var newTotal = currentTotal-oldCount+parseInt(message.count);
             $("#totalCount").text(commaSeparateNumber(newTotal));
-        case "bargraph_data":
-            data.labels = [];
-            data.datasets = [];
+        case "bargraph_range_data":
+            data_range.labels = [];
+            data_range.datasets = [];
             if (message.hasOwnProperty('error')){
                 console.log("Error: ", message.error);
             }
@@ -117,12 +134,13 @@ socket.onmessage = function(evt){
                         var count_difference = current_gate_secondLast_count-current_gate_last_count;
 
                         current_dataset.data.push(count_difference);
-                        data.labels.push("Gate "+(i+1).toString())
+                        data_range.labels.push("Gate "+(i+1).toString())
                     }
                 } else {
                     $("#barChart").remove();
-                    $("#alertCard").remove();
-                    var insufficientData_card = document.createElement('div');
+                    //$("#alertCard").remove();
+                    Materialize.toast("Data Insufficient To Plot Graph", 4000);
+                    /*var insufficientData_card = document.createElement('div');
                     $(insufficientData_card)
                         .addClass("card red z-depth-3")
                         .html(
@@ -132,14 +150,14 @@ socket.onmessage = function(evt){
                                 <h1 style="font-size:30px" class="card-title">The Data Is Insufficient For Plotting A Graph</h1>\
                             </div>\
                         </div>')
-                        .appendTo(".container");
+                        .appendTo(".container");*/
                 }
                 console.log("Current Dataset: ", current_dataset);
-                data.datasets.push(current_dataset);
-                $("#barChart").remove();
+                data_range.datasets.push(current_dataset);
+                $("#barChart_range").remove();
                 var bar_chart = document.createElement('div');
-                $(bar_chart).html('<canvas id="barChart" width="700px" height="400px"></canvas>').appendTo("#graph_div");
-                var ctx = document.getElementById("barChart").getContext("2d");
+                $(bar_chart).html('<canvas id="barChart_range" width="700px" height="400px"></canvas>').appendTo("#range_graph_div");
+                var ctx = document.getElementById("barChart_range").getContext("2d");
                 options = {
                         //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
                         scaleBeginAtZero : true,
@@ -171,12 +189,84 @@ socket.onmessage = function(evt){
                         //Number - Spacing between data sets within X values
                         barDatasetSpacing : 1,
                     
-                        //responsive : true,
+                        responsive : true,
                         
                         legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
                     }
-                var ashiotoBarChart = new Chart(ctx).Bar(data, options);
-                $('#barChart').css('background-color', 'rgba(255, 255, 255, 1)');
+                var rangeBarChart = new Chart(ctx).Bar(data_range, options);
+                $('#barChart_range').css('background-color', 'rgba(255, 255, 255, 1)');
             }
+        case "bargraph_overall":
+            $("#barChart_overall").remove();
+            console.log("Message Over:", message);
+            data_overall.labels = [];
+            data_overall.datasets = [];
+            var time_start = message.data.time_start;
+            var steps = message.data.loop;
+            var time_step = message.data.time_step;
+            var gates = message.data.gates;
+            
+            for(var i=0;i<steps;i++){
+                var step = time_start + time_step*i
+                var difference = step-time_start
+                var time = new Date(step*1000).format("d M Y h:i:s A");
+                console.log("DIFF", step);
+                data_overall.labels.push(time);
+            }
+            for(var i=0;i<gates.length;i++){
+                var colorString = getColorString();
+                var current_dataset = {
+                    label : (message.data.time_start-message.data.time_stop).toString,
+                    fillColor : colorString+",0.5)",
+                    strokeColor : colorString+",0.8)",
+                    highlightFill : colorString+",0.75)",
+                    highlightStroke : colorString+",1)",
+                    data : [],
+                };
+                current_dataset.data = gates[i];
+                data_overall.datasets.push(current_dataset);
+            }
+            var bar_chart = document.createElement('div');
+                $(bar_chart).html('<canvas id="barChart_overall" width="700px" height="400px"></canvas>').appendTo("#overall_graph_div");
+                var ctx = document.getElementById("barChart_overall").getContext("2d");
+                options = {
+                    //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+                    scaleBeginAtZero : true,
+
+                    //Boolean - Whether grid lines are shown across the chart
+                    scaleShowGridLines : true,
+
+                    //String - Colour of the grid lines
+                    scaleGridLineColor : "rgba(0,0,0,.05)",
+
+                    //Number - Width of the grid lines
+                    scaleGridLineWidth : 1,
+
+                    //Boolean - Whether to show horizontal lines (except X axis)
+                    scaleShowHorizontalLines: true,
+
+                    //Boolean - Whether to show vertical lines (except Y axis)
+                    scaleShowVerticalLines: true,
+
+                    //Boolean - If there is a stroke on each bar
+                    barShowStroke : true,
+
+                    //Number - Pixel width of the bar stroke
+                    barStrokeWidth : 2,
+
+                    //Number - Spacing between each of the X value sets
+                    barValueSpacing : 1,
+
+                    //Number - Spacing between data sets within X values
+                    barDatasetSpacing : 1,
+
+                    responsive : true,
+
+                    legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+                }
+            console.log("DATA: ", data_overall);
+            overallBarChart = 0;
+            overallBarChart = new Chart(ctx).Bar(data_overall, options);
+            $('#barChart_overall').css('background-color', 'rgba(255, 255, 255, 1)');
     }
 };
