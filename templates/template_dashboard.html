@@ -15,8 +15,18 @@
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         
+        <!--D3.js script-->
+        <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        
         <!--Ashioto scripts-->
         <script type="text/javascript" src="{{static_url("js_dashboard/dateformat.js")}}"></script>
+        
+        <!--Chart.js-->
+        <script type="text/javascript" src="{{static_url("chartjs/Chart.js")}}"></script>
+        
+        <!--Slider-->
+        <script type="text/javascript" src="{{static_url("js_dashboard/nouislider.min.js")}}"></script>
+        <link href="{{static_url("js_dashboard/nouislider.css")}}" rel="stylesheet">
         
         <title>{{event_title}}</title>
     </head>
@@ -42,28 +52,51 @@
             }
         </style>
         <div class="container">
-        <div class="row" id="cards_head">
-                    <div class="card {{theme_accent}} z-depth-3">
-                        <div class="card-content {{theme_text}}-text center">
-                            <p id="totalCountTitle" class="card-title center" style="font-size: 30px;">Total Count</p>
-                            <h1 style="font-size:30px" class="card-title" id="totalCount">{{"{:,}".format(int(total_count))}}</h1>
-                        </div>
-                    </div>
-        </div>
-        <div class="row">
-                {% for gate in gates %}
-                    {% block gates %}
-                        <div class="col m6">
-                            <div class="card {{theme_accent}} center z-depth-3">
-                                <div class="card-content {{theme_text}}-text center">
-                                    <span class="card-title center" style="font-size:30px">{{ escape(gate['name']) }}</span><br>
-                                    <span class="card-title center" style="font-size:21px" id="{{escape("timestamp"+str(gates.index(gate)+1))}}">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
-                                    <span class="card-title center" style="font-size:30px" id="{{escape("count"+str(gates.index(gate)+1))}}">{{ "{:,}".format(int(escape((str(gate['count']))))) }}</span><br>
-                                </div>
+            <div class="row" id="cards_head">
+                        <div class="card {{theme_accent}} z-depth-3">
+                            <div class="card-content {{theme_text}}-text center">
+                                <p id="totalCountTitle" class="card-title center" style="font-size: 30px;">Total Count</p>
+                                <h1 style="font-size:30px" class="card-title" id="totalCount">{{"{:,}".format(int(total_count))}}</h1>
                             </div>
                         </div>
+            </div>
+            <script type="application/javascript">
+                gates_names_list = [];
+            </script>
+            <div class="row">
+                    {% for gate in gates %}
+                        {% block gates %}
+                            <div class="col m6">
+                                <div class="card {{theme_accent}} center z-depth-3">
+                                    <div class="card-content {{theme_text}}-text center">
+                                        <span class="card-title center" style="font-size:30px">{{ escape(gate['name']) }}</span><br>
+                                        <script type="application/javascript">gates_names_list.push("{{escape(gate['name'])}}") </script>
+                                        <span class="card-title center" style="font-size:21px" id="{{escape("timestamp"+str(gates.index(gate)+1))}}">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
+                                        <span class="card-title center" style="font-size:30px" id="{{escape("count"+str(gates.index(gate)+1))}}">{{ "{:,}".format(int(escape((str(gate['count']))))) }}</span><br>
+                                    </div>
+                                </div>
+                            </div>
+                        {% end %}
                     {% end %}
-                {% end %}
+            </div>
+            
+            <div id="graph_div">
+                <div id="slider_values">
+                    <span id="input_low" class="circle teal center card-title avatar" style="color:{{theme_text}};font-size:30px;padding:20px;"></span>
+                    <span id="input_high" class="circle teal center card-title avatar" style="color:{{theme_text}};font-size:30px;padding:20px"></span>
+                    <a class="waves-effect waves-light btn" id="barPlot_btn">Get Graph</a>
+                </div>
+                <style>
+                    #slider_values {
+                        width:500px;
+                        margin:0px auto; /* Right and left margin widths set to "auto". */
+                        text-align:center; /* Counteract to Internet Explorer 5/Windows hack. */
+                        padding:15px;
+                    }
+                </style>
+                <div id="slider"></div>
+                
+            </div>
         </div>
 
         <!--Ashioto scripts-->
@@ -71,6 +104,6 @@
             eventCode = "{{eventCode}}";
         </script>
         <script type="text/javascript" src="{{ static_url("js_dashboard/websocket.js")}}"></script>
-        </div>
+        <script type="text/javascript" src="{{static_url("js_dashboard/bargraph.js")}}"></script>
     </body>
 </html>
