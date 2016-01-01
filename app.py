@@ -319,6 +319,12 @@ def bar_init(delay1, delay2, client):
 def bar_overall(client):
     gates_length = len(events[client.eventCode]['gates'])
     
+    #Dict to be returned
+    response_dict = {
+        'type' : "bargraph_overall",
+        'data' : {}
+    }
+    
     #For finding event start time
     x = 1
     starts_list = []
@@ -330,11 +336,8 @@ def bar_overall(client):
         }).sort([("timestamp",1)]).limit(1)[0]
         starts_list.append(int(event_start['timestamp']))
         x+=1
-    
-    response_dict = {
-        'type' : "bargraph_overall",
-        'data' : {}
-    }
+    timestamp_start = min(starts_list)
+    response_dict['data']['time_start'] = timestamp_start
     return response_dict
         
 if __name__ == '__main__':
