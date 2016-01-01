@@ -63,7 +63,7 @@
             <div class="row">
                     {% for gate in gates %}
                         {% block gates %}
-                            <div class="col m6">
+                            <div class= "col m6">
                                 <div class="card {{theme_accent}} center z-depth-3">
                                     <div class="card-content {{theme_text}}-text center">
                                         <span class="card-title center" style="font-size:30px">{{ escape(gate['name']) }}</span><br>
@@ -77,21 +77,50 @@
                     {% end %}
             </div>
             
-            <div id="graph_div">
-                <div id="slider_values">
-                    <span id="input_high" class="circle teal center card-title avatar" style="color:{{theme_text}};font-size:30px;padding:20px"></span>
-                    <span id="input_low" class="circle teal center card-title avatar" style="color:{{theme_text}};font-size:30px;padding:20px;"></span>
-                    <a class="waves-effect waves-light btn" id="barPlot_btn">Get Graph</a>
-                </div>
-                <style>
-                    #slider_values {
-                        width:500px;
-                        margin:0px auto; /* Right and left margin widths set to "auto". */
-                        text-align:center; /* Counteract to Internet Explorer 5/Windows hack. */
-                        padding:15px;
-                    }
-                </style>
+            <div id="range_graph_div">
+                <div class="row">
+                    <div class="col m4 s4">
+                        <div class="card teal center z-depth-2">
+                            <div class="card-content white-text center">
+                                <span class="card-title center" id="input_high" style="font-size:20px;" style="margin-top:-10px;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col m4 s4">
+                        <div class="card teal center z-depth-2">
+                            <div class="card-content white-text center">
+                                <span id="input_low" class="card-title center" style="font-size:20px;" style="margin-top:-10px;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<div class="col m4 s4 center">-->
+                    <a class="waves-effect waves-light btn-large center" id="barPlot_btn" style="margin-top:25px">Get Graph</a>
+                    <!--</div>-->
+                    </div>
+                
                 <div id="slider"></div>
+            </div>
+            <div id="overall_graph_div">
+                <div class="row">
+                    <div class="col m4 s4 center">
+                        <div class="card teal center z-depth-2">
+                            <div class="card-content white-text center">
+                                <span class="card-title center" id="input_step" style="font-size:20px;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col m4 s4 center">
+                        <div class="card teal center z-depth-2">
+                            <div class="card-content white-text center">
+                                <span class="card-title center" id="input_range" style="font-size:20px;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="waves-effect waves-light btn-large center" id="barPlot_overall_btn">Get Graph</a>
+                </div>
+                <div id="slider_overall_step"></div>
+                <div id="slider_overall_range"></div>
+            </div>
                 
             </div>
         </div>
