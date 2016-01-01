@@ -49,7 +49,11 @@ events = {
     },
     'test_event' : {
         'event_name' : "Test Event",
-        'theme' : 'teal',
+        'theme_primary' : 'blue-grey darken-3',
+        'theme_accent' : "teal",
+        "theme_text" : "white",
+        'logo_name' : 'sulafest_logo.jpg',
+        'background' : 'sulafest_background.jpg',
         'gates' : [
             {
                 'name' : "Entry"
@@ -176,23 +180,20 @@ def total(gates):
     return total_counts
 
 def bar_init(delay1, delay2, client):
-    print("\nDELAYS: \n" + str(delay1) + "\n" + str(delay2))
     x = 1
     gates_length = len(events[client.eventCode]['gates'])
-    print(gates_length)
     response_dict = {
         'type' : "bargraph_data",
-        'data' : {}}
+        'data' : {}
+    }
     
     response_dict['data']['time_start'] = delay1
     response_dict['data']['time_stop'] = delay2
     response_dict['data']['gates'] = []
     gates_list = []
     while x <= gates_length:
-        print("X: " + str(x))
         timestamp_range = time.time()-delay1
         timestamp_buffer = time.time()-delay2
-        print("\nRange:\n"+str(timestamp_range)+"\n"+str(timestamp_buffer))
         query_lower = "";
         try:
             query_lower = db.ashioto_data.find(
@@ -202,7 +203,6 @@ def bar_init(delay1, delay2, client):
                     {"$lt":timestamp_range}},
                     {'_id': False, 'eventCode' : False }
             ).sort([("timestamp", -1)]).limit(1)[0]
-            print("LOWER: " + str(query_lower))
             
             query_upper = db.ashioto_data.find(
                 {"eventCode" : client.eventCode,
@@ -211,7 +211,6 @@ def bar_init(delay1, delay2, client):
                     {"$lt":timestamp_buffer}},
                     {'_id': False, 'eventCode' : False }
             ).sort([("timestamp", -1)]).limit(1)[0]
-            print("UPPER: " + str(query_upper))
             
         except IndexError as error:
             client.write_message({
@@ -229,6 +228,24 @@ def bar_init(delay1, delay2, client):
         print("RESPONSE: " + str(response_dict))
     return response_dict
 
+def bar_overall(client):
+    gates_length = len(events[client.eventCode]['gates'])
+    
+    #For finding event start time
+    x = 1
+    while x < gates_length: 
+        event_start = db.ashioto_data.find({
+            "eventCode" : client.eventCode,
+            "gateID" : x,
+            
+        }).sort([("timestamp",1)]).limit(1)[0]
+        print(event_start)
+        x+=1
+    response_dict = {
+        'type' : "bargraph_overall",
+        'data' : {}
+    }
+    return response_dict
 
 
 class DashboardHandler(tornado.web.RequestHandler):
@@ -299,9 +316,11 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
                 bar_clients_dict[self.eventCode].append(self)
             delay1 = int(message['delay1'])*60
             delay2 = int(message['delay2'])*60
-            response_dict = bar_init(delay1, delay2, self)
-            print(response_dict)
-            self.write_message(response_dict)
+            barInit = bar_init(delay1, delay2, self)
+            barOverall = bar_overall(self)
+            print(barInit)
+            self.write_message(barOverall)
+            self.write_message(barInit)
         
     def on_close(self):
         print("Socket Closed")
