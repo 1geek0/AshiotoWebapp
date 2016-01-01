@@ -15,9 +15,6 @@
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         
-        <!--D3.js script-->
-        <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
-        
         <!--Ashioto scripts-->
         <script type="text/javascript" src="{{static_url("js_dashboard/dateformat.js")}}"></script>
         
@@ -82,8 +79,8 @@
             
             <div id="graph_div">
                 <div id="slider_values">
-                    <span id="input_low" class="circle teal center card-title avatar" style="color:{{theme_text}};font-size:30px;padding:20px;"></span>
                     <span id="input_high" class="circle teal center card-title avatar" style="color:{{theme_text}};font-size:30px;padding:20px"></span>
+                    <span id="input_low" class="circle teal center card-title avatar" style="color:{{theme_text}};font-size:30px;padding:20px;"></span>
                     <a class="waves-effect waves-light btn" id="barPlot_btn">Get Graph</a>
                 </div>
                 <style>
