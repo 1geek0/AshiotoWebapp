@@ -102,10 +102,14 @@ class CountHandler(tornado.web.RequestHandler):
         try:
             for user in client_dict[eventCode]:
                 user.write_message({
+                    'type' : 'count_update',
                     'gateID' : gateID,
                     'timestamp' : times,
                     'count' : count
                     })
+            for user in bar_clients_dict[eventCode]:
+                user.write_message
+                pass
         except KeyError as ke:
             print("No Clients")
         self.write(serve)
@@ -148,12 +152,9 @@ def gates_top(event_code):
         count = 0
         last = 0
         for item in query:
-            print(item)
             count = item['outcount']
-            print(count)
             mega += count
             last = item['timestamp']
-            print(last)
         
         index = i-1
         
@@ -173,6 +174,61 @@ def total(gates):
     for gate in gates:
         total_counts += int(gate['count'])
     return total_counts
+
+def bar_init(delay1, delay2, client):
+    print("\nDELAYS: \n" + str(delay1) + "\n" + str(delay2))
+    x = 1
+    gates_length = len(events[client.eventCode]['gates'])
+    print(gates_length)
+    response_dict = {
+        'type' : "bargraph_data",
+        'data' : {}}
+    
+    response_dict['data']['time_start'] = delay1
+    response_dict['data']['time_stop'] = delay2
+    response_dict['data']['gates'] = []
+    gates_list = []
+    while x <= gates_length:
+        print("X: " + str(x))
+        timestamp_range = time.time()-delay1
+        timestamp_buffer = time.time()-delay2
+        print("\nRange:\n"+str(timestamp_range)+"\n"+str(timestamp_buffer))
+        query_lower = "";
+        try:
+            query_lower = db.ashioto_data.find(
+                {"eventCode" : client.eventCode,
+                 "gateID" : x,
+                 "timestamp" :
+                    {"$lt":timestamp_range}},
+                    {'_id': False, 'eventCode' : False }
+            ).sort([("timestamp", -1)]).limit(1)[0]
+            print("LOWER: " + str(query_lower))
+            
+            query_upper = db.ashioto_data.find(
+                {"eventCode" : client.eventCode,
+                 "gateID" : x,
+                 "timestamp" :
+                    {"$lt":timestamp_buffer}},
+                    {'_id': False, 'eventCode' : False }
+            ).sort([("timestamp", -1)]).limit(1)[0]
+            print("UPPER: " + str(query_upper))
+            
+        except IndexError as error:
+            client.write_message({
+                'type' : 'bargraph_data',
+                'error' : "Insufficient Data"
+            })
+            x += 1
+            continue
+        x += 1
+    
+        response_dict['data']['gates'].append({
+            'last' : query_lower,
+            'secondLast' : query_upper
+        })
+        print("RESPONSE: " + str(response_dict))
+    return response_dict
+
 
 
 class DashboardHandler(tornado.web.RequestHandler):
@@ -205,7 +261,6 @@ class DashboardHandler(tornado.web.RequestHandler):
 class LogoHandler(tornado.web.RequestHandler):
     #code
     def get(self, filename):
-        print("\n\nFile: " +filename)
         image_file = Image.open("static_files/images/" + filename)
         image_io = io.BytesIO()
         image_file.save(image_io, format="JPEG")
@@ -224,32 +279,29 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
     
     def on_message(self, msg):
         message = json.loads(msg)
-        print(message)
         self.event_type = message['type']
         self.eventCode = message['event_code']
         if self.event_type == "browserClient_register":
             try:
-                client_dict[self.eventCode].append(self)
+                if self not in client_dict[self.eventCode]:
+                    client_dict[self.eventCode].append(self)
             except KeyError as ke:
                 client_dict[self.eventCode] = []
                 client_dict[self.eventCode].append(self)
-        elif self.event_type == "browserClient_data":
+        elif self.event_type == "barchart_register":
+            print("New Client")
             try:
-                client_dict[self.eventCode].append(self)
+                if self not in bar_clients_dict[self.eventCode]:
+                    bar_clients_dict[self.eventCode].append(self)
             except KeyError as ke:
-                client_dict[self.eventCode] = []
-                client_dict[self.eventCode].append(self)
-            
-            x = 1
-            gates_length = len(events[self.eventCode]['gates'])
-            print(gates_length)
-            while x <= gates_length:
-                data = db.ashioto_data.find(
-                {"eventCode":self.eventCode,
-                 "gateID" : x}).sort([("timestamp",-1)]).limit(2)
-                for item in data:
-                    print(item)
-                x += 1
+                print("ERROR: " + str(ke))
+                bar_clients_dict[self.eventCode] = []
+                bar_clients_dict[self.eventCode].append(self)
+            delay1 = int(message['delay1'])*60
+            delay2 = int(message['delay2'])*60
+            response_dict = bar_init(delay1, delay2, self)
+            print(response_dict)
+            self.write_message(response_dict)
         
     def on_close(self):
         print("Socket Closed")
