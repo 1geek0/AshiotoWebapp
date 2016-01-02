@@ -313,6 +313,7 @@ socket.onmessage = function(evt){
             } else{
                 range_limit = 3599
             }
+                $("#range_graph_ul").show();
             noUiSlider.create(slider, {
                 start: [ 1,  parseInt(range_difference)*60], // Handle start position
                 step: 1, // Slider moves in increments of '10'
@@ -348,7 +349,14 @@ socket.onmessage = function(evt){
             }
             );
             } else{
-                $("#range_graph_ul").remove();
+                $("#range_graph_ul").hide();
+                setTimeout(function(){
+                        socket.send(JSON.stringify({
+                        type : "time_difference",
+                        event_code : eventCode
+                    }));
+                    console.log("QUERIED");
+                }, 60000);
             }
             break;
     }
