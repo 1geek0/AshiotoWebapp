@@ -1,5 +1,6 @@
-var socket = new WebSocket("ws://ashioto.in/websock");
-var delay_list = [];
+var socket = new WebSocket("ws://localhost/websock");
+var delay_list = ["1-5"];
+var color_pallete = ["rgba(96,125,139,", "rgba(0,150,136,", "rgba(0,151,167,", "rgba(198,40,40,"];
 socket.onopen = function(){
     socket.send(JSON.stringify({
         type : "browserClient_register", 
@@ -12,13 +13,17 @@ socket.onopen = function(){
             delay1 : ranges[0],
             delay2 : ranges[1],
         }));
-        console.log("SENDING REQ");
     });
     socket.send(JSON.stringify({
         type : "bar_overall_register",
         event_code : eventCode,
         time_step : 15,
-        time_range : 2
+        time_range : 2,
+        time_type : "event"
+    }));
+    socket.send(JSON.stringify({
+        type : "time_difference",
+        event_code : eventCode
     }));
 };
 
@@ -52,13 +57,37 @@ function getRandomInt(min, max) {
 }
 
 function getColorString(){
-    var colorString = "rgba("+
-                getRandomInt(0,255).toString()+","+
-                getRandomInt(0,255).toString()+","+
-                getRandomInt(0,255).toString();
+    var pallete_length = color_pallete.length-1;
+    var colorString = color_pallete[getRandomInt(0, pallete_length)];
     return colorString;
 }
 
+function updateSliderRange ( min, max ) {
+    slider.noUiSlider.destroy();
+    noUiSlider.create(slider,{
+        start : [min, max],
+        step : 1,
+        margin: 10, // Handles must be more than '20' apart
+        connect: true, // Display a colored bar between the handles
+        direction: 'ltr', // Put '0' at the bottom of the slider
+        orientation: 'horizontal', // Orient the slider vertically
+        behaviour: 'tap-drag', // Move handle on tap, bar is draggable
+		range: {
+			'min': [ min],
+			'max': [ max]
+		}
+	});
+    var valueLow = document.getElementById('input_low'),
+        valueHigh = document.getElementById('input_high');
+    slider.noUiSlider.on('update', function( values, handle ) {
+                if ( handle ) {
+                    valueLow.innerHTML = secondsToTime(parseInt(values[handle]));
+
+                } else {
+                    valueHigh.innerHTML = secondsToTime(parseInt(values[handle]));
+                }
+            });
+}
 
 var rightNow = new Date();
 var jan1 = new Date(rightNow.getFullYear(), 0, 1, 0, 0, 0, 0);
@@ -77,7 +106,6 @@ data_overall = {
 
 socket.onmessage = function(evt){
     var message = jQuery.parseJSON(evt.data);
-    console.log("TYPE: ", message.type);    
     //If message is count update
     switch(message.type){
         case "count_update":
@@ -101,27 +129,22 @@ socket.onmessage = function(evt){
                 console.log("Error: ", message.error);
             }
             else{
-                console.log("Message", message);
-                colorString = "rgba("+
-                                    getRandomInt(0,255).toString()+","+
-                                    getRandomInt(0,255).toString()+","+
-                                    getRandomInt(0,255).toString();
+                var colorString = getColorString();
                 var current_dataset = {
                         label : (message.data.time_start-message.data.time_stop).toString,
-                        fillColor : colorString+",0.5)",
-                        strokeColor : colorString+",0.8)",
-                        highlightFill : colorString+",0.75)",
-                        highlightStroke : colorString+",1)",
+                        fillColor : colorString+"0.5)",
+                        strokeColor : colorString+"0.8)",
+                        highlightFill : colorString+"0.75)",
+                        highlightStroke : colorString+"1)",
                         data : [],
                     };
+                console.log("END COLOR: ", current_dataset);
                 gates = message.data.gates;
-                console.log("Gates: ", gates);
                 gates_number = gates.length;
-                console.log("Number: ", gates_number);
+                
                 if (gates_number==gates_names_list.length){
                     for(var i=0;i<gates_number;i++){
                         var current_gate = gates[i];
-                        console.log("Current Gate: ", current_gate);
                         var current_gate_last = current_gate.last;
                         var current_gate_last_count = current_gate_last.outcount;
                         var current_gate_last_timestamp = current_gate_last.timestamp;
@@ -152,13 +175,12 @@ socket.onmessage = function(evt){
                         </div>')
                         .appendTo(".container");*/
                 }
-                console.log("Current Dataset: ", current_dataset);
                 data_range.datasets.push(current_dataset);
                 $("#barChart_range").remove();
                 var bar_chart = document.createElement('div');
                 $(bar_chart).html('<canvas id="barChart_range" width="700px" height="400px"></canvas>').appendTo("#range_graph_div");
                 var ctx = document.getElementById("barChart_range").getContext("2d");
-                options = {
+                var options = {
                         //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
                         scaleBeginAtZero : true,
 
@@ -196,9 +218,9 @@ socket.onmessage = function(evt){
                 var rangeBarChart = new Chart(ctx).Bar(data_range, options);
                 $('#barChart_range').css('background-color', 'rgba(255, 255, 255, 1)');
             }
+            break;
         case "bargraph_overall":
             $("#barChart_overall").remove();
-            console.log("Message Over:", message);
             data_overall.labels = [];
             data_overall.datasets = [];
             var time_start = message.data.time_start;
@@ -210,26 +232,28 @@ socket.onmessage = function(evt){
                 var step = time_start + time_step*i
                 var difference = step-time_start
                 var time = new Date(step*1000).format("d M Y h:i:s A");
-                console.log("DIFF", step);
                 data_overall.labels.push(time);
             }
             for(var i=0;i<gates.length;i++){
+                var gate_number = i+1;
+                var gate_name = "Gate " + gate_number;
                 var colorString = getColorString();
                 var current_dataset = {
-                    label : (message.data.time_start-message.data.time_stop).toString,
-                    fillColor : colorString+",0.5)",
-                    strokeColor : colorString+",0.8)",
-                    highlightFill : colorString+",0.75)",
-                    highlightStroke : colorString+",1)",
+                    label : gate_name,
+                    fillColor : colorString+"0.5)",
+                    strokeColor : colorString+"0.8)",
+                    highlightFill : colorString+"0.75)",
+                    highlightStroke : colorString+"1)",
                     data : [],
                 };
+                console.log("DATASET: ",current_dataset);
                 current_dataset.data = gates[i];
                 data_overall.datasets.push(current_dataset);
             }
             var bar_chart = document.createElement('div');
                 $(bar_chart).html('<canvas id="barChart_overall" width="700px" height="400px"></canvas>').appendTo("#overall_graph_div");
                 var ctx = document.getElementById("barChart_overall").getContext("2d");
-                options = {
+                var options = {
                     //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
                     scaleBeginAtZero : true,
 
@@ -255,18 +279,77 @@ socket.onmessage = function(evt){
                     barStrokeWidth : 2,
 
                     //Number - Spacing between each of the X value sets
-                    barValueSpacing : 1,
+                    barValueSpacing : 10,
 
                     //Number - Spacing between data sets within X values
                     barDatasetSpacing : 1,
 
                     responsive : true,
-
-                    legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+                    
+                    multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
+                
+                    legendTemplate : "<ul id=\"legend\" class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label.toString()){%><%=datasets[i].label.toString()%><%}%></li><%}%></ul>",
                 }
-            console.log("DATA: ", data_overall);
             overallBarChart = 0;
             overallBarChart = new Chart(ctx).Bar(data_overall, options);
+            var legend_overall = overallBarChart.generateLegend();
             $('#barChart_overall').css('background-color', 'rgba(255, 255, 255, 1)');
+            $("#barChart_overall").append(legend_overall);
+            break;
+        case "time_difference_response":
+            console.log("TIME: ",message.difference);
+            range_difference = message.difference;
+            if(range_difference!=0){
+            if(range_difference<59){
+                    range_limit = range_difference*60;
+                    setTimeout(function(){
+                        socket.send(JSON.stringify({
+                        type : "time_difference",
+                        event_code : eventCode
+                    }));
+                    slider.noUiSlider.destroy();
+                    console.log("QUERIED");
+                }, 60000);
+            } else{
+                range_limit = 3599
+            }
+            noUiSlider.create(slider, {
+                start: [ 1,  parseInt(range_difference)*60], // Handle start position
+                step: 1, // Slider moves in increments of '10'
+                margin: 10, // Handles must be more than '20' apart
+                connect: true, // Display a colored bar between the handles
+                direction: 'ltr', // Put '0' at the bottom of the slider
+                orientation: 'horizontal', // Orient the slider vertically
+                behaviour: 'tap-drag', // Move handle on tap, bar is draggable
+                range: { // Slider can select '0' to '100'
+                    'min': [ 1],
+                    'max': [ parseInt(range_difference)*60]
+                },
+            });
+            var valueLow = document.getElementById('input_low'),
+                valueHigh = document.getElementById('input_high');
+
+            // When the slider value changes, update the input and span
+            slider.noUiSlider.on('update', function( values, handle ) {
+                if ( handle ) {
+                    valueLow.innerHTML = secondsToTime(parseInt(values[handle]));
+
+                } else {
+                    valueHigh.innerHTML = secondsToTime(parseInt(values[handle]));
+                }
+            });
+
+            $("#barPlot_btn").click(function(){
+                socket.send(JSON.stringify({
+                    type : 'bar_range_register',
+                    event_code : eventCode,
+                    delay1 : $("#input_low").text().replace(" Minutes", ""),
+                    delay2 : $("#input_high").text().replace(" Minutes", "")}));
+            }
+            );
+            } else{
+                $("#range_graph_ul").remove();
+            }
+            break;
     }
 };
