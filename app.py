@@ -48,6 +48,7 @@ events = {
         ]
     },
     'test_event' : {
+        'eventCode' : "test_event",
         'event_name' : "Test Event",
         'theme_primary' : 'blue-grey darken-3',
         'theme_accent' : "teal",
@@ -73,9 +74,6 @@ events = {
         'gates' : [
             {
                 'name' : 'Entry'
-            },
-            {
-                'name' : 'Exit'
             }
         ]
     }
@@ -257,6 +255,7 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
             print("New Overall Client")
             self.time_step = int(message['time_step'])
             self.time_range = int(message['time_range'])
+            self.time_type = str(message['time_type'])
             try:
                 if self not in bar_overall_clients_dict[self.eventCode]:
                     bar_overall_clients_dict[self.eventCode].append(self)
@@ -266,6 +265,14 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
             bar_stats = bar_overall(self)
             print("STATS: " + str(bar_stats))
             self.write_message(bar_stats)
+        elif self.event_type == "time_difference":
+            timestamp_start = int(db.ashioto_events.find({
+            "eventCode" : self.eventCode
+            })[0]['time_start'])
+            time_difference = int((time.time() - timestamp_start)/60)
+            resonse_dict = {"difference" : time_difference, "type":"time_difference_response" }
+            print("TIME: " + str(resonse_dict))
+            self.write_message(resonse_dict)
         
     def on_close(self):
         print("Socket Closed")
@@ -277,6 +284,11 @@ def bar_init(delay1, delay2, client):
         'type' : "bargraph_range_data",
         'data' : {}
     }
+    timestamp_start = int(db.ashioto_events.find({
+            "eventCode" : client.eventCode
+            })[0]['time_start'])
+    
+    time_difference = int((time.time() - timestamp_start)/60)
     
     response_dict['data']['time_start'] = delay1
     response_dict['data']['time_stop'] = delay2
@@ -323,6 +335,7 @@ def bar_overall(client):
     gates_length = len(events[client.eventCode]['gates'])
     time_step = client.time_step
     time_limit = client.time_range
+    time_type = client.time_type
     eventCode = client.eventCode
     
     #Dict to be returned
@@ -337,16 +350,15 @@ def bar_overall(client):
     #For finding event start time
     x = 1
     starts_list = []
-    while x <= gates_length: 
-        event_start = db.ashioto_data.find({
-            "eventCode" : eventCode,
-            "gateID" : x,
-            
-        }).sort([("timestamp",1)]).limit(1)[0]
-        starts_list.append(int(event_start['timestamp']))
-        x+=1
-    timestamp_start = min(starts_list)
+    if time_type == "event":
+        timestamp_start = int(db.ashioto_events.find({
+            "eventCode" : client.eventCode
+            })[0]['time_start'])
+        print("START: " + str(timestamp_start))
+    elif time_type == "current":
+        timestamp_start = time.time()
     timestamp_stop = timestamp_start+time_step*60
+    print("STOP: " + str(timestamp_stop))
     response_dict['data']['time_start'] = timestamp_start
     timestamp_between = timestamp_start+(time_limit)*3600
     timesToLoop = (time_limit)*60/time_step
@@ -361,19 +373,23 @@ def bar_overall(client):
         current_stop = timestamp_stop
         oldCount=0
         while step_number <= timesToLoop:
-            newCount = int(query_range(current_start, current_stop,eventCode,z))
-            difference = newCount-oldCount
-            gates_list.append(difference)
-            print("Gate: "+str(z))
-            print("New Count: " + str(newCount))
-            print("Old Count: " + str(oldCount));
-            oldCount=newCount
+            try:
+                newCount = int(query_range(current_start, current_stop,eventCode,z))
+                difference = newCount-oldCount
+                gates_list.append(difference)
+                print("Gate: "+str(z))
+                print("New Count: " + str(newCount))
+                print("Old Count: " + str(oldCount));
+                oldCount=newCount
+            except IndexError as ie:
+                client.write_message({"error":"IndexError"})
             current_start+=time_step*60
             #print("New Current Start: " + current_start)
             current_stop+=time_step*60
             #print("New Current Stop: " + current_stop)
             step_number+=1
         response_dict['data']['gates'].append(gates_list)
+        print("OVERALL: " + str(response_dict))
         z+=1
     return response_dict
 
@@ -384,6 +400,14 @@ def query_range(gt,lt,evt,g_id):
         "timestamp" : {"$gte" : gt, "$lte" : lt}
     }).sort([("timestamp", 1)]).limit(1)[0]['outcount']
     return query_gate
+
+class StartTimeHandler(tornado.web.RequestHandler):
+    def get(self, eventCode):
+        event = db.ashioto_events.update({"eventCode" : eventCode},
+            {"$set": {"time_start": int(time.time())},}
+        )
+        self.write("KAM ZALA!!")
+        print(event)
 
         
 if __name__ == '__main__':
@@ -396,10 +420,11 @@ if __name__ == '__main__':
             (r"/dashboard/([a-zA-Z_0-9]+)", DashboardHandler),
             (r"/websock", AshiotoWebSocketHandler),
             (r"/img/(?P<filename>.+\.jpg)?", LogoHandler),
+            (r"/event_time_start/([a-zA-Z_0-9]+)", StartTimeHandler),
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files")
     )
-    http_server = tornado.httpserver.HTTPServer(app)
+    http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
     #http_server.start(0)
     #http_server.bind(8888)
     http_server.listen(80)
