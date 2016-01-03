@@ -140,6 +140,7 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
         request_body = tornado.escape.json_decode(self.request.body)
         event_code = request_body['event_code']
         gates_data = gates_top(event_code)
+        print(gates_data)
         self.write(gates_data)
         
 def gates_top(event_code):
@@ -354,11 +355,14 @@ def bar_overall(client):
         timestamp_start = int(db.ashioto_events.find({
             "eventCode" : client.eventCode
             })[0]['time_start'])
-        print("START: " + str(timestamp_start))
+        timestamp_stop = int(timestamp_start+time_step*60)
+        
     elif time_type == "current":
-        timestamp_start = time.time()
-    timestamp_stop = timestamp_start+time_step*60
-    print("STOP: " + str(timestamp_stop))
+        timestamp_start = int(time.time()-time_step*60*time_limit)
+        timestamp_stop = int(time.time())
+        print("LIMIT: " + str(time_limit))
+        print("START: " + str(timestamp_start))
+        print("STOP: " + str(timestamp_stop))
     response_dict['data']['time_start'] = timestamp_start
     timestamp_between = timestamp_start+(time_limit)*3600
     timesToLoop = (time_limit)*60/time_step
