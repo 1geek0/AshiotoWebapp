@@ -29,7 +29,7 @@ noUiSlider.create(slider_overall_range, {
     behaviour: 'tap', // Move handle on tap, bar is draggable
     range: { // Slider can select '0' to '100'
         'min': 1,
-        'max': 4
+        'max': 24
     },
 });
 var value_range = document.getElementById('input_range');

@@ -1,4 +1,4 @@
-var socket = new WebSocket("ws://ashioto.in/websock");
+var socket = new WebSocket("ws://localhost/websock");
 var delay_list = ["1-5"];
 var color_pallete = ["rgba(96,125,139,", "rgba(0,150,136,", "rgba(0,151,167,", "rgba(198,40,40,"];
 socket.onopen = function(){
@@ -310,9 +310,6 @@ socket.onmessage = function(evt){
                     slider.noUiSlider.destroy();
                     console.log("QUERIED");
                 }, 60000);
-            } else{
-                range_limit = 3599
-            }
                 $("#range_graph_ul").show();
             noUiSlider.create(slider, {
                 start: [ 1,  parseInt(range_difference)*60], // Handle start position
@@ -327,7 +324,7 @@ socket.onmessage = function(evt){
                     'max': [ parseInt(range_difference)*60]
                 },
             });
-            var valueLow = document.getElementById('input_low'),
+                var valueLow = document.getElementById('input_low'),
                 valueHigh = document.getElementById('input_high');
 
             // When the slider value changes, update the input and span
@@ -340,6 +337,37 @@ socket.onmessage = function(evt){
                 }
             });
 
+            } else{
+                range_limit = 3599
+                $("#range_graph_ul").show();
+            noUiSlider.create(slider, {
+                start: [ 1,  parseInt(range_difference)*60], // Handle start position
+                step: 1, // Slider moves in increments of '10'
+                margin: 10, // Handles must be more than '20' apart
+                connect: true, // Display a colored bar between the handles
+                direction: 'ltr', // Put '0' at the bottom of the slider
+                orientation: 'horizontal', // Orient the slider vertically
+                behaviour: 'tap-drag', // Move handle on tap, bar is draggable
+                range: { // Slider can select '0' to '100'
+                    'min': [ 1],
+                    'max': [ range_limit]
+                },
+            });
+                var valueLow = document.getElementById('input_low'),
+                valueHigh = document.getElementById('input_high');
+
+            // When the slider value changes, update the input and span
+            slider.noUiSlider.on('update', function( values, handle ) {
+                if ( handle ) {
+                    valueLow.innerHTML = secondsToTime(parseInt(values[handle]));
+
+                } else {
+                    valueHigh.innerHTML = secondsToTime(parseInt(values[handle]));
+                }
+            });
+
+            }
+            
             $("#barPlot_btn").click(function(){
                 socket.send(JSON.stringify({
                     type : 'bar_range_register',
