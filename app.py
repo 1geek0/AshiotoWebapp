@@ -429,10 +429,10 @@ def bar_between_days(client):
     response_dict = {
         'type' : "bargraph_overall",
         'data' : {
-            'gates' : []
+            'gates' : [],
+            'time_step' : 86400
         },
-        'between_days' : True,
-        'time_step' : 86400
+        'between_days' : True
     }
     
     response_dict['data']['loop'] = time_days
