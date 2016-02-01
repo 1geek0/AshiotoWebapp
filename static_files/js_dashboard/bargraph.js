@@ -55,7 +55,7 @@ $("#barPlot_overall_btn").click(function(){
                     time_range : $("#input_range").text().replace(/\D/g,''),
                     time_step : $("#input_step").text().replace(/\D/g,''),
                     time_type : selected,
-                    time_day : parseInt(new Date(moment($("#date_one").val().toString(), "DD MMMM, YYYY")._d).getTime())
+                    time_day : parseInt(new Date(moment($("#date_one").val().toString(), "DD MMMM, YYYY")._d).getTime())/1000
                 }));
                 break;
         }
