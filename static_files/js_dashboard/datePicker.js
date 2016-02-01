@@ -9,6 +9,7 @@ $("#radio_time_day_one").click(function(){
     $("#card_step").show();
     $("#card_range").hide();
     $("#slider_overall_range").hide();
+    $("#slider_overall_step").show();
 });
 $("#radio_time_day_between").click(function(){
     $("#date_one").attr("placeholder", "Select Start Date");
@@ -25,6 +26,7 @@ $("#radio_time_start").click(function(){
     $("#card_step").show();
     $("#card_range").show();
     $("#slider_overall_range").show();
+    $("#slider_overall_step").show();
 });
 $("#radio_event_start").click(function(){
     $("#date_one").hide();
@@ -32,4 +34,5 @@ $("#radio_event_start").click(function(){
     $("#card_step").show();
     $("#card_range").show();
     $("#slider_overall_range").show();
+    $("#slider_overall_step").show();
 });
