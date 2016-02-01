@@ -406,11 +406,12 @@ def bar_between_days(client):
     while x <=gates_length:
         gates_list = []
         step_number = 1
+        current_day_start = timestamp_start
         current_day_end = timestamp_start +86399
         oldCount=0
         while step_number <= time_days:
             try:
-                newCount = int(day_total(eventCode, current_day_end, x))
+                newCount = int(day_total(eventCode, current_day_end, current_day_start, x))
                 difference = newCount-oldCount
                 gates_list.append(newCount)
                 print("Gate: "+str(x))
@@ -419,6 +420,7 @@ def bar_between_days(client):
                 oldCount=newCount
             except IndexError as ie:
                 client.write_message({"error":"IndexError"})
+            current_day_start+=86400
             current_day_end+=86400
             step_number+=1
         response_dict['data']['gates'].append(gates_list)
@@ -435,11 +437,11 @@ def query_range(gt,lt,evt,g_id):
     }).sort([("timestamp", 1)]).limit(1)[0]['outcount']
     return query_gate
 
-def day_total(evt, day_timestamp, g_id):
+def day_total(evt, day_timestamp_stop, day_timestamp_start, g_id):
     query_gate = db.ashioto_data.find({
         "eventCode" : evt,
         "gateID" : g_id,
-        "timestamp" : {"$lte" : day_timestamp}
+        "timestamp" : {"$lte" : day_timestamp_stop, "$gte" : day_timestamp_start}
     }).sort([("timestamp", -1)]).limit(1)[0]['outcount']
     return query_gate
 
