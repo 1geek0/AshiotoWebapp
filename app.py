@@ -377,7 +377,7 @@ def bar_overall(client):
     elif time_type == "day_between":
         timestamp_start = client.time_one
         timestamp_stop = client.time_two
-        time_limit = int(timestamp_stop-timestamp_start/60)
+        time_limit = int((timestamp_stop-timestamp_start)/60)
         print("LIMIT: " + str(time_limit))
     response_dict['data']['time_start'] = timestamp_start
     timestamp_between = timestamp_start+(time_limit)*3600
@@ -408,7 +408,7 @@ def bar_overall(client):
             current_stop+=time_step*60
             #print("New Current Stop: " + current_stop)
             step_number+=1
-            print("Step: " + str(step_number))
+            #print("Step: " + str(step_number))
         response_dict['data']['gates'].append(gates_list)
         print("OVERALL: " + str(response_dict))
         z+=1
