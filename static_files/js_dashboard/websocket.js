@@ -27,6 +27,16 @@ socket.onopen = function(){
     }));
 };
 
+function arrayMax(arr) {
+  var len = arr.length, max = -Infinity;
+  while (len--) {
+    if (arr[len] > max) {
+      max = arr[len];
+    }
+  }
+  return max;
+};
+
 function commaSeparateNumber(val){
     while (/(\d+)(\d{3})/.test(val.toString())){
       val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
@@ -286,7 +296,7 @@ socket.onmessage = function(evt){
                     barDatasetSpacing : 1,
 
                     responsive : true,
-                    showXLabels : Math.max.apply(Math, data_overall.datasets),
+                    showXLabels : arrayMax(data_overall.datasets),
                     
                     multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
                 
