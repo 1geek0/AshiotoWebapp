@@ -265,6 +265,9 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
                 bar_overall_clients_dict[self.eventCode].append(self)
             if self.time_type == "day_one":
                 self.time_day = int(message['time_day'])
+            elif self.time_type == "day_between":
+                self.time_one = int(message['time_one'])
+                self.time_two = int(message['time_two'])
             bar_stats = bar_overall(self)
             print("STATS: " + str(bar_stats))
             self.write_message(bar_stats)
