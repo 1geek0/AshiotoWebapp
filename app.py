@@ -156,11 +156,15 @@ class DashboardHandler(tornado.web.RequestHandler):
             call = gates_top(event)
             all_gates = call['Gates']
             total_count = total(all_gates)
+            size = 6
+            if len(all_gates) == 1:
+                size = 12
             self.render(
                 "templates/template_dashboard.html",
                 event_title=name,
                 total_count=total_count,
                 gates=all_gates,
+                size=size,
                 theme_primary=theme_primary,
                 theme_accent=theme_accent,
                 theme_text=theme_text,
