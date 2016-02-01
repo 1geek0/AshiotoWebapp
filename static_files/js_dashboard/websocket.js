@@ -251,7 +251,15 @@ socket.onmessage = function(evt){
                     data : [],
                 };
                 console.log("DATASET: ",current_dataset);
-                current_dataset.data = gates[i].count;
+                if(!message.hasOwnProperty("between_days")){
+                    current_dataset.data = gates[i];
+                } else{
+                    var set= []
+                    for(var j=0;j<gates[i].length;j++){
+                        set.push(gates[i][j].count);
+                    }
+                    current_dataset.data = set;
+                }
                 data_overall.datasets.push(current_dataset);
             }
             var dataLengths = [];
@@ -265,7 +273,9 @@ socket.onmessage = function(evt){
                     var time = new Date(step*1000).format("d M Y h:i:s A");
                     data_overall.labels.push(time);
                 } else{
-                    var step = gates[i].timestamp
+                    var step = time_start + time_step*i
+                    console.log("Step", time_step);
+                    var difference = step-time_start
                     var time = new Date(step*1000).format("d M Y");
                     data_overall.labels.push(time);
                 }
