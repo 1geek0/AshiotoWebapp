@@ -266,7 +266,7 @@ socket.onmessage = function(evt){
                     data_overall.labels.push(time);
                 } else{
                     var step = time_start + time_step*i
-                    console.log("Step", step);
+                    console.log("Step", time_step);
                     var difference = step-time_start
                     var time = new Date(step*1000).format("d M Y");
                     data_overall.labels.push(time);
