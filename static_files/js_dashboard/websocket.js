@@ -254,8 +254,11 @@ socket.onmessage = function(evt){
                 current_dataset.data = gates[i];
                 data_overall.datasets.push(current_dataset);
             }
-            
-            for(var i=0;i<arrayMax(data_overall.datasets);i++){
+            var dataLengths = [];
+            for(var i=0;i<data_overall.datasets.length;i++){
+                dataLengths.push(data_overall.datasets[i].data.length);
+            }
+            for(var i=0;i<arrayMax(dataLengths);i++){
                 var step = time_start + time_step*i
                 var difference = step-time_start
                 var time = new Date(step*1000).format("d M Y h:i:s A");
