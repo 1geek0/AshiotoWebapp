@@ -65,8 +65,8 @@ $("#barPlot_overall_btn").click(function(){
                     time_range : $("#input_range").text().replace(/\D/g,''),
                     time_step : $("#input_step").text().replace(/\D/g,''),
                     time_type : selected,
-                    time_one : parseInt(new Date(moment($("#date_one").val().toString(), "DD MMMM, YYYY")._d).getTime())/1000,
-                    time_two : parseInt(new Date(moment($("#date_two").val().toString(), "DD MMMM, YYYY")._d).getTime())/1000,
+                    time_one : parseInt(new Date(moment($("#date_one").val().toString(), "DD MMMM, YYYY")._d).getTime())/1000+std_time_offset,
+                    time_two : parseInt(new Date(moment($("#date_two").val().toString(), "DD MMMM, YYYY")._d).getTime())/1000+std_time_offset,
                 }));
         }
     }
