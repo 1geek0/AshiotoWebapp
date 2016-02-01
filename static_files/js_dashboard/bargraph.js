@@ -6,7 +6,7 @@ var slider_overall_range = document.getElementById('slider_overall_range');
 
 
 noUiSlider.create(slider_overall_step, {
-    start: 15, // Handle start position
+    start: 30, // Handle start position
     step: 5, // Slider moves in increments of '10'
     orientation: 'horizontal', // Orient the slider vertically
     animate : true,
@@ -21,7 +21,7 @@ var value_step = document.getElementById('input_step');
 slider_overall_step.noUiSlider.on('update', function(value){value_step.innerHTML = parseInt(value) + " Minutes";});
 
 noUiSlider.create(slider_overall_range, {
-    start: 1, // Handle start position
+    start: 5, // Handle start position
     step: 1, // Slider moves in increments of '10'
     animate : true,
     connect : "lower",
@@ -58,6 +58,16 @@ $("#barPlot_overall_btn").click(function(){
                     time_day : parseInt(new Date(moment($("#date_one").val().toString(), "DD MMMM, YYYY")._d).getTime())/1000
                 }));
                 break;
+            case "day_between":
+                socket.send(JSON.stringify({
+                    type : 'bar_overall_register',
+                    event_code : eventCode,
+                    time_range : $("#input_range").text().replace(/\D/g,''),
+                    time_step : $("#input_step").text().replace(/\D/g,''),
+                    time_type : selected,
+                    time_one : parseInt(new Date(moment($("#date_one").val().toString(), "DD MMMM, YYYY")._d).getTime())/1000,
+                    time_two : parseInt(new Date(moment($("#date_two").val().toString(), "DD MMMM, YYYY")._d).getTime())/1000,
+                }));
         }
     }
 });
