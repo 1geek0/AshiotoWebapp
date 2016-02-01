@@ -369,6 +369,10 @@ def bar_overall(client):
         timestamp_start = client.time_day
         timestamp_stop = timestamp_start+86399
         time_limit = 24
+    elif time_type == "day_between":
+        timestamp_start = client.time_one
+        timestamp_stop = client.time_two
+        time_limit = int(timestamp_stop-timestamp_start/60)
     response_dict['data']['time_start'] = timestamp_start
     timestamp_between = timestamp_start+(time_limit)*3600
     timesToLoop = (time_limit)*60/time_step
