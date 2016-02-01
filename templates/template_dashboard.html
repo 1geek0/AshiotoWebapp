@@ -25,6 +25,9 @@
         <script type="text/javascript" src="{{static_url("js_dashboard/nouislider.min.js")}}"></script>
         <link href="{{static_url("js_dashboard/nouislider.css")}}" rel="stylesheet">
         
+        <!--Date Parse-->
+        <script type="text/javascript" src="http://momentjs.com/downloads/moment.min.js"></script>
+        
         <title>{{event_title}}</title>
     </head>
     <body>
@@ -155,7 +158,16 @@
                         <input name="group1" type="radio" id="radio_time_start" value="current">
                         <label for="radio_time_start">Show From Current Time</label>
                     </span>
+                    <span>
+                        <input name="group1" type="radio" id="radio_time_day_one" value="day_one">
+                        <label for="radio_time_day_one">Show For A Day</label>
+                    </span>
+                    <span>
+                        <input name="group1" type="radio" id="radio_time_day_between" value="day_between">
+                        <label for="radio_time_day_between">Show Between Days</label>
+                    </span>
                 </form>
+                <input type="date" class="datepicker picker__input picker__input--active" haspopup="true" id="date_one">
                 <div id="slider_overall_step"></div>
                 <div id="slider_overall_range" style="margin-top:5px"></div>
                 
@@ -171,5 +183,6 @@
         </script>
         <script type="text/javascript" src="{{ static_url("js_dashboard/websocket.js")}}"></script>
         <script type="text/javascript" src="{{static_url("js_dashboard/bargraph.js")}}"></script>
+    <script type="text/javascript" src="{{static_url("js_dashboard/datePicker.js")}}"></script>
     </body>
 </html>
