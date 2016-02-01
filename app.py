@@ -270,8 +270,11 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
                 self.time_one = int(message['time_one'])
                 self.time_two = int(message['time_two'])
                 print("Time One and Two" + str(self.time_one) + "\n" + str(self.time_two))
-            bar_stats = bar_overall(self)
-            print("STATS: " + str(bar_stats))
+            if self.time_type != "day_between":    
+                bar_stats = bar_overall(self)
+            else:
+                bar_stats = bar_between_days(self)
+            #print("STATS: " + str(bar_stats))
             self.write_message(bar_stats)
         elif self.event_type == "time_difference":
             timestamp_start = int(db.ashioto_events.find({
@@ -357,7 +360,6 @@ def bar_overall(client):
     
     #For finding event start time
     x = 1
-    starts_list = []
     if time_type == "event":
         timestamp_start = int(db.ashioto_events.find({
             "eventCode" : client.eventCode
@@ -414,12 +416,66 @@ def bar_overall(client):
         z+=1
     return response_dict
 
+def bar_between_days(client):
+    gates_length = len(events[client.eventCode]['gates'])
+    time_step = client.time_step
+    time_limit = client.time_range
+    time_type = client.time_type
+    eventCode = client.eventCode
+    timestamp_start = client.time_one
+    timestamp_stop = client.time_two+86399
+    time_days = (timestamp_stop+1 - timestamp_start)/86400
+    #Dict to be returned
+    response_dict = {
+        'type' : "bargraph_overall",
+        'data' : {
+            'gates' : []
+        }
+    }
+    
+    response_dict['data']['loop'] = time_days
+    
+    
+    x=1
+    
+    while x <=gates_length:
+        gates_list = []
+        step_number = 1
+        current_day_end = timestamp_start +86399
+        oldCount=0
+        while step_number <= time_days:
+            try:
+                newCount = int(day_total(eventCode, current_day_end, x))
+                difference = newCount-oldCount
+                gates_list.append(newCount)
+                print("Gate: "+str(x))
+                print("New Count: " + str(newCount))
+                print("Old Count: " + str(oldCount));
+                oldCount=newCount
+            except IndexError as ie:
+                client.write_message({"error":"IndexError"})
+            current_day_end+=86400
+            step_number+=1
+        response_dict['data']['gates'].append(gates_list)
+        print("OVERALL: " + str(response_dict))
+        x+=1
+    return response_dict
+
+
 def query_range(gt,lt,evt,g_id):
     query_gate = db.ashioto_data.find({
         "eventCode" : evt,
         "gateID" : g_id,
         "timestamp" : {"$gte" : gt, "$lte" : lt}
     }).sort([("timestamp", 1)]).limit(1)[0]['outcount']
+    return query_gate
+
+def day_total(evt, day_timestamp, g_id):
+    query_gate = db.ashioto_data.find({
+        "eventCode" : evt,
+        "gateID" : g_id,
+        "timestamp" : {"$lte" : day_timestamp}
+    }).sort([("timestamp", -1)]).limit(1)[0]['outcount']
     return query_gate
 
 class StartTimeHandler(tornado.web.RequestHandler):
