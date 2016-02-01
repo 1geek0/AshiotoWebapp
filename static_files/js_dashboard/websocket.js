@@ -250,6 +250,7 @@ socket.onmessage = function(evt){
                 current_dataset.data = gates[i];
                 data_overall.datasets.push(current_dataset);
             }
+            
             var bar_chart = document.createElement('div');
                 $(bar_chart).html('<canvas id="barChart_overall" width="700px" height="400px"></canvas>').appendTo("#overall_graph_div");
                 var ctx = document.getElementById("barChart_overall").getContext("2d");
@@ -285,7 +286,7 @@ socket.onmessage = function(evt){
                     barDatasetSpacing : 1,
 
                     responsive : true,
-                    skipXLabels : true,
+                    showXLabels : Math.max.apply(Math, data_overall.datasets),
                     
                     multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
                 
