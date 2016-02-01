@@ -413,7 +413,9 @@ def bar_between_days(client):
             try:
                 newCount = int(day_total(eventCode, current_day_end, current_day_start, x))
                 difference = newCount-oldCount
-                gates_list.append(newCount)
+                gates_list.append({
+                     "count" : newCount,
+                     "timestamp" : current_day_start})
                 print("Gate: "+str(x))
                 print("New Count: " + str(newCount))
                 print("Old Count: " + str(oldCount));
