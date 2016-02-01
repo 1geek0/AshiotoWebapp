@@ -263,6 +263,8 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
             except KeyError as ke:
                 bar_overall_clients_dict[self.eventCode] = []
                 bar_overall_clients_dict[self.eventCode].append(self)
+            if self.time_type == "day_one":
+                self.time_day = int(message['time_day'])
             bar_stats = bar_overall(self)
             print("STATS: " + str(bar_stats))
             self.write_message(bar_stats)
@@ -363,6 +365,9 @@ def bar_overall(client):
         print("LIMIT: " + str(time_limit))
         print("START: " + str(timestamp_start))
         print("STOP: " + str(timestamp_stop))
+    elif time_type == "day_one":
+        timestamp_start = client.time_day
+        timestamp_stop = timestamp_start+86399
     response_dict['data']['time_start'] = timestamp_start
     timestamp_between = timestamp_start+(time_limit)*3600
     timesToLoop = (time_limit)*60/time_step
