@@ -408,6 +408,7 @@ def bar_overall(client):
             current_stop+=time_step*60
             #print("New Current Stop: " + current_stop)
             step_number+=1
+            print("Step: " + str(step_number))
         response_dict['data']['gates'].append(gates_list)
         print("OVERALL: " + str(response_dict))
         z+=1
