@@ -251,15 +251,7 @@ socket.onmessage = function(evt){
                     data : [],
                 };
                 console.log("DATASET: ",current_dataset);
-                if(!message.hasOwnProperty("between_days")){
-                    current_dataset.data = gates[i];
-                } else{
-                    var set= []
-                    for(var j=0;j<gates[i].length;j++){
-                        set.push(gates[i][j].count);
-                    }
-                    current_dataset.data = set;
-                }
+                current_dataset.data = gates[i];
                 data_overall.datasets.push(current_dataset);
             }
             var dataLengths = [];
