@@ -208,6 +208,7 @@ class DashboardHandler(tornado.web.RequestHandler):
                 background=background)
         else:
             self.write("error")
+            self.finish()
             
 class LogoHandler(tornado.web.RequestHandler):
     #code
