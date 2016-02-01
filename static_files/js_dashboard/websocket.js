@@ -251,7 +251,7 @@ socket.onmessage = function(evt){
                     data : [],
                 };
                 console.log("DATASET: ",current_dataset);
-                current_dataset.data = gates[i];
+                current_dataset.data = gates[i].count;
                 data_overall.datasets.push(current_dataset);
             }
             var dataLengths = [];
@@ -265,9 +265,7 @@ socket.onmessage = function(evt){
                     var time = new Date(step*1000).format("d M Y h:i:s A");
                     data_overall.labels.push(time);
                 } else{
-                    var step = time_start + time_step*i
-                    console.log("Step", time_step);
-                    var difference = step-time_start
+                    var step = gates[i].timestamp
                     var time = new Date(step*1000).format("d M Y");
                     data_overall.labels.push(time);
                 }
