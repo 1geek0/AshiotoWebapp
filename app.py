@@ -34,51 +34,12 @@ db = client.ashioto_data
 
 #api keys
 event_codes = ['test_event', 'sulafest_16', 'express_tower']
-events = {
-    'express_tower' : {
-        'event_name' : "Indian Express Demo",
-        'theme' : 'black',
-        'gates' : [
-            {
-                'name' : 'Express Towers'
-            },
-            {
-                'name' : 'Exit'
-            }
-        ]
-    },
-    'test_event' : {
-        'eventCode' : "test_event",
-        'event_name' : "Test Event",
-        'theme_primary' : 'blue-grey darken-3',
-        'theme_accent' : "teal",
-        "theme_text" : "white",
-        'logo_name' : 'sulafest_logo.jpg',
-        'background' : 'sulafest_background.jpg',
-        'gates' : [
-            {
-                'name' : "Entry"
-            },
-            {
-                'name' : 'Exit'
-            }
-        ]
-    },
-    'sulafest_16' : {
-        'event_name' : "SulaFest 2016",
-        'theme_primary' : 'white',
-        'theme_accent' : "purple darken-2",
-        "theme_text" : "white",
-        'logo_name' : 'sulafest_logo.jpg',
-        'background' : 'sulafest_background.jpg',
-        'gates' : [
-            {
-                'name' : 'Entry'
-            }
-        ]
-    }
-}
 
+events = {}
+db_events = db.ashioto_events.find();
+for event in db_events:
+    event_codes.append(event['eventCode'])
+    events[event['eventCode']] = event
 client_dict = {} #Browser clients
 bar_range_clients_dict = {} #Range Graph Clients
 bar_overall_clients_dict = {} #Overall Graph Clients
