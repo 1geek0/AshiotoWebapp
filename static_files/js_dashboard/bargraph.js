@@ -38,13 +38,28 @@ slider_overall_range.noUiSlider.on('update', function(value){value_range.innerHT
 $("#barPlot_overall_btn").click(function(){
     var selected = $("input[type='radio'][name='group1']:checked").val();
     console.log("VAL: " + selected);
-    socket.send(JSON.stringify({
-        type : 'bar_overall_register',
-        event_code : eventCode,
-        time_range : $("#input_range").text().replace(/\D/g,''),
-        time_step : $("#input_step").text().replace(/\D/g,''),
-        time_type : selected
-    }))
+    if(selected.search("day") == -1){
+        socket.send(JSON.stringify({
+            type : 'bar_overall_register',
+            event_code : eventCode,
+            time_range : $("#input_range").text().replace(/\D/g,''),
+            time_step : $("#input_step").text().replace(/\D/g,''),
+            time_type : selected
+        }));
+    } else{
+        switch(selected){
+            case "day_one":
+                socket.send(JSON.stringify({
+                    type : 'bar_overall_register',
+                    event_code : eventCode,
+                    time_range : $("#input_range").text().replace(/\D/g,''),
+                    time_step : $("#input_step").text().replace(/\D/g,''),
+                    time_type : selected,
+                    time_day : parseInt(new Date(moment($("#date_one").val().toString(), "DD MMMM, YYYY")._d).getTime())
+                }));
+                break;
+        }
+    }
 });
 
 //Graphs collapsible
