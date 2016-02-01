@@ -430,7 +430,8 @@ def bar_between_days(client):
         'type' : "bargraph_overall",
         'data' : {
             'gates' : [],
-            'time_step' : 86400
+            'time_step' : 86400,
+            'time_start' : timestamp_start
         },
         'between_days' : True
     }
