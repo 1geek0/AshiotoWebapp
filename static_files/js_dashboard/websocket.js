@@ -238,12 +238,6 @@ socket.onmessage = function(evt){
             var time_step = message.data.time_step;
             var gates = message.data.gates;
             
-            for(var i=0;i<steps;i++){
-                var step = time_start + time_step*i
-                var difference = step-time_start
-                var time = new Date(step*1000).format("d M Y h:i:s A");
-                data_overall.labels.push(time);
-            }
             for(var i=0;i<gates.length;i++){
                 var gate_number = i+1;
                 var gate_name = "Gate " + gate_number;
@@ -259,6 +253,13 @@ socket.onmessage = function(evt){
                 console.log("DATASET: ",current_dataset);
                 current_dataset.data = gates[i];
                 data_overall.datasets.push(current_dataset);
+            }
+            
+            for(var i=0;i<arrayMax(data_overall.datasets);i++){
+                var step = time_start + time_step*i
+                var difference = step-time_start
+                var time = new Date(step*1000).format("d M Y h:i:s A");
+                data_overall.labels.push(time);
             }
             
             var bar_chart = document.createElement('div');
