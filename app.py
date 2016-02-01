@@ -257,6 +257,7 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
             self.time_step = int(message['time_step'])
             self.time_range = int(message['time_range'])
             self.time_type = str(message['time_type'])
+            print("Time Type: " + str(self.time_type))
             try:
                 if self not in bar_overall_clients_dict[self.eventCode]:
                     bar_overall_clients_dict[self.eventCode].append(self)
