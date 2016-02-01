@@ -285,7 +285,7 @@ socket.onmessage = function(evt){
                     barDatasetSpacing : 1,
 
                     responsive : true,
-                    scaleLabel: " <%= value %>",
+                    skipXLabels : true,
                     
                     multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
                 
