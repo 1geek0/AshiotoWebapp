@@ -135,13 +135,15 @@
                     <div class="col m4 s4 center">
                         <div class="card teal center z-depth-2">
                             <div class="card-content white-text center">
+                                <span>Data Step</span><br>
                                 <span class="card-title center" id="input_step" style="font-size:20px;"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="col m4 s4 center">
+                    <div class="col m4 s4 center" id="card_range">
                         <div class="card teal center z-depth-2">
                             <div class="card-content white-text center">
+                                <span>Data Range</span><br>
                                 <span class="card-title center" id="input_range" style="font-size:20px;"></span>
                             </div>
                         </div>
@@ -167,7 +169,8 @@
                         <label for="radio_time_day_between">Show Between Days</label>
                     </span>
                 </form>
-                <input type="date" class="datepicker picker__input picker__input--active" haspopup="true" id="date_one">
+                <input hidden="true" type="date" class="datepicker picker__input picker__input--active" id="date_one" placeholder="Select Date To Show Stats Of">
+                <input hidden="true" type="date" class="datepicker picker__input picker__input--active" id="date_two" placeholder="Select End Date">
                 <div id="slider_overall_step"></div>
                 <div id="slider_overall_range" style="margin-top:5px"></div>
                 
