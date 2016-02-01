@@ -413,15 +413,14 @@ def bar_between_days(client):
             try:
                 newCount = int(day_total(eventCode, current_day_end, current_day_start, x))
                 difference = newCount-oldCount
-                gates_list.append({
-                     "count" : newCount,
-                     "timestamp" : current_day_start})
+                gates_list.append(newCount)
                 print("Gate: "+str(x))
                 print("New Count: " + str(newCount))
                 print("Old Count: " + str(oldCount));
                 oldCount=newCount
             except IndexError as ie:
                 client.write_message({"error":"IndexError"})
+                gates_list.append(0)
             current_day_start+=86400
             current_day_end+=86400
             step_number+=1
