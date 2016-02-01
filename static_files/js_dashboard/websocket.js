@@ -259,10 +259,17 @@ socket.onmessage = function(evt){
                 dataLengths.push(data_overall.datasets[i].data.length);
             }
             for(var i=0;i<arrayMax(dataLengths);i++){
-                var step = time_start + time_step*i
-                var difference = step-time_start
-                var time = new Date(step*1000).format("d M Y h:i:s A");
-                data_overall.labels.push(time);
+                if(!message.hasOwnProperty("between_days")){
+                    var step = time_start + time_step*i
+                    var difference = step-time_start
+                    var time = new Date(step*1000).format("d M Y h:i:s A");
+                    data_overall.labels.push(time);
+                } else{
+                    var step = time_start + time_step*i
+                    var difference = step-time_start
+                    var time = new Date(step*1000).format("d M Y");
+                    data_overall.labels.push(time);
+                }
             }
             
             var bar_chart = document.createElement('div');
