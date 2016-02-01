@@ -7,14 +7,14 @@ var slider_overall_range = document.getElementById('slider_overall_range');
 
 noUiSlider.create(slider_overall_step, {
     start: 15, // Handle start position
-    step: 1, // Slider moves in increments of '10'
+    step: 5, // Slider moves in increments of '10'
     orientation: 'horizontal', // Orient the slider vertically
     animate : true,
     connect : "lower",
     behaviour: 'tap', // Move handle on tap, bar is draggable
     range: { // Slider can select '0' to '100'
-        'min': 1,
-        'max': 150
+        'min': 15,
+        'max': 180
     },
 });
 var value_step = document.getElementById('input_step');
