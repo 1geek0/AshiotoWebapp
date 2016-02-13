@@ -45,6 +45,7 @@ bar_range_clients_dict = {} #Range Graph Clients
 bar_overall_clients_dict = {} #Overall Graph Clients
 
 class CountHandler(tornado.web.RequestHandler):
+    @tornado.web.addslash
     @tornado.gen.coroutine
     def post(self):
         req_body = tornado.escape.json_decode(self.request.body)
@@ -80,6 +81,7 @@ class CountHandler(tornado.web.RequestHandler):
         self.finish()
 
 class EventCodeConfirmHandler(tornado.web.RequestHandler):
+    @tornado.web.addslash
     @tornado.gen.coroutine
     def post(self):
         body_json = tornado.escape.json_decode(self.request.body)
@@ -96,6 +98,7 @@ class EventCodeConfirmHandler(tornado.web.RequestHandler):
             self.write(response)
 
 class PerGate_DataProvider(tornado.web.RequestHandler):
+    @tornado.web.addslash
     @tornado.gen.coroutine
     def post(self):
         request_body = tornado.escape.json_decode(self.request.body)
@@ -144,6 +147,7 @@ def total(gates):
 
 
 class DashboardHandler(tornado.web.RequestHandler):
+    @tornado.web.addslash
     @tornado.web.asynchronous
     def get(self, event):
         if event in event_codes:
@@ -177,6 +181,7 @@ class DashboardHandler(tornado.web.RequestHandler):
             
 class LogoHandler(tornado.web.RequestHandler):
     #code
+    @tornado.web.addslash
     def get(self, filename):
         image_file = Image.open("static_files/images/" + filename)
         image_io = io.BytesIO()
@@ -190,7 +195,6 @@ class LogoHandler(tornado.web.RequestHandler):
 class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
     eventCode = ""
     event_type = ""
-    
     def open(self):
         print("Socket Opened")
     
@@ -451,6 +455,7 @@ def day_total(evt, day_timestamp_stop, day_timestamp_start, g_id):
     return query_gate
 
 class StartTimeHandler(tornado.web.RequestHandler):
+    @tornado.web.addslash
     def get(self, eventCode):
         event = db.ashioto_events.update({"eventCode" : eventCode},
             {"$set": {"time_start": int(time.time())},}
@@ -463,16 +468,17 @@ if __name__ == '__main__':
     tornado.options.parse_command_line()
     app = tornado.web.Application(
         handlers=[
-            (r"/count_update", CountHandler),
-            (r"/event_confirm", EventCodeConfirmHandler),
-            (r"/per_gate", PerGate_DataProvider),
-            (r"/dashboard/([a-zA-Z_0-9]+)", DashboardHandler),
+            (r"/count_update/", CountHandler),
+            (r"/event_confirm/", EventCodeConfirmHandler),
+            (r"/per_gate/", PerGate_DataProvider),
+            (r"/dashboard/([a-zA-Z_0-9]+)/", DashboardHandler),
             (r"/websock", AshiotoWebSocketHandler),
-            (r"/img/(?P<filename>.+\.jpg)?", LogoHandler),
-            (r"/event_time_start/([a-zA-Z_0-9]+)", StartTimeHandler),
+            (r"/img/(?P<filename>.+\.jpg)?/", LogoHandler),
+            (r"/event_time_start/([a-zA-Z_0-9]+)/", StartTimeHandler),
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files")
     )
+    
     http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
     #http_server.start(0)
     #http_server.bind(8888)
