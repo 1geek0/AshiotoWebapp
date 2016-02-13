@@ -413,3 +413,6 @@ socket.onmessage = function(evt){
             break;
     }
 };
+socket.onclose = function(){
+    var socket = new WebSocket("ws://ashioto.in/websock");
+}
