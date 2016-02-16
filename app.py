@@ -176,12 +176,11 @@ class DashboardHandler(tornado.web.RequestHandler):
                 logo_name=logo,
                 background=background)
         else:
-            self.write("error")
+            self.write("Event not found")
             self.finish()
             
 class LogoHandler(tornado.web.RequestHandler):
     #code
-    @tornado.web.addslash
     def get(self, filename):
         image_file = Image.open("static_files/images/" + filename)
         image_io = io.BytesIO()
@@ -473,14 +472,20 @@ if __name__ == '__main__':
             (r"/per_gate/", PerGate_DataProvider),
             (r"/dashboard/([a-zA-Z_0-9]+)/", DashboardHandler),
             (r"/websock", AshiotoWebSocketHandler),
-            (r"/img/(?P<filename>.+\.jpg)?/", LogoHandler),
+            (r"/img/(?P<filename>.+\.jpg)?", LogoHandler),
             (r"/event_time_start/([a-zA-Z_0-9]+)/", StartTimeHandler),
+            
+            (r"/count_update", CountHandler),
+            (r"/event_confirm", EventCodeConfirmHandler),
+            (r"/per_gate", PerGate_DataProvider),
+            (r"/dashboard/([a-zA-Z_0-9]+)", DashboardHandler),
+            (r"/event_time_start/([a-zA-Z_0-9]+)", StartTimeHandler),
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files")
     )
     
     http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
-    #http_server.start(0)
-    #http_server.bind(8888)
-    http_server.listen(80)
+    http_server.start(0)
+    http_server.bind(options.port)
+    #http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
