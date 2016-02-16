@@ -33,7 +33,7 @@ client.ashioto_data.authenticate("rest_user", "Ashioto_8192")
 db = client.ashioto_data
 
 #api keys
-event_codes = ['test_event', 'sulafest_16', 'express_tower']
+event_codes = []
 
 events = {}
 db_events = db.ashioto_events.find();
