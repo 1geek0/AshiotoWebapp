@@ -192,6 +192,9 @@ class LogoHandler(tornado.web.RequestHandler):
 
 
 class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
+    #To always allow access to websocket
+    def check_origin(self, origin):
+        return True
     eventCode = ""
     event_type = ""
     def open(self):
