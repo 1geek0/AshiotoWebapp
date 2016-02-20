@@ -45,7 +45,6 @@ bar_range_clients_dict = {} #Range Graph Clients
 bar_overall_clients_dict = {} #Overall Graph Clients
 
 class CountHandler(tornado.web.RequestHandler):
-    @tornado.web.addslash
     @tornado.gen.coroutine
     def post(self):
         req_body = tornado.escape.json_decode(self.request.body)
@@ -81,7 +80,6 @@ class CountHandler(tornado.web.RequestHandler):
         self.finish()
 
 class EventCodeConfirmHandler(tornado.web.RequestHandler):
-    @tornado.web.addslash
     @tornado.gen.coroutine
     def post(self):
         body_json = tornado.escape.json_decode(self.request.body)
@@ -98,7 +96,6 @@ class EventCodeConfirmHandler(tornado.web.RequestHandler):
             self.write(response)
 
 class PerGate_DataProvider(tornado.web.RequestHandler):
-    @tornado.web.addslash
     @tornado.gen.coroutine
     def post(self):
         request_body = tornado.escape.json_decode(self.request.body)
