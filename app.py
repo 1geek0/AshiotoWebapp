@@ -106,6 +106,7 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
         
 def gates_top(event_code):
     event_request = events[event_code]
+    start_time = db.ashioto_events.find({"eventCode" : event_code})['time_start']
     gates_number = len(event_request['gates'])
     gates = []
     mega = 0
@@ -113,7 +114,7 @@ def gates_top(event_code):
     while i <= gates_number:
         query = db.ashioto_data.find(
             {"eventCode":event_code,
-             "gateID":i}).sort([("timestamp",-1)]).limit(1)
+             "gateID":i, "timestamp" : {"$gte" : start_time}}).sort([("timestamp",-1)]).limit(1)
         count = 0
         last = 0
         for item in query:
