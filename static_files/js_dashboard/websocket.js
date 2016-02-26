@@ -1,30 +1,10 @@
-var socket = new WebSocket("ws://ashioto.in/websock");
+var socket = new WebSocket("ws://localhost:8000/websock");
 var delay_list = ["1-5"];
 var color_pallete = ["rgba(96,125,139,", "rgba(0,150,136,", "rgba(0,151,167,", "rgba(198,40,40,"];
 socket.onopen = function(){
     socket.send(JSON.stringify({
         type : "browserClient_register", 
         event_code : eventCode}));
-    delay_list.forEach(function(range){
-        var ranges = range.split("-");
-        socket.send(JSON.stringify({
-            type : "bar_range_register",
-            event_code : eventCode,
-            delay1 : ranges[0],
-            delay2 : ranges[1],
-        }));
-    });
-    socket.send(JSON.stringify({
-        type : "bar_overall_register",
-        event_code : eventCode,
-        time_step : 15,
-        time_range : 2,
-        time_type : "event"
-    }));
-    socket.send(JSON.stringify({
-        type : "time_difference",
-        event_code : eventCode
-    }));
 };
 
 function arrayMax(arr) {
@@ -260,10 +240,14 @@ socket.onmessage = function(evt){
             }
             for(var i=0;i<arrayMax(dataLengths);i++){
                 if(!message.hasOwnProperty("between_days")){
-                    var step = time_start + time_step*i
-                    var difference = step-time_start
-                    var time = new Date(step*1000).format("d M Y h:i:s A");
-                    data_overall.labels.push(time);
+                    var step1 = time_start + time_step*i
+                    var difference1 = step1-time_start
+                    var time1 = new Date(step1*1000).format("d M Y h:i:s A");
+                    var step2 = time_start + time_step*(i+1)
+                    var difference2 = step2-time_start
+                    var time2 = new Date(step2*1000).format("d M Y h:i:s A");
+                    var labelString = time1 + " - " + time2
+                    data_overall.labels.push(labelString);
                 } else{
                     var step = time_start + time_step*i
                     console.log("Step", time_step);
@@ -309,7 +293,6 @@ socket.onmessage = function(evt){
 
                     responsive : true,
                     showXLabels : arrayMax(data_overall.datasets),
-                    
                     multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
                 
                     legendTemplate : "<ul id=\"legend\" class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label.toString()){%><%=datasets[i].label.toString()%><%}%></li><%}%></ul>",
