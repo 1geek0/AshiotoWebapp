@@ -28,7 +28,7 @@ define("port", default=8000, help="run on the given port", type=int)
 keysDB = pickledb.load('api_keys.db', False)
 
 #MongoDB init
-client = MongoClient()
+client = MongoClient(host="52.5.163.54",port=27017)
 client.ashioto_data.authenticate("rest_user", "Ashioto_8192")
 db = client.ashioto_data
 
@@ -104,9 +104,9 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
         print(gates_data)
         self.write(gates_data)
         
-def gates_top(event_code):
+def gates_top(event_code, start_time):
     event_request = events[event_code]
-    start_time = db.ashioto_events.find({"eventCode" : event_code})['time_start']
+    
     gates_number = len(event_request['gates'])
     gates = []
     mega = 0
@@ -148,13 +148,14 @@ class DashboardHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def get(self, event):
         if event in event_codes:
+            start_time = db.ashioto_events.find({"eventCode" : event})[0]['time_start']
             name = events[event]['event_name']
             theme_primary = events[event]['theme_primary']
             theme_accent = events[event]['theme_accent']
             theme_text = events[event]['theme_text']
             logo = events[event]['logo_name']
             background = events[event]['background']
-            call = gates_top(event)
+            call = gates_top(event, start_time)
             all_gates = call['Gates']
             total_count = total(all_gates)
             size = 6
@@ -364,17 +365,14 @@ def bar_overall(client):
     while z <= gates_length:
         gates_list = []
         step_number = 1
-        current_start = timestamp_start
+        current_start = timestamp_start+time_step*60
         current_stop = timestamp_stop
-        oldCount=0
+        oldCount = int(query_range(current_start-(time_step*60),current_start,eventCode,z, reverse=True))
         while step_number <= timesToLoop:
             try:
-                newCount = int(query_range(current_start, current_stop,eventCode,z))
+                newCount = int(query_range(current_start, current_stop,eventCode,z, reverse=False))
                 difference = newCount-oldCount
                 gates_list.append(difference)
-                print("Gate: "+str(z))
-                print("New Count: " + str(newCount))
-                print("Old Count: " + str(oldCount));
                 oldCount=newCount
             except IndexError as ie:
                 client.write_message({"error":"IndexError"})
@@ -441,12 +439,15 @@ def bar_between_days(client):
     return response_dict
 
 
-def query_range(gt,lt,evt,g_id):
+def query_range(gt,lt,evt,g_id,reverse):
+    tSort = 1
+    if reverse:
+        tSort = -1
     query_gate = db.ashioto_data.find({
         "eventCode" : evt,
         "gateID" : g_id,
         "timestamp" : {"$gte" : gt, "$lte" : lt}
-    }).sort([("timestamp", 1)]).limit(1)[0]['outcount']
+    }).sort([("timestamp", tSort)]).limit(1)[0]['outcount']
     return query_gate
 
 def day_total(evt, day_timestamp_stop, day_timestamp_start, g_id):
@@ -482,9 +483,8 @@ if __name__ == '__main__':
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files")
     )
-    tornado.options.logging = "none"
     http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
-    http_server.start(0)
-    http_server.bind(options.port)
-    #http_server.listen(options.port)
+    #http_server.start(0)
+    #http_server.bind(options.port)
+    http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
