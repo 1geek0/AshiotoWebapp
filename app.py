@@ -259,8 +259,9 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
         
     def on_close(self):
         print("Socket Closed")
-        print(client_dict)
         client_dict[self.eventCode].remove(self)
+        for i in client_dict:
+            print(i + ": " + str(len(client_dict[i])))
         
 def bar_init(delay1, delay2, client):
     x = 1
@@ -367,7 +368,10 @@ def bar_overall(client):
         step_number = 1
         current_start = timestamp_start+time_step*60
         current_stop = timestamp_stop
-        oldCount = int(query_range(current_start-(time_step*60),current_start,eventCode,z, reverse=True))
+        try:
+            oldCount = int(query_range(current_start-(time_step*60),current_start,eventCode,z, reverse=True))
+        except IndexError:
+            oldCount = 0
         while step_number <= timesToLoop:
             try:
                 newCount = int(query_range(current_start, current_stop,eventCode,z, reverse=False))
@@ -416,13 +420,16 @@ def bar_between_days(client):
         gates_list = []
         step_number = 1
         current_day_start = timestamp_start
-        current_day_end = timestamp_start +86399
-        oldCount=0
+        current_day_end = timestamp_start + 86399
+        try:
+            oldCount = int(query_range(current_day_start-86399,current_day_start,client.eventCode,x, reverse=True))
+        except IndexError:
+            oldCount = 0
         while step_number <= time_days:
             try:
                 newCount = int(day_total(eventCode, current_day_end, current_day_start, x))
                 difference = newCount-oldCount
-                gates_list.append(newCount)
+                gates_list.append(difference)
                 print("Gate: "+str(x))
                 print("New Count: " + str(newCount))
                 print("Old Count: " + str(oldCount));
