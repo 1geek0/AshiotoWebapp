@@ -260,8 +260,11 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
     def on_close(self):
         print("Socket Closed")
         client_dict[self.eventCode].remove(self)
+        client_lengths = 0
         for i in client_dict:
             print(i + ": " + str(len(client_dict[i])))
+            client_lengths += len(client_dict[i])
+        print("Total Clients: " + str(client_lengths))
         
 def bar_init(delay1, delay2, client):
     x = 1
