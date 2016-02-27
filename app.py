@@ -192,16 +192,11 @@ class LogoHandler(tornado.web.RequestHandler):
 class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
     #To always allow access to websocket
     def check_origin(self, origin):
-         print(origin)
          return True
     eventCode = ""
     event_type = ""
-    def open(self):
-        print("Socket Opened")
-    
     def on_message(self, msg):
         message = json.loads(msg)
-        print(msg)
         self.event_type = message['type']
         self.eventCode = message['event_code']
         if self.event_type == "browserClient_register":
@@ -260,11 +255,6 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
     def on_close(self):
         print("Socket Closed")
         client_dict[self.eventCode].remove(self)
-        client_lengths = 0
-        for i in client_dict:
-            print(i + ": " + str(len(client_dict[i])))
-            client_lengths += len(client_dict[i])
-        print("Total Clients: " + str(client_lengths))
         
 def bar_init(delay1, delay2, client):
     x = 1
@@ -476,6 +466,16 @@ class StartTimeHandler(tornado.web.RequestHandler):
         self.write("KAM ZALA!!")
         print(event)
 
+class UserStatsHandler(tornado.web.RequestHandler):
+    def get(self):
+        stats_json = {}
+        client_lengths = 0
+        for i in client_dict:
+            stats_json[i] = str(len(client_dict[i]))
+            client_lengths += len(client_dict[i])
+        stats_json['Total Clients'] = str(client_lengths)
+        self.write(stats_json)
+
         
 if __name__ == '__main__':
     tornado.options.parse_command_line()
@@ -490,11 +490,13 @@ if __name__ == '__main__':
             (r"/dashboard/([a-zA-Z_0-9]+)/", DashboardHandler),
             (r"/event_time_start/([a-zA-Z_0-9]+)", StartTimeHandler),
             (r"/event_time_start/([a-zA-Z_0-9]+)/", StartTimeHandler),
+            (r"/userstats", UserStatsHandler),
+            (r"/userstats/", UserStatsHandler)
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files")
     )
     http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
-    #http_server.start(0)
-    #http_server.bind(options.port)
-    http_server.listen(options.port)
+    http_server.start(0)
+    http_server.bind(options.port)
+    #http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()

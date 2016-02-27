@@ -1,4 +1,4 @@
-var socket = new WebSocket("ws://localhost:8000/websock");
+var socket = new WebSocket("ws://ashioto.in:8000/websock");
 var delay_list = ["1-5"];
 var color_pallete = ["rgba(96,125,139,", "rgba(0,150,136,", "rgba(0,151,167,", "rgba(198,40,40,"];
 socket.onopen = function(){
