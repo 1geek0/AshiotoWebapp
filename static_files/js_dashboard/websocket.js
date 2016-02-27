@@ -217,11 +217,15 @@ socket.onmessage = function(evt){
             var steps = message.data.loop;
             var time_step = message.data.time_step;
             var gates = message.data.gates;
-            
+            var prev_colors = []
             for(var i=0;i<gates.length;i++){
                 var gate_number = i+1;
                 var gate_name = "Gate " + gate_number;
                 var colorString = getColorString();
+                var index = prev_colors.indexOf(colorString);
+                if(index!=-1){
+                    colorString = getColorString();
+                }
                 var current_dataset = {
                     label : gate_name,
                     fillColor : colorString+"0.5)",
