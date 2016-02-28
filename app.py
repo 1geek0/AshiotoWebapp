@@ -1,6 +1,5 @@
 import time
 
-import pickledb
 import os
 
 import json
@@ -24,8 +23,6 @@ import io
 from tornado.options import define, options
 define("port", default=8000, help="run on the given port", type=int)
 
-#PickleDB
-keysDB = pickledb.load('api_keys.db', False)
 
 #MongoDB init
 client = MongoClient(host="52.5.163.54",port=27017)
