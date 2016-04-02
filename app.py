@@ -100,10 +100,10 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
         gates_data = gates_top(event_code)
         print(gates_data)
         self.write(gates_data)
-        
+
 def gates_top(event_code, start_time):
     event_request = events[event_code]
-    
+
     gates_number = len(event_request['gates'])
     gates = []
     mega = 0
@@ -118,9 +118,9 @@ def gates_top(event_code, start_time):
             count = item['outcount']
             mega += count
             last = item['timestamp']
-        
+
         index = i-1
-        
+
         gates.append({
             "name" : str(events[event_code]['gates'][index]['name']),
             "count" : int(count),
@@ -173,7 +173,7 @@ class DashboardHandler(tornado.web.RequestHandler):
         else:
             self.write("Event not found")
             self.finish()
-            
+
 class LogoHandler(tornado.web.RequestHandler):
     #code
     def get(self, filename):
@@ -234,7 +234,7 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
                 self.time_one = int(message['time_one'])
                 self.time_two = int(message['time_two'])
                 print("Time One and Two" + str(self.time_one) + "\n" + str(self.time_two))
-            if self.time_type != "day_between":    
+            if self.time_type != "day_between":
                 bar_stats = bar_overall(self)
             else:
                 bar_stats = bar_between_days(self)
@@ -248,11 +248,11 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
             resonse_dict = {"difference" : time_difference, "type":"time_difference_response" }
             print("TIME: " + str(resonse_dict))
             self.write_message(resonse_dict)
-        
+
     def on_close(self):
         print("Socket Closed")
         client_dict[self.eventCode].remove(self)
-        
+
 def bar_init(delay1, delay2, client):
     x = 1
     gates_length = len(events[client.eventCode]['gates'])
@@ -263,9 +263,9 @@ def bar_init(delay1, delay2, client):
     timestamp_start = int(db.ashioto_events.find({
             "eventCode" : client.eventCode
             })[0]['time_start'])
-    
+
     time_difference = int((time.time() - timestamp_start)/60)
-    
+
     response_dict['data']['time_start'] = delay1
     response_dict['data']['time_stop'] = delay2
     response_dict['data']['gates'] = []
@@ -282,7 +282,7 @@ def bar_init(delay1, delay2, client):
                     {"$lt":timestamp_range}},
                     {'_id': False, 'eventCode' : False }
             ).sort([("timestamp", -1)]).limit(1)[0]
-            
+
             query_upper = db.ashioto_data.find(
                 {"eventCode" : client.eventCode,
                  "gateID" : x,
@@ -290,7 +290,7 @@ def bar_init(delay1, delay2, client):
                     {"$lt":timestamp_buffer}},
                     {'_id': False, 'eventCode' : False }
             ).sort([("timestamp", -1)]).limit(1)[0]
-            
+
         except IndexError as error:
             client.write_message({
                 'type' : 'bargraph_data',
@@ -299,7 +299,7 @@ def bar_init(delay1, delay2, client):
             x += 1
             continue
         x += 1
-    
+
         response_dict['data']['gates'].append({
             'last' : query_lower,
             'secondLast' : query_upper
@@ -313,7 +313,7 @@ def bar_overall(client):
     time_limit = client.time_range
     time_type = client.time_type
     eventCode = client.eventCode
-    
+
     #Dict to be returned
     response_dict = {
         'type' : "bargraph_overall",
@@ -322,7 +322,7 @@ def bar_overall(client):
         }
     }
     response_dict['data']['time_step'] = time_step*60
-    
+
     #For finding event start time
     x = 1
     if time_type == "event":
@@ -330,7 +330,7 @@ def bar_overall(client):
             "eventCode" : client.eventCode
             })[0]['time_start'])
         timestamp_stop = int(timestamp_start+time_step*60)
-        
+
     elif time_type == "current":
         timestamp_start = int(time.time()-time_step*60*time_limit)
         timestamp_stop = int(time.time())
@@ -350,7 +350,7 @@ def bar_overall(client):
     timestamp_between = timestamp_start+(time_limit)*3600
     timesToLoop = (time_limit)*60/time_step
     response_dict['data']['loop'] = timesToLoop
-        
+
     #for fetching actual data
     z = 1
     while z <= gates_length:
@@ -400,12 +400,12 @@ def bar_between_days(client):
         },
         'between_days' : True
     }
-    
+
     response_dict['data']['loop'] = time_days
-    
-    
+
+
     x=1
-    
+
     while x <=gates_length:
         gates_list = []
         step_number = 1
@@ -473,12 +473,12 @@ class UserStatsHandler(tornado.web.RequestHandler):
         stats_json['Total Clients'] = str(client_lengths)
         self.write(stats_json)
 
-        
+
 if __name__ == '__main__':
     tornado.options.parse_command_line()
     app = tornado.web.Application(
         handlers=[
-            (r"/websock", AshiotoWebSocketHandler),
+    #        (r"/websock", AshiotoWebSocketHandler),
             (r"/img/(?P<filename>.+\.jpg)?", LogoHandler),
             (r"/count_update", CountHandler),
             (r"/event_confirm", EventCodeConfirmHandler),
@@ -493,7 +493,7 @@ if __name__ == '__main__':
         static_path=os.path.join(os.path.dirname(__file__), "static_files")
     )
     http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
-    http_server.start(0)
-    http_server.bind(options.port)
-    #http_server.listen(options.port)
+    #http_server.start(0)
+    #http_server.bind(options.port)
+    http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()

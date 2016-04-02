@@ -112,7 +112,7 @@ socket.onmessage = function(evt){
             var currentTotal = parseInt(removeCommas($("#totalCount").text()));
             var newTotal = currentTotal-oldCount+parseInt(message.count);
             $("#totalCount").text(commaSeparateNumber(newTotal));
-        case "bargraph_range_data":
+        /*case "bargraph_range_data":
             data_range.labels = [];
             data_range.datasets = [];
             if (message.hasOwnProperty('error')){
@@ -153,7 +153,7 @@ socket.onmessage = function(evt){
                     $("#barChart").remove();
                     //$("#alertCard").remove();
                     Materialize.toast("Data Insufficient To Plot Graph", 4000);
-                    /*var insufficientData_card = document.createElement('div');
+                    var insufficientData_card = document.createElement('div');
                     $(insufficientData_card)
                         .addClass("card red z-depth-3")
                         .html(
@@ -163,7 +163,7 @@ socket.onmessage = function(evt){
                                 <h1 style="font-size:30px" class="card-title">The Data Is Insufficient For Plotting A Graph</h1>\
                             </div>\
                         </div>')
-                        .appendTo(".container");*/
+                        .appendTo(".container");
                 }
                 data_range.datasets.push(current_dataset);
                 $("#barChart_range").remove();
@@ -208,7 +208,7 @@ socket.onmessage = function(evt){
                 var rangeBarChart = new Chart(ctx).Bar(data_range, options);
                 $('#barChart_range').css('background-color', 'rgba(255, 255, 255, 1)');
             }
-            break;
+            break; */
         case "bargraph_overall":
             $("#barChart_overall").remove();
             data_overall.labels = [];
