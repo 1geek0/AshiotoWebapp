@@ -1,9 +1,9 @@
-var socket = new WebSocket("ws://ashioto.in:8000/websock");
+var socket = new WebSocket("ws://localhost:8000/websock");
 var delay_list = ["1-5"];
 var color_pallete = ["rgba(96,125,139,", "rgba(0,150,136,", "rgba(0,151,167,", "rgba(198,40,40,"];
 socket.onopen = function(){
     socket.send(JSON.stringify({
-        type : "browserClient_register", 
+        type : "browserClient_register",
         event_code : eventCode}));
 };
 
@@ -131,7 +131,7 @@ socket.onmessage = function(evt){
                 console.log("END COLOR: ", current_dataset);
                 gates = message.data.gates;
                 gates_number = gates.length;
-                
+
                 if (gates_number==gates_names_list.length){
                     for(var i=0;i<gates_number;i++){
                         var current_gate = gates[i];
@@ -200,9 +200,9 @@ socket.onmessage = function(evt){
 
                         //Number - Spacing between data sets within X values
                         barDatasetSpacing : 1,
-                    
+
                         responsive : true,
-                        
+
                         legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
                     }
                 var rangeBarChart = new Chart(ctx).Bar(data_range, options);
@@ -260,7 +260,7 @@ socket.onmessage = function(evt){
                     data_overall.labels.push(time);
                 }
             }
-            
+
             var bar_chart = document.createElement('div');
                 $(bar_chart).html('<canvas id="barChart_overall" width="700px" height="400px"></canvas>').appendTo("#overall_graph_div");
                 var ctx = document.getElementById("barChart_overall").getContext("2d");
@@ -298,7 +298,7 @@ socket.onmessage = function(evt){
                     responsive : true,
                     showXLabels : arrayMax(data_overall.datasets),
                     multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
-                
+
                     legendTemplate : "<ul id=\"legend\" class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label.toString()){%><%=datasets[i].label.toString()%><%}%></li><%}%></ul>",
                 }
             overallBarChart = 0;
@@ -378,7 +378,7 @@ socket.onmessage = function(evt){
             });
 
             }
-            
+
             $("#barPlot_btn").click(function(){
                 socket.send(JSON.stringify({
                     type : 'bar_range_register',

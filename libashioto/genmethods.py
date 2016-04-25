@@ -1,3 +1,4 @@
+from variables import *
 #Returns total count of all the gates in the gates' list provided
 def total(gates):
     total_counts = 0

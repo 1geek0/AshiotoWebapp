@@ -1,3 +1,4 @@
+from variables import *
 #Returns total difference of count
 def day_total(evt, day_timestamp_stop, day_timestamp_start, g_id):
     query_gate = db.ashioto_data.find({
