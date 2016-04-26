@@ -14,44 +14,47 @@ import tornado.web
 import tornado.escape
 import tornado.template
 import tornado.websocket
+import tornado.gen
 
 from PIL import Image
 import io
 
 from tornado.options import define, options
+
 define("port", default=8000, help="run on the given port", type=int)
 
-#libashioto imports
+# libashioto imports
 from libashioto.genmethods import *
 from libashioto.graphmethods import *
+
 
 class CountHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def post(self):
         req_body = tornado.escape.json_decode(self.request.body)
         dict_body = dict(req_body)
-        count = int(dict_body.get('count')) #Number of People
-        gateID = int(dict_body.get('gateID'))#GateID
-        eventCode = dict_body.get('eventCode') #Event Code
-        times = int(dict_body.get('timestamp', time.time())) #Unix Timestamp
+        count = int(dict_body.get('count'))  # Number of People
+        gateID = int(dict_body.get('gateID'))  # GateID
+        eventCode = dict_body.get('eventCode')  # Event Code
+        times = int(dict_body.get('timestamp', time.time()))  # Unix Timestamp
         count_item = {
-            'gateID' : gateID,
-            'timestamp' : times,
-            'outcount' : count,
-            'eventCode' : eventCode
+            'gateID': gateID,
+            'timestamp': times,
+            'outcount': count,
+            'eventCode': eventCode
         }
         db.ashioto_data.insert(count_item)
         serve = {
-            'error' : False
+            'error': False
         }
         try:
             for user in client_dict[eventCode]:
                 user.write_message({
-                    'type' : 'count_update',
-                    'gateID' : gateID,
-                    'timestamp' : times,
-                    'count' : count
-                    })
+                    'type': 'count_update',
+                    'gateID': gateID,
+                    'timestamp': times,
+                    'count': count
+                })
             for user in bar_range_clients_dict[eventCode]:
                 user.write_message
                 pass
@@ -60,6 +63,7 @@ class CountHandler(tornado.web.RequestHandler):
         self.write(serve)
         self.finish()
 
+
 class EventCodeConfirmHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def post(self):
@@ -67,14 +71,15 @@ class EventCodeConfirmHandler(tornado.web.RequestHandler):
         event_requested = body_json['event']
         if event_requested in event_codes:
             response = {
-                'exists' : True
+                'exists': True
             }
             self.write(response)
         else:
             response = {
-                'exists' : False
+                'exists': False
             }
             self.write(response)
+
 
 class PerGate_DataProvider(tornado.web.RequestHandler):
     @tornado.gen.coroutine
@@ -85,11 +90,12 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
         print(gates_data)
         self.write(gates_data)
 
+
 class DashboardHandler(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def get(self, event):
         if event in event_codes:
-            start_time = db.ashioto_events.find({"eventCode" : event})[0]['time_start']
+            start_time = db.ashioto_events.find({"eventCode": event})[0]['time_start']
             name = events[event]['event_name']
             theme_primary = events[event]['theme_primary']
             theme_accent = events[event]['theme_accent']
@@ -118,8 +124,9 @@ class DashboardHandler(tornado.web.RequestHandler):
             self.write("Event not found")
             self.finish()
 
+
 class LogoHandler(tornado.web.RequestHandler):
-    #code
+    # code
     def get(self, filename):
         image_file = Image.open("static_files/images/" + filename)
         image_io = io.BytesIO()
@@ -131,11 +138,13 @@ class LogoHandler(tornado.web.RequestHandler):
 
 
 class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
-    #To always allow access to websocket
+    # To always allow access to websocket
     def check_origin(self, origin):
-         return True
+        return True
+
     eventCode = ""
     event_type = ""
+
     def on_message(self, msg):
         message = json.loads(msg)
         self.event_type = message['type']
@@ -144,23 +153,23 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
             try:
                 if self not in client_dict[self.eventCode]:
                     client_dict[self.eventCode].append(self)
-            except KeyError as ke:
+            except KeyError:
                 client_dict[self.eventCode] = []
                 client_dict[self.eventCode].append(self)
-        elif self.event_type == "bar_range_register":
+        elif self.event_type == "bar_range_register":  # Make into HTTP call
             print("New Range Client")
             try:
                 if self not in bar_range_clients_dict[self.eventCode]:
                     bar_range_clients_dict[self.eventCode].append(self)
-            except KeyError as ke:
+            except KeyError:
                 bar_range_clients_dict[self.eventCode] = []
                 bar_range_clients_dict[self.eventCode].append(self)
-            delay1 = int(message['delay1'])*60
-            delay2 = int(message['delay2'])*60
+            delay1 = int(message['delay1']) * 60
+            delay2 = int(message['delay2']) * 60
             barInit = bar_init(delay1, delay2, self)
             print(barInit)
             self.write_message(barInit)
-        elif self.event_type == "bar_overall_register":
+        elif self.event_type == "bar_overall_register":  # Make into HTTP call
             print("New Overall Client")
             self.time_step = int(message['time_step'])
             self.time_range = int(message['time_range'])
@@ -169,7 +178,7 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
             try:
                 if self not in bar_overall_clients_dict[self.eventCode]:
                     bar_overall_clients_dict[self.eventCode].append(self)
-            except KeyError as ke:
+            except KeyError:
                 bar_overall_clients_dict[self.eventCode] = []
                 bar_overall_clients_dict[self.eventCode].append(self)
             if self.time_type == "day_one":
@@ -182,14 +191,14 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
                 bar_stats = bar_overall(self)
             else:
                 bar_stats = bar_between_days(self)
-            #print("STATS: " + str(bar_stats))
+            # print("STATS: " + str(bar_stats))
             self.write_message(bar_stats)
         elif self.event_type == "time_difference":
             timestamp_start = int(db.ashioto_events.find({
-            "eventCode" : self.eventCode
+                "eventCode": self.eventCode
             })[0]['time_start'])
-            time_difference = int((time.time() - timestamp_start)/60)
-            resonse_dict = {"difference" : time_difference, "type":"time_difference_response" }
+            time_difference = int((time.time() - timestamp_start) / 60)
+            resonse_dict = {"difference": time_difference, "type": "time_difference_response"}
             print("TIME: " + str(resonse_dict))
             self.write_message(resonse_dict)
 
@@ -197,13 +206,15 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
         print("Socket Closed")
         client_dict[self.eventCode].remove(self)
 
+
 class StartTimeHandler(tornado.web.RequestHandler):
     def get(self, eventCode):
-        event = db.ashioto_events.update({"eventCode" : eventCode},
-            {"$set": {"time_start": int(time.time())},}
-        )
+        event = db.ashioto_events.update({"eventCode": eventCode},
+                                         {"$set": {"time_start": int(time.time())},}
+                                         )
         self.write("KAM ZALA!!")
         print(event)
+
 
 class UserStatsHandler(tornado.web.RequestHandler):
     def get(self):
@@ -220,7 +231,7 @@ if __name__ == '__main__':
     tornado.options.parse_command_line()
     app = tornado.web.Application(
         handlers=[
-    #        (r"/websock", AshiotoWebSocketHandler),
+            #        (r"/websock", AshiotoWebSocketHandler),
             (r"/img/(?P<filename>.+\.jpg)?", LogoHandler),
             (r"/count_update", CountHandler),
             (r"/event_confirm", EventCodeConfirmHandler),
@@ -235,7 +246,7 @@ if __name__ == '__main__':
         static_path=os.path.join(os.path.dirname(__file__), "static_files")
     )
     http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
-    #http_server.start(0)
-    #http_server.bind(options.port)
+    # http_server.start(0)
+    # http_server.bind(options.port)
     http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
