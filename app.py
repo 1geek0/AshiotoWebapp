@@ -20,6 +20,7 @@ from PIL import Image
 import io
 
 from tornado.options import define, options
+from tornado.web import RequestHandler
 
 define("port", default=8000, help="run on the given port", type=int)
 
@@ -227,11 +228,30 @@ class UserStatsHandler(tornado.web.RequestHandler):
         self.write(stats_json)
 
 
+class CreateUser(RequestHandler):
+    """Needs: events, email and type in json"""
+
+    def post(self):
+        request_body = dict(tornado.escape.json_decode(self.request.body))
+        user_events = request_body['events']
+        user_email = request_body['email']
+        user_type = request_body['type']
+        user_tempcode = generateConfirmCode()
+        user_dbitem = {'email': user_email, 'type': user_type, 'events': user_events, 'tempCode': user_tempcode}
+        try:
+            db.ashioto_users.find({'email': user_email})[0]
+            self.write(False)
+        except IndexError:
+            db.ashioto_users.insert(user_dbitem)
+            sendConfirmEmail(user_email, user_tempcode)
+            self.write(True)
+
+
 if __name__ == '__main__':
     tornado.options.parse_command_line()
     app = tornado.web.Application(
         handlers=[
-            #        (r"/websock", AshiotoWebSocketHandler),
+            # (r"/websock", AshiotoWebSocketHandler),
             (r"/img/(?P<filename>.+\.jpg)?", LogoHandler),
             (r"/count_update", CountHandler),
             (r"/event_confirm", EventCodeConfirmHandler),
@@ -241,7 +261,9 @@ if __name__ == '__main__':
             (r"/event_time_start/([a-zA-Z_0-9]+)", StartTimeHandler),
             (r"/event_time_start/([a-zA-Z_0-9]+)/", StartTimeHandler),
             (r"/userstats", UserStatsHandler),
-            (r"/userstats/", UserStatsHandler)
+            (r"/userstats/", UserStatsHandler),
+            (r"/createUser", CreateUser),
+            (r"/createUser/", CreateUser)
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files")
     )
