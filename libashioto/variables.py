@@ -1,9 +1,9 @@
 from pymongo import MongoClient
 
 #MongoDB init
-client = MongoClient(host="ds021691.mlab.com", port=21691)
-client.ashioto_data.authenticate("rest_user", "Ashioto_8192")
-db = client.ashioto_data
+mongoclient = MongoClient(host="ds021691.mlab.com", port=21691)
+mongoclient.ashioto_data.authenticate("rest_user", "Ashioto_8192")
+db = mongoclient.ashioto_data
 
 #api keys
 event_codes = []
