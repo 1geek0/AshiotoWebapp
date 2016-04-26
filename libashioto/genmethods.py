@@ -1,8 +1,12 @@
+import random
+import string
+
+from tornado.gen import coroutine
 from tornado_smtp.client import TornadoSMTP
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from variables import *
+from libashioto.variables import *
 
 
 # Returns total count of all the gates in the gates' list provided
@@ -45,8 +49,9 @@ def gates_top(event_code, start_time):
     }
     return response
 
-
+@coroutine
 def sendConfirmEmail(user_email, confirmCode):
+    print('Sending Email')
     smtp_client = TornadoSMTP('smtp.mailgun.org')
     yield smtp_client.starttls()
     yield smtp_client.login(smpt_login, smpt_password)
@@ -64,10 +69,14 @@ def sendConfirmEmail(user_email, confirmCode):
         <head></head>
         <body>
         <p>Hey,<br>
-        Here is the confirmation <a href=http://""" + serverhost + ":8181" + """/key/""" + confirmCode + """>link</a></p></body></html>"""
+        Here is the confirmation <a href=http://""" + serverhost + ":8888" + """/confirm/""" + confirmCode + """>link</a></p></body></html>"""
     part1 = MIMEText(text, 'plain')
     part2 = MIMEText(html, 'html')
     msg.attach(part1)
     msg.attach(part2)
     yield smtp_client.send_message(msg)
     yield smtp_client.quit()
+
+
+def generateConfirmCode():
+    return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(6))
