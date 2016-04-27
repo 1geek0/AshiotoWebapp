@@ -240,12 +240,21 @@ class CreateUser(RequestHandler):
         user_dbitem = {'email': user_email, 'type': user_type, 'events': user_events, 'tempCode': user_tempcode}
         try:
             db.ashioto_users.find({'email': user_email})[0]
-            self.write(False)
+            self.write('False')
         except IndexError:
             db.ashioto_users.insert(user_dbitem)
             sendConfirmEmail(user_email, user_tempcode)
-            self.write(True)
+            self.write('True')
 
+
+class ConfirmUser(RequestHandler):
+    """Confirms User"""
+    def get(self, code):
+        userConfirmed = confirmUser(code)
+        if userConfirmed:
+            pass
+        else:
+            self.write("User already confirmed")
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
@@ -263,7 +272,9 @@ if __name__ == '__main__':
             (r"/userstats", UserStatsHandler),
             (r"/userstats/", UserStatsHandler),
             (r"/createUser", CreateUser),
-            (r"/createUser/", CreateUser)
+            (r"/createUser/", CreateUser),
+            (r"/confirmUser/([a-zA-Z_0-9]+)", ConfirmUser),
+            (r"/confirmUser/([a-zA-Z_0-9]+)/", ConfirmUser)
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files")
     )
