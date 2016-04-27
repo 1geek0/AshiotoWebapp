@@ -49,6 +49,7 @@ def gates_top(event_code, start_time):
     }
     return response
 
+
 @coroutine
 def sendConfirmEmail(user_email, confirmCode):
     print('Sending Email')
@@ -69,7 +70,7 @@ def sendConfirmEmail(user_email, confirmCode):
         <head></head>
         <body>
         <p>Hey,<br>
-        Here is the confirmation <a href=http://""" + serverhost + ":8888" + """/confirm/""" + confirmCode + """>link</a></p></body></html>"""
+        Here is the confirmation <a href=http://""" + serverhost + ":8888" + """/confirmUser/""" + confirmCode + """>link</a></p></body></html>"""
     part1 = MIMEText(text, 'plain')
     part2 = MIMEText(html, 'html')
     msg.attach(part1)
@@ -80,3 +81,14 @@ def sendConfirmEmail(user_email, confirmCode):
 
 def generateConfirmCode():
     return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(6))
+
+
+def confirmUser(code):
+    try:
+        db.ashioto_users.update(
+            {'tempCode': code},
+            {'$unset': {'tempCode': ''}, '$set': {'state': 'active'}},
+            False)
+        return True
+    except IndexError:
+        return False
