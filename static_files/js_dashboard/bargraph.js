@@ -38,6 +38,10 @@ slider_overall_range.noUiSlider.on('update', function(value){value_range.innerHT
 $("#barPlot_overall_btn").click(function(){
     var selected = $("input[type='radio'][name='group1']:checked").val();
     console.log("VAL: " + selected);
+    $("#chart_loader").show();
+    $("#chart_loader2").show();
+    $("#chart_download").hide();
+    $("barChart_overall").remove();
     if(selected.search("day") == -1){
         socket.send(JSON.stringify({
             type : 'bar_overall_register',
