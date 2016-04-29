@@ -1,4 +1,4 @@
-var socket = new WebSocket("ws://localhost:8000/websock");
+var socket = new WebSocket("ws://localhost:8888/websock");
 var delay_list = ["1-5"];
 var color_pallete = ["rgba(96,125,139,", "rgba(0,150,136,", "rgba(0,151,167,", "rgba(198,40,40,"];
 socket.onopen = function(){
@@ -6,6 +6,17 @@ socket.onopen = function(){
         type : "browserClient_register",
         event_code : eventCode}));
 };
+
+function downloadCanvas(link, canvasId, filename) {
+    canvasId = document.getElementById(canvasId);
+    var ctx = canvasId.getContext('2d');
+    link.href = canvasId.toDataURL('image/png');
+    link.download = filename;
+}
+
+document.getElementById('chart_download').addEventListener('click', function() {
+    downloadCanvas(this, 'barChart_overall', 'test.png');
+}, false);
 
 function arrayMax(arr) {
   var len = arr.length, max = -Infinity;
@@ -122,10 +133,10 @@ socket.onmessage = function(evt){
                 var colorString = getColorString();
                 var current_dataset = {
                         label : (message.data.time_start-message.data.time_stop).toString,
-                        fillColor : colorString+"0.5)",
-                        strokeColor : colorString+"0.8)",
-                        highlightFill : colorString+"0.75)",
-                        highlightStroke : colorString+"1)",
+                        backgroundColor : colorString+"0.5)",
+                        borderColor : colorString+"0.8)",
+                        hoverBackgroundColor : colorString+"0.75)",
+                        hoverBorderColor : colorString+"1)",
                         data : [],
                     };
                 console.log("END COLOR: ", current_dataset);
@@ -203,7 +214,7 @@ socket.onmessage = function(evt){
 
                         responsive : true,
 
-                        legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+                        legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].backgroundColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
                     }
                 var rangeBarChart = new Chart(ctx).Bar(data_range, options);
                 $('#barChart_range').css('background-color', 'rgba(255, 255, 255, 1)');
@@ -228,10 +239,11 @@ socket.onmessage = function(evt){
                 }
                 var current_dataset = {
                     label : gate_name,
-                    fillColor : colorString+"0.5)",
-                    strokeColor : colorString+"0.8)",
-                    highlightFill : colorString+"0.75)",
-                    highlightStroke : colorString+"1)",
+                    backgroundColor : colorString+"0.5)",
+                    borderColor : colorString+"0.8)",
+                    borderWidth : 2,
+                    hoverBackgroundColor : colorString+"0.75)",
+                    hoverBorderColor : colorString+"1)",
                     data : [],
                 };
                 console.log("DATASET: ",current_dataset);
@@ -246,10 +258,10 @@ socket.onmessage = function(evt){
                 if(!message.hasOwnProperty("between_days")){
                     var step1 = time_start + time_step*i
                     var difference1 = step1-time_start
-                    var time1 = new Date(step1*1000).format("d M Y h:i:s A");
+                    var time1 = new Date(step1*1000).format("h:i:s A");
                     var step2 = time_start + time_step*(i+1)
                     var difference2 = step2-time_start
-                    var time2 = new Date(step2*1000).format("d M Y h:i:s A");
+                    var time2 = new Date(step2*1000).format("h:i:s A");
                     var labelString = time1 + " - " + time2
                     data_overall.labels.push(labelString);
                 } else{
@@ -263,8 +275,9 @@ socket.onmessage = function(evt){
 
             var bar_chart = document.createElement('div');
                 $(bar_chart).html('<canvas id="barChart_overall" width="700px" height="400px"></canvas>').appendTo("#overall_graph_div");
-                var ctx = document.getElementById("barChart_overall").getContext("2d");
+                ctx = document.getElementById("barChart_overall").getContext("2d");
                 var options = {
+                    type : "bar",
                     //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
                     scaleBeginAtZero : true,
 
@@ -293,19 +306,28 @@ socket.onmessage = function(evt){
                     barValueSpacing : 10,
 
                     //Number - Spacing between data sets within X values
-                    barDatasetSpacing : 1,
+                    barDatasetSpacing : 0,
 
                     responsive : true,
                     showXLabels : arrayMax(data_overall.datasets),
                     multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
 
-                    legendTemplate : "<ul id=\"legend\" class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label.toString()){%><%=datasets[i].label.toString()%><%}%></li><%}%></ul>",
+                    legendTemplate : "<ul id=\"legend\" class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].%>\"></span><%if(datasets[i].label.toString()){%><%=datasets[i].label.toString()%><%}%></li><%}%></ul>",
                 }
             overallBarChart = 0;
-            overallBarChart = new Chart(ctx).Bar(data_overall, options);
+            barJSON = {
+                type: "bar",
+                data: data_overall,
+                options: options
+            }
+            overallBarChart = new Chart(ctx, barJSON);
             var legend_overall = overallBarChart.generateLegend();
-            $('#barChart_overall').css('background-color', 'rgba(255, 255, 255, 1)');
+            //$('#barChart_overall').css('background-color', 'rgba(255, 255, 255, 1)');
             $("#barChart_overall").append(legend_overall);
+            $("#chart_download").show();
+            $("#chart_loader").hide();
+            $("#chart_loader2").hide();
+            scrollToOverall();
             break;
         case "time_difference_response":
             console.log("TIME: ",message.difference);
