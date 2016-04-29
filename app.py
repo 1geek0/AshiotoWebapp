@@ -3,9 +3,6 @@ import time
 import os
 
 import json
-import urllib3
-
-import datetime
 
 import tornado.httpserver
 import tornado.ioloop
@@ -22,11 +19,14 @@ import io
 from tornado.options import define, options
 from tornado.web import RequestHandler
 
+from passlib.hash import sha256_crypt
+
 define("port", default=8000, help="run on the given port", type=int)
 
 # libashioto imports
 from libashioto.genmethods import *
 from libashioto.graphmethods import *
+from libashioto.passmethods import *
 
 
 class CountHandler(tornado.web.RequestHandler):
@@ -93,41 +93,29 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
 
 
 class DashboardHandler(tornado.web.RequestHandler):
-    @tornado.web.asynchronous
-    def get(self, event):
-        if event in event_codes:
-            start_time = db.ashioto_events.find({"eventCode": event})[0]['time_start']
-            name = events[event]['event_name']
-            theme_primary = events[event]['theme_primary']
-            theme_accent = events[event]['theme_accent']
-            theme_text = events[event]['theme_text']
-            logo = events[event]['logo_name']
-            background = events[event]['background']
-            call = gates_top(event, start_time)
-            all_gates = call['Gates']
-            total_count = total(all_gates)
-            size = 6
-            if len(all_gates) == 1:
-                size = 12
-            self.render(
-                "templates/template_dashboard.html",
-                event_title=name,
-                total_count=total_count,
-                gates=all_gates,
-                size=size,
-                theme_primary=theme_primary,
-                theme_accent=theme_accent,
-                theme_text=theme_text,
-                eventCode=event,
-                logo_name=logo,
-                background=background)
+
+    def get(self, event_requested):
+        if event_requested in event_codes:
+            event_type = events[event_requested]['type']
+            if event_type == "public":
+                showDashboard(self, event_requested)
+            elif event_type == "private":
+                if self.get_secure_cookie("user"):
+                    user_email = self.get_secure_cookie("user").decode('utf-8')
+                    user_events = db.ashioto_users.find({'email': user_email})[0]['events']
+                    if event_requested in user_events:
+                        showDashboard(self, event_requested)
+                    else:
+                        self.write("Not authenticated for this dashboard")
+                else:
+                    self.redirect("/login")
         else:
             self.write("Event not found")
             self.finish()
 
 
 class LogoHandler(tornado.web.RequestHandler):
-    # code
+
     def get(self, filename):
         image_file = Image.open("static_files/images/" + filename)
         image_io = io.BytesIO()
@@ -229,38 +217,66 @@ class UserStatsHandler(tornado.web.RequestHandler):
 
 
 class CreateUser(RequestHandler):
-    """Needs: events, email and type in json"""
+    """Needs: events, email, password and type in json"""
 
     def post(self):
         request_body = dict(tornado.escape.json_decode(self.request.body))
         user_events = request_body['events']
         user_email = request_body['email']
         user_type = request_body['type']
-        user_tempcode = generateConfirmCode()
-        user_dbitem = {'email': user_email, 'type': user_type, 'events': user_events, 'tempCode': user_tempcode}
+        user_pass_plain = request_body['pass']
+        user_pass_hashed = hashpasswd(user_pass_plain)
+        user_dbitem = {'email': user_email, 'type': user_type, 'events': user_events, 'password': user_pass_hashed}
         try:
             db.ashioto_users.find({'email': user_email})[0]
             self.write('False')
         except IndexError:
             db.ashioto_users.insert(user_dbitem)
-            sendConfirmEmail(user_email, user_tempcode)
+            sendConfirmEmail(user_email, user_pass_plain)
             self.write('True')
 
 
 class ConfirmUser(RequestHandler):
     """Confirms User"""
+
     def get(self, code):
         userConfirmed = confirmUser(code)
         if userConfirmed:
-            pass
+            self.set_secure_cookie("first_setup", code, 1)
+            self.redirect("/firstset", True)
         else:
-            self.write("User already confirmed")
+            pass
+
+
+class LoginHandler(RequestHandler):
+    """Login Page"""
+
+    def get(self):
+        self.render("templates/template_login.html")
+
+    def post(self):
+        user_email = self.get_argument("email")
+        user_pass = self.get_argument("password")
+        try:
+            user_db = db.ashioto_users.find({"email": user_email})[0]
+            user_auth = sha256_crypt.verify(user_pass, user_db['password'])
+            print("Auth: " + str(user_auth))
+            if user_auth:
+                self.set_secure_cookie("user", user_email, 1)
+                url = "/dashboard/" + user_db['events'][0]
+                print(url)
+                self.redirect(url, True)
+            else:
+                self.write("Wrong password")
+        except IndexError:
+            self.write("Account doesn't exist")
+
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
     app = tornado.web.Application(
         handlers=[
-            # (r"/websock", AshiotoWebSocketHandler),
+            (r"/websock", AshiotoWebSocketHandler),
             (r"/img/(?P<filename>.+\.jpg)?", LogoHandler),
             (r"/count_update", CountHandler),
             (r"/event_confirm", EventCodeConfirmHandler),
@@ -274,9 +290,12 @@ if __name__ == '__main__':
             (r"/createUser", CreateUser),
             (r"/createUser/", CreateUser),
             (r"/confirmUser/([a-zA-Z_0-9]+)", ConfirmUser),
-            (r"/confirmUser/([a-zA-Z_0-9]+)/", ConfirmUser)
+            (r"/confirmUser/([a-zA-Z_0-9]+)/", ConfirmUser),
+            (r"/login", LoginHandler),
+            (r"/login/", LoginHandler),
         ],
-        static_path=os.path.join(os.path.dirname(__file__), "static_files")
+        static_path=os.path.join(os.path.dirname(__file__), "static_files"),
+        cookie_secret=cookie_secret
     )
     http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
     # http_server.start(0)
