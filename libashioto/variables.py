@@ -21,4 +21,5 @@ bar_overall_clients_dict = {} #Overall Graph Clients
 smpt_login = 'Welcome@ashioto.in'
 smpt_password = 'Ashioto1024Welcome'
 
-serverhost = 'localhost' #Server host
+serverhost = 'localhost:8888' #Server host
+cookie_secret = "RpFXgM1P0g5oTrs3XwRTLX8xzm8doo8kmLrCzyg29eF28m0ckBuBi7ieqBDhH/LVkOM="
