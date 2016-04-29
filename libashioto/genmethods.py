@@ -51,7 +51,7 @@ def gates_top(event_code, start_time):
 
 
 @coroutine
-def sendConfirmEmail(user_email, confirmCode):
+def sendConfirmEmail(user_email, password):
     print('Sending Email')
     smtp_client = TornadoSMTP('smtp.mailgun.org')
     yield smtp_client.starttls()
@@ -65,12 +65,15 @@ def sendConfirmEmail(user_email, confirmCode):
 
     # Email Body
     text = "This is an email to activate your Ashioto Analytics account"
-    html = """\
+    html = '''\
         <html>
         <head></head>
         <body>
         <p>Hey,<br>
-        Here is the confirmation <a href=http://""" + serverhost + ":8888" + """/confirmUser/""" + confirmCode + """>link</a></p></body></html>"""
+        Your account for Ashioto analytics has been created.<br>
+        Your password is: ''' + password + '''<br>
+        If any assistance is needed, please contact geek@ashioto.in<br>
+        Proceed to Ashioto dashboard by logging in : <a href=http://''' + serverhost + '''/login>Log in</a></body></html>'''
     part1 = MIMEText(text, 'plain')
     part2 = MIMEText(html, 'html')
     msg.attach(part1)
@@ -81,6 +84,34 @@ def sendConfirmEmail(user_email, confirmCode):
 
 def generateConfirmCode():
     return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(6))
+
+
+def showDashboard(user, event_requested):
+    start_time = db.ashioto_events.find({"eventCode": event_requested})[0]['time_start']
+    name = events[event_requested]['event_name']
+    theme_primary = events[event_requested]['theme_primary']
+    theme_accent = events[event_requested]['theme_accent']
+    theme_text = events[event_requested]['theme_text']
+    logo = events[event_requested]['logo_name']
+    background = events[event_requested]['background']
+    call = gates_top(event_requested, start_time)
+    all_gates = call['Gates']
+    total_count = total(all_gates)
+    size = 6
+    if len(all_gates) == 1:
+        size = 12
+    user.render(
+        "../templates/template_dashboard.html",
+        event_title=name,
+        total_count=total_count,
+        gates=all_gates,
+        size=size,
+        theme_primary=theme_primary,
+        theme_accent=theme_accent,
+        theme_text=theme_text,
+        eventCode=event_requested,
+        logo_name=logo,
+        background=background)
 
 
 def confirmUser(code):
