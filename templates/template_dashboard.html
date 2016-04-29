@@ -4,36 +4,36 @@
         <!--Import Google Icon Font-->
         <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         
-        <!--jQuery-->
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.js"></script>
+        <link href="https://cdn.rawgit.com/leongersen/noUiSlider/master/distribute/nouislider.min.css" rel="stylesheet">
+        <link href="http://materializecss.com/extras/noUiSlider/nouislider.css" rel="stylesheet">
         
-        <!--MaterializeCSS Scripts-->
-        <script type="text/javascript" src="{{ static_url("materialize_files/js/materialize.js")}}"></script>
+        
         <!--Import MaterializeCSS stylesheet-->
-        <link type="text/css" rel="stylesheet" href="{{static_url("materialize_files/css/materialize.css")}}" media="screen,projection"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
         
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        
+        <title>{{event_title}}</title>
+    </head>
+    <body>
+        <!--jQuery-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.js"></script>
+        
+        <!--Slider-->
+        <script type="text/javascript" src="https://cdn.rawgit.com/leongersen/noUiSlider/master/distribute/nouislider.min.js"></script>
+        
+        <!--MaterializeCSS Scripts-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
         
         <!--Ashioto scripts-->
         <script type="text/javascript" src="{{static_url("js_dashboard/dateformat.js")}}"></script>
         
         <!--Chart.js-->
-        <script type="text/javascript" src="{{static_url("chartjs/Chart.js")}}"></script>
-        
-        <!--Slider-->
-        <script type="text/javascript" src="{{static_url("js_dashboard/nouislider.min.js")}}"></script>
-        <link href="{{static_url("js_dashboard/nouislider.css")}}" rel="stylesheet">
+        <script type="text/javascript" src="https://cdn.rawgit.com/chartjs/Chart.js/master/dist/Chart.min.js"></script>
         
         <!--Date Parse-->
         <script type="text/javascript" src="http://momentjs.com/downloads/moment.min.js"></script>
-        
-        <!--Google Charts-->
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-        
-        <title>{{event_title}}</title>
-    </head>
-    <body>
         <style>
             { margin: 0; padding: 0; }
             html { 
@@ -102,7 +102,7 @@
                     {% end %}
                 {% end %}
             </div>
-            <ul id="range_graph_ul" class="collapsible white" data-collapsible="expandable">
+            <ul id="range_graph_ul" class="collapsible white" data-collapsible="expandable" hidden="hidden">
                 <li>
                     <div class="collapsible-header blue-grey darken-3 white-text center" onclick="scrollToOverall()">Range Graph</div>
                     <div class="collapsible-body" id="range_graph_div">
@@ -124,7 +124,7 @@
                     <!--<div class="col m4 s4 center">-->
                     <a class="waves-effect waves-light btn-large center" id="barPlot_btn" style="margin-top:25px" onclick="scrollToRange()">Get Graph</a>
                     <!--</div>-->
-                    </div>
+                </div>
                 
                 <div id="slider"></div>
             </div>
@@ -133,21 +133,23 @@
             <ul id="overall_graph_ul" class="collapsible white" data-collapsible="expandable">
                 <li>
                     <div onclick="scrollToOverall()" class="collapsible-header blue-grey darken-3 white-text center">Overall Graph</div>
-                    <div class="collapsible-body" id="overall_graph_div">
+                    <div class="collapsible-body" id="overall_graph_div" style="padding-bottom:10px;">
                 <div class="row center-align" style="margin-left:20px">
                     <div class="col m4 s4 center" id="card_step">
-                        <div class="card teal center z-depth-2">
+                        <div class="card blue-grey darken-3 center z-depth-2">
                             <div class="card-content white-text center">
                                 <span>Data Step</span><br>
                                 <span class="card-title center" id="input_step" style="font-size:20px;"></span>
+                                <div id="slider_overall_step"></div>
                             </div>
                         </div>
                     </div>
                     <div class="col m4 s4 center" id="card_range">
-                        <div class="card teal center z-depth-2">
+                        <div class="card blue-grey darken-3 center z-depth-2">
                             <div class="card-content white-text center">
                                 <span>Data Range</span><br>
                                 <span class="card-title center" id="input_range" style="font-size:20px;"></span>
+                                <div id="slider_overall_range" style="margin-top:5px;"></div>
                             </div>
                         </div>
                     </div>
@@ -155,28 +157,29 @@
                     
                 </div>
                 <form action="#" id="radiogroup_time" class="center">
-                    <span>
+                    <span hidden="hidden">
                         <input name="group1" type="radio" id="radio_event_start" value="event" checked>
                         <label for="radio_event_start">Show From Event Start</label>
                     </span>
                     <span>
                         <input name="group1" type="radio" id="radio_time_start" value="current">
-                        <label for="radio_time_start">Show From Current Time</label>
+                        <label for="radio_time_start">From Current Time</label>
                     </span>
                     <span>
                         <input name="group1" type="radio" id="radio_time_day_one" value="day_one">
-                        <label for="radio_time_day_one">Show For A Day</label>
+                        <label for="radio_time_day_one">Day Stats</label>
                     </span>
                     <span>
                         <input name="group1" type="radio" id="radio_time_day_between" value="day_between">
-                        <label for="radio_time_day_between">Show Between Days</label>
+                        <label for="radio_time_day_between">Between Days</label>
                     </span>
                 </form>
                 <input hidden="true" type="date" class="datepicker picker__input picker__input--active" id="date_one" placeholder="Select Date To Show Stats Of">
                 <input hidden="true" type="date" class="datepicker picker__input picker__input--active" id="date_two" placeholder="Select End Date">
-                <div id="slider_overall_step"></div>
-                <div id="slider_overall_range" style="margin-top:5px"></div>
-                
+                <a id="chart_download" hidden="hidden">Download as PNG</a>
+                <div class="progress" id="chart_loader2" hidden="hidden">
+                    <div class="indeterminate" hidden="hidden" id="chart_loader"></div>
+                </div>
             </div>
                 </li>
             </ul>
