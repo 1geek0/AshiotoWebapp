@@ -298,7 +298,7 @@ if __name__ == '__main__':
         cookie_secret=cookie_secret
     )
     http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
-    # http_server.start(0)
-    # http_server.bind(options.port)
-    http_server.listen(options.port)
+    http_server.start(0)
+    http_server.bind(options.port)
+    #http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
