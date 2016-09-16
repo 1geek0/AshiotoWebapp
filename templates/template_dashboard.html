@@ -57,137 +57,62 @@
                 padding-top: 15px;
             }
         </style>
-        <div class="container">
-            <div class="row" id="cards_head">
-                        <div class="card {{theme_accent}} hoverable">
-                            <div class="card-content {{theme_text}}-text center">
-                                <p id="totalCountTitle" class="card-title center" style="font-size: 30px;">Total Count</p>
-                                <h1 style="font-size:30px" class="card-title" id="totalCount">{{"{:,}".format(int(total_count))}}</h1>
-                            </div>
+        <!-- <div class="container"> -->
+          <!--Current Count Card-->
+            <div class="row" id="cards_head" style="padding-right:25px;">
+                        <!--Card for count stats-->
+                        <div class="card {{theme_accent}} hoverable col m4 offset-m1" style="height: 200px;">
+                          <div class="card-content {{theme_text}}-text center">
+                            <span id="totalCountTitle" class="card-title center" style="font-size: 30px; font-weight: 300;">Total Count</span><br />
+                            <span style="font-size:34px; font-weight: 400;" class="card-title" id="totalCount">{{"{:,}".format(int(total_count))}}</span><br /><br />
+                            <a class="activator btn-flat" style="font-size: 30px; color: {{theme_text}}; font-weight: 200;">Per Gate</a>
+                          </div>
+
+                          <div class="card-reveal {{theme_accent}}">
+                            <span class="card-title {{theme_text}}-text text-darken-4">Per Gate Data<i class="material-icons right">close</i></span>
+                            {% for gate in gates %}
+                              {% block gates %}
+                                <div class="section">
+                                  <span style="font-size: 20px; margin: 0; color: {{theme_text}};"><b>{{ escape(gate['name']) }}</b>(<span id="{{escape("timestamp"+str(gates.index(gate)+1))}}" style="color: {{theme_text}};">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M %p')) }}</span>)</span><br />
+                                  <script type="application/javascript">gates_names_list.push("{{escape(gate['name'])}}") </script> <!--This is to ensure real-time update of the counts-->
+                                  <span style="font-size: 34px; margin: 0; color: {{theme_text}};" id="{{escape("count"+str(gates.index(gate)+1))}}">{{ "{:,}".format(int(escape((str(gate['count']))))) }}</span>
+                                </div>
+                                <div class="divider"></div>
+                              {% end %}
+                            {% end %}
+                          </div>
+                        </div>
+
+                        <!--Card for Flow Rate-->
+                        <div class="card {{theme_accent}} hoverable col m6" style="height: 200px; margin-left: 24px;">
+                          <div class="card-content {{theme_text}}-text center">
+                            <span id="totalCountTitle" class="card-title center" style="font-size: 30px; font-weight: 300;">Flow Rate</span><br />
+                            <span style="font-size:34px; font-weight: 400;" class="card-title" id="totalCount">{{"{:,}".format(int(total_count))}}</span><br /><br />
+
+                            <a class='dropdown-button btn' href='#' data-activates='time_intervals' style="font-weight: 400;">Time Intervals</a>
+
+                            <!--Dropdown list for time gaps-->
+                            <ul id='time_intervals' class='dropdown-content'>
+                              <li><a href="#!">5 Minutes</a></li>
+                              <li class="divider"></li>
+                              <li><a href="#!">10 Minutes</a></li>
+                              <li class="divider"></li>
+                              <li><a href="#!">30 Minutes</a></li>
+                              <li class="divider"></li>
+                              <li><a href="#!">60 Minutes</a></li>
+                              <li class="divider"></li>
+                              <li><a href="#!">Custom</a></li>
+                            </ul>
+                          </div>
                         </div>
             </div>
             <script type="application/javascript">
                 gates_names_list = [];
             </script>
             <div class="row">
-                {% if len(gates)>1 %}
-                    {% for gate in gates %}
-                        {% block gates %}
-                            <div class= "col m12">
-                                <div class="card {{theme_accent}} center hoverable">
-                                    <div class="card-content {{theme_text}}-text center">
-                                        <span class="card-title center" style="font-size:30px">{{ escape(gate['name']) }}</span><br>
-                                        <script type="application/javascript">gates_names_list.push("{{escape(gate['name'])}}") </script>
-                                        <span class="card-title center" style="font-size:21px" id="{{escape("timestamp"+str(gates.index(gate)+1))}}">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
-                                        <span class="card-title center" style="font-size:30px" id="{{escape("count"+str(gates.index(gate)+1))}}">{{ "{:,}".format(int(escape((str(gate['count']))))) }}</span><br>
-                                    </div>
-                                </div>
-                            </div>
-                        {% end %}
-                    {% end %}
-                {% else %}
-                    <script type="application/javascript">
-                        $("#cards_head").remove();
-                    </script>
-                    {% for gate in gates %}
-                        {% block gates %}
-                            <div class= "col m{{size}}">
-                                <div class="card {{theme_accent}} center hoverable">
-                                    <div class="card-content {{theme_text}}-text center">
-                                        <span class="card-title center" style="font-size:30px">{{ escape(gate['name']) }}</span><br>
-                                        <script type="application/javascript">gates_names_list.push("{{escape(gate['name'])}}") </script>
-                                        <span class="card-title center" style="font-size:21px" id="{{escape("timestamp"+str(gates.index(gate)+1))}}">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
-                                        <span class="card-title center" style="font-size:30px" id="{{escape("count"+str(gates.index(gate)+1))}}">{{ "{:,}".format(int(escape((str(gate['count']))))) }}</span><br>
-                                    </div>
-                                </div>
-                            </div>
-                        {% end %}
-                    {% end %}
-                {% end %}
-            </div>
-            <ul id="range_graph_ul" class="collapsible white" data-collapsible="expandable" hidden="hidden">
-                <li>
-                    <div class="collapsible-header blue-grey darken-3 white-text center" onclick="scrollToOverall()">Range Graph</div>
-                    <div class="collapsible-body" id="range_graph_div">
-                <div class="row center-align" style="margin-left:20px">
-                    <div class="col m4 s4">
-                        <div class="card teal center z-depth-2">
-                            <div class="card-content white-text center">
-                                <span class="card-title center" id="input_high" style="font-size:20px;" style="margin-top:-10px;"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col m4 s4">
-                        <div class="card teal center z-depth-2">
-                            <div class="card-content white-text center">
-                                <span id="input_low" class="card-title center" style="font-size:20px;" style="margin-top:-10px;"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <!--<div class="col m4 s4 center">-->
-                    <a class="waves-effect waves-light btn-large center" id="barPlot_btn" style="margin-top:25px" onclick="scrollToRange()">Get Graph</a>
-                    <!--</div>-->
-                </div>
 
-                <div id="slider"></div>
             </div>
-                </li>
-            </ul>
-            <ul id="overall_graph_ul" class="collapsible white" data-collapsible="expandable">
-                <li>
-                    <div onclick="scrollToOverall()" class="collapsible-header blue-grey darken-3 white-text center">Overall Graph</div>
-                    <div class="collapsible-body" id="overall_graph_div" style="padding-bottom:10px;">
-                <div class="row center-align" style="margin-left:20px">
-                    <div class="col m4 s4 center" id="card_step">
-                        <div class="card blue-grey darken-3 center z-depth-2">
-                            <div class="card-content white-text center">
-                                <span>Data Step</span><br>
-                                <span class="card-title center" id="input_step" style="font-size:20px;"></span>
-                                <div id="slider_overall_step"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col m4 s4 center" id="card_range">
-                        <div class="card blue-grey darken-3 center z-depth-2">
-                            <div class="card-content white-text center">
-                                <span>Data Range</span><br>
-                                <span class="card-title center" id="input_range" style="font-size:20px;"></span>
-                                <div id="slider_overall_range" style="margin-top:5px;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <a class="waves-effect waves-light btn-large center" id="barPlot_overall_btn" style="margin-top:25px">Get Graph</a>
-
-                </div>
-                <form action="#" id="radiogroup_time" class="center">
-                    <span hidden="hidden">
-                        <input name="group1" type="radio" id="radio_event_start" value="event" checked>
-                        <label for="radio_event_start">Show From Event Start</label>
-                    </span>
-                    <span>
-                        <input name="group1" type="radio" id="radio_time_start" value="current">
-                        <label for="radio_time_start">From Current Time</label>
-                    </span>
-                    <span>
-                        <input name="group1" type="radio" id="radio_time_day_one" value="day_one">
-                        <label for="radio_time_day_one">Day Stats</label>
-                    </span>
-                    <span>
-                        <input name="group1" type="radio" id="radio_time_day_between" value="day_between">
-                        <label for="radio_time_day_between">Between Days</label>
-                    </span>
-                </form>
-                <input hidden="true" type="date" class="datepicker picker__input picker__input--active" id="date_one" placeholder="Select Date To Show Stats Of">
-                <input hidden="true" type="date" class="datepicker picker__input picker__input--active" id="date_two" placeholder="Select End Date">
-                <a id="chart_download" hidden="hidden">Download as PNG</a>
-                <div class="progress" id="chart_loader2" hidden="hidden">
-                    <div class="indeterminate" hidden="hidden" id="chart_loader"></div>
-                </div>
-            </div>
-                </li>
-            </ul>
-            </div>
-        </div>
+        <!-- </div> -->
 
         <!--Ashioto scripts-->
         <script type="application/javascript">
