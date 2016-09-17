@@ -96,6 +96,7 @@ def showDashboard(user, event_requested):
     background = events[event_requested]['background']
     call = gates_top(event_requested, start_time)
     all_gates = call['Gates']
+    realtime = events[event_requested]['realtime']
     total_count = total(all_gates)
     size = 6
     if len(all_gates) == 1:
@@ -111,7 +112,8 @@ def showDashboard(user, event_requested):
         theme_text=theme_text,
         eventCode=event_requested,
         logo_name=logo,
-        background=background)
+        background=background,
+        realtime=realtime)
 
 
 def confirmUser(code):
