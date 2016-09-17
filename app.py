@@ -27,6 +27,7 @@ define("port", default=8000, help="run on the given port", type=int)
 from libashioto.genmethods import *
 from libashioto.graphmethods import *
 from libashioto.passmethods import *
+from libashioto.flow_rate import FlowRateHandler
 
 
 class CountHandler(tornado.web.RequestHandler):
@@ -293,9 +294,11 @@ if __name__ == '__main__':
             (r"/confirmUser/([a-zA-Z_0-9]+)/", ConfirmUser),
             (r"/login", LoginHandler),
             (r"/login/", LoginHandler),
+            (r"/flow_rate", FlowRateHandler)
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files"),
-        cookie_secret=cookie_secret
+        cookie_secret=cookie_secret,
+        debug=True
     )
     http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
     #http_server.start(0)
