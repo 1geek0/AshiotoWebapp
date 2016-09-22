@@ -117,11 +117,14 @@ def showDashboard(user, event_requested):
 
 #Give a list of names of all the public events
 def listEvents():
+    events_dict = {}
     events_list = []
-    events_db = db.ashioto_events.find({}, {"event_name": 1})
+    events_db = db.ashioto_events.find({}, {"event_name": 1, "_id": 0})
+    x = 0
     for event in events_db:
-        events_list.append(event)
-    return events_list
+        events_list.append(event['event_name'])
+    events_dict['Events'] = events_list
+    return events_dict
 
 def confirmUser(code):
     try:
