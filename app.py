@@ -29,7 +29,6 @@ from libashioto.graphmethods import *
 from libashioto.passmethods import *
 from libashioto.flow_rate import FlowRateHandler
 
-
 class CountHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def post(self):
@@ -271,6 +270,12 @@ class LoginHandler(RequestHandler):
                 self.write("Wrong password")
         except IndexError:
             self.write("Account doesn't exist")
+
+#Simply return a list of public events
+class EventsListHandler(RequestHandler):
+    def get(self):
+        self.write(listEvents)
+        self.finish()
 
 
 if __name__ == '__main__':

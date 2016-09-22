@@ -115,6 +115,13 @@ def showDashboard(user, event_requested):
         background=background,
         realtime=realtime)
 
+#Give a list of names of all the public events
+def listEvents():
+    events_list = []
+    events_db = db.ashioto_events.find({}, {"event_name": 1})
+    for event in events_db:
+        events_list.append(event)
+    return events_list
 
 def confirmUser(code):
     try:
