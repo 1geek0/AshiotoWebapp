@@ -299,7 +299,8 @@ if __name__ == '__main__':
             (r"/confirmUser/([a-zA-Z_0-9]+)/", ConfirmUser),
             (r"/login", LoginHandler),
             (r"/login/", LoginHandler),
-            (r"/flow_rate", FlowRateHandler)
+            (r"/flow_rate", FlowRateHandler),
+            (r"/listEvents", EventsListHandler)
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files"),
         cookie_secret=cookie_secret,
