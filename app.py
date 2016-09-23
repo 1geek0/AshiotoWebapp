@@ -274,7 +274,7 @@ class LoginHandler(RequestHandler):
 #Simply return a list of public events
 class EventsListHandler(RequestHandler):
     def get(self):
-        self.write(listEvents)
+        self.write(listEvents())
         self.finish()
 
 
