@@ -57,123 +57,70 @@
                 padding-top: 15px;
             }
         </style>
-        <!-- <div class="container"> -->
-          <!--Current Count Card-->
-            <div class="row" id="cards_head" style="padding-right:25px;">
-                        <!--Card for count stats-->
-                        <div class="card {{theme_accent}} hoverable col m4 offset-m1" style="height: 200px;">
-                          <div class="card-content {{theme_text}}-text center">
-                            <span id="totalCountTitle" class="card-title center" style="font-size: 30px; font-weight: 300;">Total Count</span><br />
-                            <span style="font-size:34px; font-weight: 400;" class="card-title" id="totalCount">{{"{:,}".format(int(total_count))}}</span><br /><br />
-                            <a class="activator btn-flat" style="font-size: 30px; color: {{theme_text}}; font-weight: 200;">Per Gate</a>
-                          </div>
-
-                          <div class="card-reveal {{theme_accent}}">
-                            <span class="card-title {{theme_text}}-text text-darken-4">Per Gate Data<i class="material-icons right">close</i></span>
-                            {% for gate in gates %}
-                              {% block gates %}
-                                <div class="section">
-                                  <span style="font-size: 20px; margin: 0; color: {{theme_text}};"><b>{{ escape(gate['name']) }}</b>(<span id="{{escape("timestamp"+str(gates.index(gate)+1))}}" style="color: {{theme_text}};">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M %p')) }}</span>)</span><br />
-                                  <script type="application/javascript">gates_names_list.push("{{escape(gate['name'])}}") </script> <!--This is to ensure real-time update of the counts-->
-                                  <span style="font-size: 34px; margin: 0; color: {{theme_text}};" id="{{escape("count"+str(gates.index(gate)+1))}}">{{ "{:,}".format(int(escape((str(gate['count']))))) }}</span>
-                                </div>
-                                <div class="divider"></div>
-                              {% end %}
-                            {% end %}
-                          </div>
-                        </div>
-
-                        <!--Card for Flow Rate-->
-                        <div class="card {{theme_accent}} hoverable col m6" style="height: 200px; margin-left: 24px;">
-                          <div class="card-content {{theme_text}}-text center">
-                            <span id="totalCountTitle" class="card-title center" style="font-size: 30px; font-weight: 300;">Flow Rate</span><br />
-                            <span style="font-size:34px; font-weight: 400;" class="card-title" id="flow_rateText">Choose Gate->Choose Time Interval->Submit</span><br /><br />
-
-                            <form id="flow_rateForm" method="post">
-                              <a class='dropdown-button btn' id="gateButton" href='#' data-activates='gates_dropdownContent' style="font-weight: 400;">Gate</a>
-                              <a class='dropdown-button btn' id="timeButton" href='#' data-activates="time_intervals" style="font-weight: 400;">Time Interval</a>
-                              <button class="btn" type="submit">Get Flow Rate</button>
-                            </form>
-
-                            <!--Dropdown list for time gaps-->
-                            <ul id='time_intervals' class='dropdown-content timeContent'>
-                              <li><a href="#!" class="interval" interval=60>1 Minute</a></li>
-                              <li class="divider"></li>
-                              <li><a href="#!" class="interval" interval=300>5 Minutes</a></li>
-                              <li class="divider"></li>
-                              <li><a href="#!" interval=600 class="interval">10 Minutes</a></li>
-                              <li class="divider"></li>
-                              <li><a href="#!" interval=1800 class="interval">30 Minutes</a></li>
-                              <li class="divider"></li>
-                              <li><a href="#!" interval=3600 class="interval">60 Minutes</a></li>>
-                            </ul>
-
-                            <ul id="gates_dropdownContent" class="dropdown-content gatesContent">
-                              <li><a gateID=0 href="#!" class="gateItem">Overall</a></li>
-                              {% for gate in gates %}
-                                {% block dropGates %}
-                                  <li><a gateID={{escape(str(gates.index(gate)+1))}} href="#!" class="gateItem">{{ escape(gate['name']) }}</a></li>
-                                {% end %}
-                              {% end %}
-                            </ul>
-                          </div>
+        <div class="container">
+            <div class="row" id="cards_head" hidden="hidden">
+                        <div class="card {{theme_accent}} hoverable">
+                            <div class="card-content {{theme_text}}-text center">
+                                <p id="totalCountTitle" class="card-title center" style="font-size: 30px;">Total Count</p>
+                                <h1 style="font-size:30px" class="card-title" id="totalCount">{{"{:,}".format(int(total_count))}}</h1>
+                            </div>
                         </div>
             </div>
             <script type="application/javascript">
                 gates_names_list = [];
             </script>
             <div class="row">
-
+                {% if len(gates)>1 %}
+                    {% for gate in gates %}
+                        {% block gates %}
+                            <div class= "col m12">
+                                <div class="card {{theme_accent}} center hoverable">
+                                    <div class="card-content {{theme_text}}-text center">
+                                        <span class="card-title center" style="font-size:30px">{{ escape(gate['name']) }}</span><br>
+                                        <script type="application/javascript">gates_names_list.push("{{escape(gate['name'])}}") </script>
+                                        <span class="card-title center" style="font-size:21px" id="{{escape("timestamp"+str(gates.index(gate)+1))}}">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
+                                        <span class="card-title center" style="font-size:30px" id="{{escape("count"+str(gates.index(gate)+1))}}">{{ "{:,}".format(int(escape((str(gate['count']))))) }}</span><br>
+                                    </div>
+                                </div>
+                            </div>
+                        {% end %}
+                    {% end %}
+                {% else %}
+                    <script type="application/javascript">
+                        $("#cards_head").remove();
+                    </script>
+                    {% for gate in gates %}
+                        {% block gates %}
+                            <div class= "col m{{size}}">
+                                <div class="card {{theme_accent}} center hoverable">
+                                    <div class="card-content {{theme_text}}-text center">
+                                        <span class="card-title center" style="font-size:30px">{{ escape(gate['name']) }}</span><br>
+                                        <script type="application/javascript">gates_names_list.push("{{escape(gate['name'])}}") </script>
+                                        <span class="card-title center" style="font-size:21px" id="{{escape("timestamp"+str(gates.index(gate)+1))}}">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
+                                        <span class="card-title center" style="font-size:30px" id="{{escape("count"+str(gates.index(gate)+1))}}">{{ "{:,}".format(int(escape((str(gate['count']))))) }}</span><br>
+                                    </div>
+                                </div>
+                            </div>
+                        {% end %}
+                    {% end %}
+                {% end %}
             </div>
-        <!-- </div> -->
+            </div>
+        </div>
+
+        <div id="logos">
+          <span>Supported By:</span>
+          <img src="/static/images/disq_logo.jpg" width="496px" height="248px"/>
+          <img src="/static/images/kumbhaLogo.png" />
+          <img src="/static/images/ashioto_logo.jpg" width="248px" height="248px" />
+        </div>
 
         <!--Ashioto scripts-->
         <script type="application/javascript">
             eventCode = "{{eventCode}}";
-            var frm = $('#flow_rateForm');
-            frm.submit(function (ev) {
-                $.ajax({
-                    type: frm.attr('method'),
-                    url: frm.attr('action'),
-                    data: frm.serialize(),
-                    success: function (data) {
-                        $("#flow_rateText").text(data + " per " + (selectedInterval/60) + " min");
-                    }
-                });
-
-                ev.preventDefault();
-            });
         </script>
         <script type="text/javascript" src="{{ static_url("js_dashboard/websocket.js")}}"></script>
         <script type="text/javascript" src="{{static_url("js_dashboard/bargraph.js")}}"></script>
     <script type="text/javascript" src="{{static_url("js_dashboard/datePicker.js")}}"></script>
-
-    <script type="application/javascript">
-    realtime = "{{realtime}}";
-    $('ul.gatesContent li').click(function(event) {
-      /* Act on the event */
-      selectedGateID = $(this).find('a.gateItem').attr('gateID').toString();
-      console.log(selectedGateID);
-    });
-    $('ul.timeContent li').click(function(event) {
-      /* Act on the event */
-      selectedInterval = $(this).find('a.interval').attr("interval").toString();
-      $("#flow_rateForm").attr("action", "/flow_rate?time_interval="+selectedInterval+"&event="+eventCode+"&gateID="+selectedGateID);
-    });
-
-    $(document).ready(function() {
-      console.log(realtime);
-      if (realtime == "True") {
-        $.ajax({
-            type: "POST",
-            url: "/flow_rate?time_interval=300&event="+eventCode+"&gateID=0",
-            data: frm.serialize(),
-            success: function (data) {
-                $("#flow_rateText").text(data + " per 5 min");
-            }
-        });
-      }
-    });
-    </script>
     </body>
 </html>
