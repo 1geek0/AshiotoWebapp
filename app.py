@@ -84,9 +84,10 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
     def post(self):
         request_body = tornado.escape.json_decode(self.request.body)
         event_code = request_body['event_code']
-        gates_data = gates_top(event_code)
+        gates_data = gates_top(event_code, events[event_code=event_code]['start_time'])
         print(gates_data)
         self.write(gates_data)
+        self.finish()
 
 
 class DashboardHandler(tornado.web.RequestHandler):
