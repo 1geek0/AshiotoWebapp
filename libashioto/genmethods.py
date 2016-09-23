@@ -122,7 +122,7 @@ def listEvents():
     events_db = db.ashioto_events.find({}, {"eventCode": 1, "_id": 0})
     x = 0
     for event in events_db:
-        events_list.append(event['event_name'])
+        events_list.append(event['eventCode'])
     events_dict['Events'] = events_list
     return events_dict
 
