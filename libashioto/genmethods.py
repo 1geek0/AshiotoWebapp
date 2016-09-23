@@ -119,7 +119,7 @@ def showDashboard(user, event_requested):
 def listEvents():
     events_dict = {}
     events_list = []
-    events_db = db.ashioto_events.find({}, {"event_name": 1, "_id": 0})
+    events_db = db.ashioto_events.find({}, {"eventCode": 1, "_id": 0})
     x = 0
     for event in events_db:
         events_list.append(event['event_name'])
