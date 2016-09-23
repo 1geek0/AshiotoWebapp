@@ -56,9 +56,6 @@ class CountHandler(tornado.web.RequestHandler):
                     'timestamp': times,
                     'count': count
                 })
-            for user in bar_range_clients_dict[eventCode]:
-                user.write_message
-                pass
         except KeyError as ke:
             print("No Clients")
         self.write(serve)
