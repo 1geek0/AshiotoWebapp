@@ -1,6 +1,6 @@
 <html>
     <head>
-        <link rel="shortcut icon" href="ashioto.ico">
+        <!-- <link rel="shortcut icon" href="/static/ashioto.ico"> -->
         <!--Import Google Icon Font-->
         <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -104,13 +104,53 @@
                         {% end %}
                     {% end %}
                 {% end %}
+                <div class="card {{theme_accent}} hoverable col m6" height="200px">
+                  <div class="card-content {{theme_text}}-text center">
+                    <span id="totalCountTitle" class="card-title center" style="font-size: 30px; font-weight: 300;">Flow Rate</span><br />
+                    <span style="font-size:34px; font-weight: 400;" class="card-title" id="flow_rateText">Choose Gate->Choose Time Interval->Submit</span><br /><br />
+
+                    <form id="flow_rateForm" method="post">
+                      <a class='dropdown-button btn' id="gateButton" href='#' data-activates='gates_dropdownContent' style="font-weight: 400;">Gate</a>
+                      <a class='dropdown-button btn' id="timeButton" href='#' data-activates="time_intervals" style="font-weight: 400;">Time Interval</a>
+                      <button class="btn" type="submit">Get Flow Rate</button>
+                    </form>
+
+                    <!--Dropdown list for time gaps-->
+                    <ul id='time_intervals' class='dropdown-content timeContent'>
+                      <li><a href="#!" class="interval" interval=60>1 Minute</a></li>
+                      <li class="divider"></li>
+                      <li><a href="#!" class="interval" interval=300>5 Minutes</a></li>
+                      <li class="divider"></li>
+                      <li><a href="#!" interval=600 class="interval">10 Minutes</a></li>
+                      <li class="divider"></li>
+                      <li><a href="#!" interval=1800 class="interval">30 Minutes</a></li>
+                      <li class="divider"></li>
+                      <li><a href="#!" interval=3600 class="interval">60 Minutes</a></li>>
+                    </ul>
+
+                    <ul id="gates_dropdownContent" class="dropdown-content gatesContent">
+                      <li><a gateID=0 href="#!" class="gateItem">Overall</a></li>
+                      {% for gate in gates %}
+                        {% block dropGates %}
+                          <li><a gateID={{escape(str(gates.index(gate)+1))}} href="#!" class="gateItem">{{ escape(gate['name']) }}</a></li>
+                        {% end %}
+                      {% end %}
+                    </ul>
+                  </div>
+                </div>
             </div>
+            <!--Card for Flow Rate-->
+
+            </div>
+            <script type="application/javascript">
+                gates_names_list = [];
+            </script>
             </div>
         </div>
 
         <div id="logos">
-          <span>Supported By:</span>
-          <img src="/static/images/disq_logo.jpg" width="496px" height="248px"/>
+          <img src="/static/images/police_logo.png" width="300px" height="248px" />
+          <img src="/static/images/disq_logo.jpg" width="450px" height="248px"/>
           <img src="/static/images/kumbhaLogo.png" />
           <img src="/static/images/ashioto_logo.jpg" width="248px" height="248px" />
         </div>
