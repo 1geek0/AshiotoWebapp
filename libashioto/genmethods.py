@@ -131,7 +131,7 @@ def showRally(user, event_requested):
     tapovanCount = all_gates[0]['count'] + all_gates[1]['count'] + 45417
     tapovanLatest = max(all_gates[0]['last_sync'], all_gates[1]['last_sync'])
 
-    rkCount = int(3*all_gates[2]['count'])
+    rkCount = int(4*all_gates[2]['count'])
     rkLatest = all_gates[2]['last_sync']
     size = 6
     if len(all_gates) == 1:
