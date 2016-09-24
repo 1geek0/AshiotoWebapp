@@ -87,7 +87,7 @@
                                       <span class="card-title center" style="font-size:30px">रविवार कारंजा</span><br>
                                       <script type="application/javascript">gates_names_list.push("रविवार कारंजा") </script>
                                       <span class="card-title center" style="font-size:21px" id="rkSync">{{ escape(datetime.datetime.fromtimestamp(rkLatest).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
-                                      <span class="card-title center" style="font-size:30px" id="rkCount">{{ "{:,}".format(int(escape((str(rkCount)))))}}</span><br>
+                                      <span class="card-title center" style="font-size:30px" id="rkCount">{{ str(rkCount) }}</span><br>
                                   </div>
                               </div>
                           </div>
