@@ -16,7 +16,7 @@ for event in db_events:
 client_dict = {} #Browser clients
 bar_range_clients_dict = {} #Range Graph Clients
 bar_overall_clients_dict = {} #Overall Graph Clients
-
+main_factor = 1
 # Email Vars
 smpt_login = 'Welcome@ashioto.in'
 smpt_password = 'Ashioto1024Welcome'
