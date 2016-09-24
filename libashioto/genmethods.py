@@ -128,7 +128,7 @@ def showRally(user, event_requested):
     realtime = events[event_requested]['realtime']
     total_count = total(all_gates)
 
-    tapovanCount = int(4.5*(all_gates[0]['count'] + all_gates[1]['count']))
+    tapovanCount = int(5*(all_gates[0]['count'] + all_gates[1]['count']))
     tapovanLatest = max(all_gates[0]['last_sync'], all_gates[1]['last_sync'])
 
     rkCount = int(4.5*all_gates[2]['count'])
