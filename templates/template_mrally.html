@@ -1,0 +1,154 @@
+<html>
+    <head>
+        <!-- <link rel="shortcut icon" href="/static/ashioto.ico"> -->
+        <!--Import Google Icon Font-->
+        <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <link href="https://cdn.rawgit.com/leongersen/noUiSlider/master/distribute/nouislider.min.css" rel="stylesheet">
+        <link href="http://materializecss.com/extras/noUiSlider/nouislider.css" rel="stylesheet">
+
+
+        <!--Import MaterializeCSS stylesheet-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <title>{{event_title}}</title>
+    </head>
+    <body>
+        <!--jQuery-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.js"></script>
+
+        <!--Slider-->
+        <script type="text/javascript" src="https://cdn.rawgit.com/leongersen/noUiSlider/master/distribute/nouislider.min.js"></script>
+
+        <!--MaterializeCSS Scripts-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+
+        <!--Ashioto scripts-->
+        <script type="text/javascript" src="{{static_url("js_dashboard/dateformat.js")}}"></script>
+
+        <!--Chart.js-->
+        <script type="text/javascript" src="https://cdn.rawgit.com/chartjs/Chart.js/master/dist/Chart.min.js"></script>
+
+        <!--Date Parse-->
+        <script type="text/javascript" src="http://momentjs.com/downloads/moment.min.js"></script>
+        <style>
+            { margin: 0; padding: 0; }
+            /*html {
+                background: url('/img/{{background}}') no-repeat center center fixed;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;
+            }*/
+            </style>
+            <!--Navigation Bar-->
+        <nav>
+            <div class="nav-wrapper {{theme_primary}} z-depth-3">
+                <!-- <img class="brand-logo center hoverable" src="/img/{{logo_name}}" style="width:280px;height:64px;"/> -->
+                <h4 class="center">{{event_title}}</h4>
+            </div>
+        </nav><br>
+        <style>
+            .nav-wrapper h4{
+                margin-top: 0;
+                padding-top: 15px;
+            }
+        </style>
+        <div class="container">
+            <div class="row" id="cards_head" hidden="hidden">
+                        <div class="card {{theme_accent}} hoverable">
+                            <div class="card-content {{theme_text}}-text center">
+                                <p id="totalCountTitle" class="card-title center" style="font-size: 30px;">Total Count</p>
+                                <h1 style="font-size:30px" class="card-title" id="totalCount">{{"{:,}".format(int(total_count))}}</h1>
+                            </div>
+                        </div>
+            </div>
+            <script type="application/javascript">
+                gates_names_list = [];
+            </script>
+            <div class="row">
+                      {% block gates %}
+                          <div class= "col m{{size}}">
+                              <div class="card {{theme_accent}} center hoverable">
+                                  <div class="card-content {{theme_text}}-text center">
+                                      <span class="card-title center" style="font-size:30px">तपोवन</span><br>
+                                      <script type="application/javascript">gates_names_list.push("तपोवन") </script>
+                                      <span class="card-title center" style="font-size:21px" id="tapovanSync">{{ escape(datetime.datetime.fromtimestamp(tapovanLatest).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
+                                      <span class="card-title center" style="font-size:30px" id="tapovanCount">{{ "{:,}".format(int(escape((str(tapovanCount)))))}}</span><br>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class= "col m{{size}}">
+                              <div class="card {{theme_accent}} center hoverable">
+                                  <div class="card-content {{theme_text}}-text center">
+                                      <span class="card-title center" style="font-size:30px">रविवार कारंजा</span><br>
+                                      <script type="application/javascript">gates_names_list.push("रविवार कारंजा") </script>
+                                      <span class="card-title center" style="font-size:21px" id="rkSync">{{ escape(datetime.datetime.fromtimestamp(rkLatest).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
+                                      <span class="card-title center" style="font-size:30px" id="rkCount">{{ "{:,}".format(int(escape((str(rkCount)))))}}</span><br>
+                                  </div>
+                              </div>
+                          </div>
+                      {% end %}
+                <div class="card {{theme_accent}} hoverable col m6" height="200px">
+                  <div class="card-content {{theme_text}}-text center">
+                    <span id="totalCountTitle" class="card-title center" style="font-size: 30px; font-weight: 300;">Flow Rate</span><br />
+                    <span style="font-size:34px; font-weight: 400;" class="card-title" id="flow_rateText">Choose Gate->Choose Time Interval->Submit</span><br /><br />
+
+                    <form id="flow_rateForm" method="post">
+                      <a class='dropdown-button btn' id="gateButton" href='#' data-activates='gates_dropdownContent' style="font-weight: 400;">Gate</a>
+                      <a class='dropdown-button btn' id="timeButton" href='#' data-activates="time_intervals" style="font-weight: 400;">Time Interval</a>
+                      <button class="btn" type="submit">Get Flow Rate</button>
+                    </form>
+
+                    <!--Dropdown list for time gaps-->
+                    <ul id='time_intervals' class='dropdown-content timeContent'>
+                      <li><a href="#!" class="interval" interval=60>1 Minute</a></li>
+                      <li class="divider"></li>
+                      <li><a href="#!" class="interval" interval=300>5 Minutes</a></li>
+                      <li class="divider"></li>
+                      <li><a href="#!" interval=600 class="interval">10 Minutes</a></li>
+                      <li class="divider"></li>
+                      <li><a href="#!" interval=1800 class="interval">30 Minutes</a></li>
+                      <li class="divider"></li>
+                      <li><a href="#!" interval=3600 class="interval">60 Minutes</a></li>>
+                    </ul>
+
+                    <ul id="gates_dropdownContent" class="dropdown-content gatesContent">
+                      <li><a gateID=0 href="#!" class="gateItem">Overall</a></li>
+                      {% for gate in gates %}
+                        {% block dropGates %}
+                          <li><a gateID={{escape(str(gates.index(gate)+1))}} href="#!" class="gateItem">{{ escape(gate['name']) }}</a></li>
+                        {% end %}
+                      {% end %}
+                    </ul>
+                  </div>
+                </div>
+            </div>
+            <!--Card for Flow Rate-->
+
+            </div>
+            <script type="application/javascript">
+                gates_names_list = [];
+            </script>
+            </div>
+        </div>
+
+        <div id="logos">
+          <img src="/static/images/police_logo.png" width="300px" height="248px" />
+          <img src="/static/images/disq_logo.jpg" width="450px" height="248px"/>
+          <img src="/static/images/kumbhaLogo.png" />
+          <img src="/static/images/ashioto_logo.jpg" width="248px" height="248px" />
+        </div>
+
+        <!--Ashioto scripts-->
+        <script type="application/javascript">
+            eventCode = "{{eventCode}}";
+        </script>
+        <script type="text/javascript" src="{{ static_url("js_dashboard/websocket.js")}}"></script>
+        <script type="text/javascript" src="{{static_url("js_dashboard/bargraph.js")}}"></script>
+    <script type="text/javascript" src="{{static_url("js_dashboard/datePicker.js")}}"></script>
+    </body>
+</html>
