@@ -71,7 +71,7 @@
             </script>
             <div class="row">
                       {% block gates %}
-                          <div class= "col m{{size}}">
+                          <!-- <div class= "col m{{size}}">
                               <div class="card {{theme_accent}} center hoverable">
                                   <div class="card-content {{theme_text}}-text center">
                                       <span class="card-title center" style="font-size:30px">तपोवन</span><br>
@@ -80,8 +80,8 @@
                                       <span class="card-title center" style="font-size:30px" id="tapovanCount">{{ "{:,}".format(int(escape((str(tapovanCount)))))}}</span><br>
                                   </div>
                               </div>
-                          </div>
-                          <div class= "col m{{size}}">
+                          </div> -->
+                          <div class= "col m12">
                               <div class="card {{theme_accent}} center hoverable">
                                   <div class="card-content {{theme_text}}-text center">
                                       <span class="card-title center" style="font-size:30px">रविवार कारंजा</span><br>
@@ -92,7 +92,7 @@
                               </div>
                           </div>
                       {% end %}
-                <div class="card {{theme_accent}} hoverable col m6" height="200px">
+                <!-- <div class="card {{theme_accent}} hoverable col m6" height="200px">
                   <div class="card-content {{theme_text}}-text center">
                     <span id="totalCountTitle" class="card-title center" style="font-size: 30px; font-weight: 300;">Flow Rate</span><br />
                     <span style="font-size:34px; font-weight: 400;" class="card-title" id="flow_rateText">Choose Gate->Choose Time Interval->Submit</span><br /><br />
@@ -103,7 +103,6 @@
                       <button class="btn" type="submit">Get Flow Rate</button>
                     </form>
 
-                    <!--Dropdown list for time gaps-->
                     <ul id='time_intervals' class='dropdown-content timeContent'>
                       <li><a href="#!" class="interval" interval=60>1 Minute</a></li>
                       <li class="divider"></li>
@@ -125,7 +124,7 @@
                       {% end %}
                     </ul>
                   </div>
-                </div>
+                </div> -->
             </div>
             <!--Card for Flow Rate-->
 
