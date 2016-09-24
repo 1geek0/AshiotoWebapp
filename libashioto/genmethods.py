@@ -115,6 +115,45 @@ def showDashboard(user, event_requested):
         background=background,
         realtime=realtime)
 
+def showRally(user, event_requested):
+    start_time = db.ashioto_events.find({"eventCode": event_requested})[0]['time_start']
+    name = events[event_requested]['event_name']
+    theme_primary = events[event_requested]['theme_primary']
+    theme_accent = events[event_requested]['theme_accent']
+    theme_text = events[event_requested]['theme_text']
+    logo = events[event_requested]['logo_name']
+    background = events[event_requested]['background']
+    call = gates_top(event_requested, start_time)
+    all_gates = call['Gates']
+    realtime = events[event_requested]['realtime']
+    total_count = total(all_gates)
+
+    tapovanCount = all_gates[0]['count'] + all_gates[1]['count']
+    tapovanLatest = max(all_gates[0]['last_sync'], all_gates[1]['last_sync'])
+
+    rkCount = all_gates[2]['count']
+    rkLatest = all_gates[2]['last_sync']
+    size = 6
+    if len(all_gates) == 1:
+        size = 12
+    user.render(
+        "../templates/template_mrally.html",
+        event_title=name,
+        total_count=total_count,
+        gates=all_gates,
+        tapovanCount=tapovanCount,
+        tapovanLatest=tapovanLatest,
+        rkCount=rkCount,
+        rkLatest=rkLatest,
+        size=size,
+        theme_primary=theme_primary,
+        theme_accent=theme_accent,
+        theme_text=theme_text,
+        eventCode=event_requested,
+        logo_name=logo,
+        background=background,
+        realtime=realtime)
+
 #Give a list of names of all the public events
 def listEvents():
     events_dict = {}

@@ -97,7 +97,10 @@ class DashboardHandler(tornado.web.RequestHandler):
         if event_requested in event_codes:
             event_type = events[event_requested]['type']
             if event_type == "public":
-                showDashboard(self, event_requested)
+                if event_requested == "mrally":
+                    showRally(self, "mrally")
+                else:
+                    showDashboard(self, event_requested)
             elif event_type == "private":
                 if self.get_secure_cookie("user"):
                     user_email = self.get_secure_cookie("user").decode('utf-8')
