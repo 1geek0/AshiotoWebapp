@@ -279,6 +279,14 @@ class EventsListHandler(RequestHandler):
         self.write(listEvents())
         self.finish()
 
+class GatesListHandler(RequestHandler):
+    def get(self):
+        eventCode = self.get_argument("event")
+        gatesDict = {
+        "Gates": events[eventCode]['gates']
+        }
+        self.write(gatesDict)
+        self.finish()
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
@@ -302,7 +310,8 @@ if __name__ == '__main__':
             (r"/login", LoginHandler),
             (r"/login/", LoginHandler),
             (r"/flow_rate", FlowRateHandler),
-            (r"/listEvents", EventsListHandler)
+            (r"/listEvents", EventsListHandler),
+            (r"/listGates", GatesListHandler)
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files"),
         cookie_secret=cookie_secret,
