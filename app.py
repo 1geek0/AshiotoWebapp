@@ -279,12 +279,6 @@ class EventsListHandler(RequestHandler):
         self.write(listEvents())
         self.finish()
 
-class FactorHandler(RequestHandler):
-    def get(self):
-        factor = self.get_argument("factor")
-        main_factor = factor
-        self.write("KAM ZALA")
-
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
@@ -308,8 +302,7 @@ if __name__ == '__main__':
             (r"/login", LoginHandler),
             (r"/login/", LoginHandler),
             (r"/flow_rate", FlowRateHandler),
-            (r"/listEvents", EventsListHandler),
-            (r"/factor/([0-9]+)", FlowRateHandler)
+            (r"/listEvents", EventsListHandler)
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files"),
         cookie_secret=cookie_secret,

@@ -50,3 +50,4 @@ def getDiff(gt, lt, evt, g_id):
             }).sort("timestamp", 1).limit(1)[0]['outcount']
         rate = newSum - oldSum
     return rate
+print("10:00-11:00 " + str(getDiff(g_id=3, evt="mrally", gt=1474691645, lt=1474691705)))

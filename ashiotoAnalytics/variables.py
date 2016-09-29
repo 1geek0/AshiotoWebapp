@@ -1,8 +1,7 @@
 from pymongo import MongoClient
 
 #MongoDB init
-mongoclient = MongoClient(host="ds021691.mlab.com", port=21691)
-mongoclient.ashioto_data.authenticate("rest_user", "Ashioto_8192")
+mongoclient = MongoClient()
 db = mongoclient.ashioto_data
 
 #api keys
