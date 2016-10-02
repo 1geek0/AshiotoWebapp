@@ -64,7 +64,7 @@
                                         <span class="card-title center" style="font-size:30px">{{ escape(gate['name']) }}</span><br>
                                         <script type="application/javascript">gates_names_list.push("{{escape(gate['name'])}}") </script>
                                         <span class="card-title center" style="font-size:21px" id="{{escape("timestamp"+str(gates.index(gate)+1))}}">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
-                                        <span class="card-title center" style="font-size:30px" id="{{escape("count"+str(gates.index(gate)+1))}}">{{ "{:,}".format(int(escape((str(gate['count']))))) }}</span><br>
+                                        <span class="card-title center" style="font-size:30px" id="{{escape("count"+str(gates.index(gate)+1))}}">{{ "{:,}".format(int(int(escape((str(gate['count'])))) + int(int(escape( (str(gate['count']) ) ) )*factor_count))) }}</span><br>
                                     </div>
                                 </div>
                             </div>
@@ -82,7 +82,7 @@
                                         <span class="card-title center" style="font-size:30px">{{ escape(gate['name']) }}</span><br>
                                         <script type="application/javascript">gates_names_list.push("{{escape(gate['name'])}}") </script>
                                         <span class="card-title center" style="font-size:21px" id="{{escape("timestamp"+str(gates.index(gate)+1))}}">{{ escape(datetime.datetime.fromtimestamp(gate['last_sync']).strftime('%d %b %Y %I:%M:%S %p')) }}</span><br>
-                                        <span class="card-title center" style="font-size:30px" id="{{escape("count"+str(gates.index(gate)+1))}}">{{ "{:,}".format(int(escape((str(gate['count']))))) }}</span><br>
+                                        <span class="card-title center" style="font-size:30px" id="{{escape("count"+str(gates.index(gate)+1))}}">{{ "{:,}".format(int(int(escape((str(gate['count'])))) + int(int(escape( (str(gate['count']) ) ) )*factor_count))) }}</span><br>
                                     </div>
                                 </div>
                             </div>

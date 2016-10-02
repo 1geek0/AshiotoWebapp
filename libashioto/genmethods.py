@@ -10,10 +10,10 @@ from libashioto.variables import *
 
 
 # Returns total count of all the gates in the gates' list provided
-def total(gates):
+def total(gates, factor):
     total_counts = 0
     for gate in gates:
-        total_counts += int(gate['count'])
+        total_counts += int(int(gate['count'])+(int(gate['count'])*factor))
     return total_counts
 
 
@@ -85,7 +85,6 @@ def sendConfirmEmail(user_email, password):
 def generateConfirmCode():
     return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(6))
 
-
 def showDashboard(user, event_requested):
     start_time = db.ashioto_events.find({"eventCode": event_requested})[0]['time_start']
     name = events[event_requested]['event_name']
@@ -97,7 +96,9 @@ def showDashboard(user, event_requested):
     call = gates_top(event_requested, start_time)
     all_gates = call['Gates']
     realtime = events[event_requested]['realtime']
-    total_count = total(all_gates)
+    factor = events[event_requested]['factor']
+    total_count = total(all_gates,factor=factor)
+
     size = 6
     if len(all_gates) == 1:
         size = 12
@@ -113,7 +114,8 @@ def showDashboard(user, event_requested):
         eventCode=event_requested,
         logo_name=logo,
         background=background,
-        realtime=realtime)
+        realtime=realtime,
+        factor_count=factor)
 
 def showRally(user, event_requested):
     start_time = db.ashioto_events.find({"eventCode": event_requested})[0]['time_start']
