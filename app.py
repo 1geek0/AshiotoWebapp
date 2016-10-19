@@ -81,9 +81,8 @@ class EventCodeConfirmHandler(tornado.web.RequestHandler):
 
 class PerGate_DataProvider(tornado.web.RequestHandler):
     @tornado.gen.coroutine
-    def post(self):
-        request_body = tornado.escape.json_decode(self.request.body)
-        event_code = request_body['event_code']
+    def get(self):
+        event_code = self.get_argument('eventCode')
         start_time = events[event_code]['start_time']
         gates_data = gates_top(event_code, start_time=start_time)
         print(gates_data)
