@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Ashioto</title>
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!--jQuery-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.js"></script>
+</head>
+<body>
+    <ul id="rewatData">
+      {% for dataPoint in rewatData %}
+        {% block dataPoints %}
+          <li>{{ escape(dataPoint['count']) }}</li>
+          <li>{{ escape(datetime.datetime.fromtimestamp(dataPoint['last_sync']).strftime('%d %b %Y %I:%M:%S %p')) }}</li>
+        {% end %}
+      {% end %}
+    </ul>
+</body>
+</html>

@@ -16,6 +16,8 @@ import tornado.gen
 from PIL import Image
 import io
 
+import datetime
+
 from tornado.options import define, options
 from tornado.web import RequestHandler
 
@@ -287,6 +289,15 @@ class GatesListHandler(RequestHandler):
         self.write(gatesDict)
         self.finish()
 
+class RewatDataHandler(RequestHandler):
+    def get(self):
+        rewatData = []
+        dbData = db.ashioto_data.find({"eventCode": "rewat"})
+        for point in dbData:
+            self.write("||Count: " + str(point['outcount']) + " Timestamp: " + datetime.datetime.fromtimestamp(point['timestamp']).strftime('%d %b %Y %I:%M:%S %p') + " ||")
+        self.finish()
+        # self.render("templates/template_rewat.html", rewatData=rewatData)
+
 if __name__ == '__main__':
     tornado.options.parse_command_line()
     app = tornado.web.Application(
@@ -310,7 +321,8 @@ if __name__ == '__main__':
             (r"/login/", LoginHandler),
             (r"/flow_rate", FlowRateHandler),
             (r"/listEvents", EventsListHandler),
-            (r"/listGates", GatesListHandler)
+            (r"/listGates", GatesListHandler),
+            (r"/rewatData", RewatDataHandler)
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files"),
         cookie_secret=cookie_secret,
