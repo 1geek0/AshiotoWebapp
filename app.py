@@ -31,6 +31,7 @@ from libashioto.graphmethods import *
 from libashioto.passmethods import *
 from libashioto.flow_rate import FlowRateHandler
 
+#Stores the received count according to the event
 class CountHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def post(self):
@@ -63,7 +64,8 @@ class CountHandler(tornado.web.RequestHandler):
         self.write(serve)
         self.finish()
 
-
+#Deprecated. Returns True if the requested event exists. Used only by old app
+# TODO: remove this
 class EventCodeConfirmHandler(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def post(self):
@@ -80,7 +82,7 @@ class EventCodeConfirmHandler(tornado.web.RequestHandler):
             }
             self.write(response)
 
-
+#Gives last count and last sync time of all the gates in an event
 class PerGate_DataProvider(tornado.web.RequestHandler):
     @tornado.gen.coroutine
     def get(self):
@@ -91,18 +93,18 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
         self.write(gates_data)
         self.finish()
 
-
+#Serves the dashboard page
 class DashboardHandler(tornado.web.RequestHandler):
 
     def get(self, event_requested):
         if event_requested in event_codes:
             event_type = events[event_requested]['type']
-            if event_type == "public":
+            if event_type == "public": #Directly serves page if event is public
                 if event_requested == "mrally":
                     showRally(self, "mrally")
                 else:
                     showDashboard(self, event_requested)
-            elif event_type == "private":
+            elif event_type == "private": #If the event is private it redirects to the login page
                 if self.get_secure_cookie("user"):
                     user_email = self.get_secure_cookie("user").decode('utf-8')
                     user_events = db.ashioto_users.find({'email': user_email})[0]['events']
@@ -117,6 +119,7 @@ class DashboardHandler(tornado.web.RequestHandler):
             self.finish()
 
 
+# Deprecated now. Handles images
 class LogoHandler(tornado.web.RequestHandler):
 
     def get(self, filename):
@@ -128,7 +131,8 @@ class LogoHandler(tornado.web.RequestHandler):
         self.set_header('Content-Length', len(image_value))
         self.write(image_value)
 
-
+#Handles real-time updation of the dashboard
+# TODO: It's broken right now, needs to be fixed
 class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
     # To always allow access to websocket
     def check_origin(self, origin):
@@ -199,6 +203,8 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
         client_dict[self.eventCode].remove(self)
 
 
+#This resets the time after which the dashboard will pick the entries from
+# TODO: Eliminate this altogether by making the front-end code fetch entries smartly
 class StartTimeHandler(tornado.web.RequestHandler):
     def get(self, eventCode):
         event = db.ashioto_events.update({"eventCode": eventCode},
@@ -207,7 +213,7 @@ class StartTimeHandler(tornado.web.RequestHandler):
         self.write("KAM ZALA!!")
         print(event)
 
-
+#Gives the stats about current active dashboard users
 class UserStatsHandler(tornado.web.RequestHandler):
     def get(self):
         stats_json = {}
@@ -218,7 +224,7 @@ class UserStatsHandler(tornado.web.RequestHandler):
         stats_json['Total Clients'] = str(client_lengths)
         self.write(stats_json)
 
-
+#Creates user for login
 class CreateUser(RequestHandler):
     """Needs: events, email, password and type in json"""
 
@@ -238,7 +244,7 @@ class CreateUser(RequestHandler):
             sendConfirmEmail(user_email, user_pass_plain)
             self.write('True')
 
-
+#This call is triggered only from the confirmation email that is sent afer calling CreateUser
 class ConfirmUser(RequestHandler):
     """Confirms User"""
 
@@ -250,13 +256,15 @@ class ConfirmUser(RequestHandler):
         else:
             pass
 
-
+#Handles everything related to authentication
 class LoginHandler(RequestHandler):
     """Login Page"""
 
+    #Serves the login page
     def get(self):
         self.render("templates/template_login.html")
 
+    #Checks the email and sets auth cookie
     def post(self):
         user_email = self.get_argument("email")
         user_pass = self.get_argument("password")
@@ -274,12 +282,13 @@ class LoginHandler(RequestHandler):
         except IndexError:
             self.write("Account doesn't exist")
 
-#Simply return a list of public events
+#Returns a list of public events
 class EventsListHandler(RequestHandler):
     def get(self):
         self.write(listEvents())
         self.finish()
 
+#Returns a list of gates in a particular event
 class GatesListHandler(RequestHandler):
     def get(self):
         eventCode = self.get_argument("event")
@@ -298,10 +307,15 @@ class RewatDataHandler(RequestHandler):
         self.finish()
         # self.render("templates/template_rewat.html", rewatData=rewatData)
 
+class LandingHandler(RequestHandler):
+    def get(self):
+        self.render("templates/template_landing.html")
+
 if __name__ == '__main__':
     tornado.options.parse_command_line()
     app = tornado.web.Application(
-        handlers=[
+        handlers=[ #Binds the handlers
+            (r"/", LandingHandler),
             (r"/websock", AshiotoWebSocketHandler),
             (r"/img/(?P<filename>.+\.jpg)?", LogoHandler),
             (r"/count_update", CountHandler),

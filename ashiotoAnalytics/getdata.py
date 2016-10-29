@@ -29,7 +29,7 @@ def NBAccuracy(features_train, labels_train, features_test, labels_test):
 ml_classifier = LinearRegression()
 
 #Get all the entries from mrally
-mrally_data_cursor = db.ashioto_data.find({"eventCode" : "mrally", "gateID": 3}, {"outcount": 1, "timestamp": 1})
+mrally_data_cursor = db.ashioto_data.find({"eventCode" : "mnm16", "gateID": 2}, {"outcount": 1, "timestamp": 1})
 mrally_data_cursor_count = mrally_data_cursor.count()
 mrally_data_timestamps = []
 mrally_data_counts = []
@@ -38,7 +38,7 @@ mrally_data_counts = []
 #     mrally_data_timestamps.append(datapoint['timestamp'])
 #     mrally_data_counts.append(datapoint['outcount'])
 
-for i in range(13, mrally_data_cursor_count):
+for i in range(0, mrally_data_cursor_count):
     mrally_data_counts.append(mrally_data_cursor[i]['outcount'])
     mrally_data_timestamps.append(mrally_data_cursor[i]['timestamp'])
 
