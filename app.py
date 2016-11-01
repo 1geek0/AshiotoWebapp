@@ -339,8 +339,7 @@ if __name__ == '__main__':
             (r"/rewatData", RewatDataHandler)
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files"),
-        cookie_secret=cookie_secret,
-        debug=True
+        cookie_secret=cookie_secret
     )
     http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
     #http_server.start(0)
