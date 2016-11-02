@@ -26,6 +26,7 @@ from passlib.hash import sha256_crypt
 define("port", default=8000, help="run on the given port", type=int)
 
 # libashioto imports
+from libashioto.variables import client_dict
 from libashioto.genmethods import *
 from libashioto.graphmethods import *
 from libashioto.passmethods import *
@@ -40,7 +41,7 @@ class CountHandler(tornado.web.RequestHandler):
         count = int(dict_body.get('count'))  # Number of People
         gateID = int(dict_body.get('gateID'))  # GateID
         eventCode = dict_body.get('eventCode')  # Event Code
-        times = int(dict_body.get('timestamp', time.time()))  # Unix Timestamp
+        times = long(dict_body.get('timestamp', time.time()))  # Unix Timestamp
         count_item = {
             'gateID': gateID,
             'timestamp': times,
@@ -103,6 +104,11 @@ class DashboardHandler(tornado.web.RequestHandler):
                 if event_requested == "mrally":
                     showRally(self, "mrally")
                 else:
+                    try:
+                        client_dict[event_requested].append(self)
+                    except KeyError:
+                        client_dict[event_requested] = []
+                        client_dict[event_requested].append(self)
                     showDashboard(self, event_requested)
             elif event_type == "private": #If the event is private it redirects to the login page
                 if self.get_secure_cookie("user"):
