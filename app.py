@@ -52,16 +52,6 @@ class CountHandler(tornado.web.RequestHandler):
         serve = {
             'error': False
         }
-        try:
-            for user in client_dict[eventCode]:
-                user.write_message({
-                    'type': 'count_update',
-                    'gateID': gateID,
-                    'timestamp': times,
-                    'count': count
-                })
-        except KeyError as ke:
-            print("No Clients")
         self.write(serve)
         self.finish()
 
