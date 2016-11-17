@@ -80,7 +80,7 @@ body {
     min-height: 632px;
     max-height: 864px;
     position: relative;
-    background-color: #009688;
+    background-color: #0aa89e;
 }
 
 input, textarea {
@@ -149,17 +149,17 @@ nav ul a {
     padding: 0px 15px;
 }
 
-.card-content a {color: #009688;}
+.card-content a {color: #0aa89e;}
 
-.card-content a:hover {color: #009688;}
+.card-content a:hover {color: #0aa89e;}
 
 #work, #team{background: rgb(247, 247, 247);}
 
 .text_h2 {font-weight: 300;margin-bottom: 4%; line-height: 4.5rem;}
 
-.span_h2 {font-weight: 300;color: #009688;}
+.span_h2 {font-weight: 300;color: #0aa89e;}
 
-.text_b{color: #009688;}
+.text_b{color: #0aa89e;}
 
 .in{font-weight: 400 !important; font-style: normal !important;}
 
