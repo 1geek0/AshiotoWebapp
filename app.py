@@ -315,7 +315,8 @@ class MobileAuthHandler(RequestHandler):
             user_db = db.ashioto_users.find({'email':user_email})[0]
             user_auth = sha256_crypt.verify(user_pass, user_db['password'])
             if user_auth:
-                self.write({auth:True})
+                superadmin = user_db['type'] == True
+                self.write({auth:True, s_admin: superadmin})
             else:
                 self.write({auth:False})
         except IndexError as e:
@@ -346,7 +347,8 @@ if __name__ == '__main__':
             (r"/flow_rate", FlowRateHandler),
             (r"/listEvents", EventsListHandler),
             (r"/listGates", GatesListHandler),
-            (r"/rewatData", RewatDataHandler)
+            (r"/rewatData", RewatDataHandler),
+            (r"/mobileauth", MobileAuthHandler)
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files"),
         cookie_secret=cookie_secret
