@@ -307,6 +307,20 @@ class LandingHandler(RequestHandler):
     def get(self):
         self.render("templates/template_landing.html")
 
+class MobileAuthHandler(RequestHandler):
+    def post(self):
+        user_email = self.get_argument('email')
+        user_pass = self.get_argument('pass')
+        try:
+            user_db = db.ashioto_users.find({'email':user_email})[0]
+            user_auth = sha256_crypt.verify(user_pass, user_db['password'])
+            if user_auth:
+                self.write({auth:True})
+            else:
+                self.write({auth:False})
+        except IndexError as e:
+            self.write({auth:False})
+
 if __name__ == '__main__':
     tornado.options.parse_command_line()
     app = tornado.web.Application(
