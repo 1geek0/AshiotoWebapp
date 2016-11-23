@@ -41,7 +41,7 @@ def gates_top(event_code, start_time):
         gates.append({
             "name": str(events[event_code]['gates'][index]['name']),
             "count": int(count),
-            "last_sync": int(last) + 19800
+            "last_sync": (int(last)+19800000)/1000
         })
         i += 1
     response = {
