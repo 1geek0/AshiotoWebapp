@@ -1,0 +1,353 @@
+body {
+  width:100%;
+  height:100%;
+  background-color:#f5f5f5;
+}
+.onNav {
+  font-weight: 200;
+  font-size: 28px;
+}
+
+#index-banner {
+    min-height: 632px;
+    max-height: 864px;
+    position: relative;
+    background-color: #0aa89e;
+}
+
+input, textarea {
+    border-bottom: 1px solid #fff;
+}
+
+nav a.button-collapse {
+    left: -25px;
+}
+
+.parallax-container {
+    height: 700px;
+}
+@media only screen and (max-width: 480px) {
+    .parallax-container {
+        padding: 4% 0;
+        font-size: 5em;
+        font-weight: 100;
+        color: white;
+    }
+}
+
+footer.page-footer {
+    margin-top: 0px !important;
+}
+
+@media only screen and (max-width: 480px) {
+    .text_h {
+        padding: 4% 0;
+        font-size: 5em;
+        font-weight: 100;
+        color: white;
+    }
+}
+
+nav ul a {
+    font-size: 1.2rem;
+    color: #000;
+    letter-spacing: 2px;
+    display: block;
+    font-weight: 300;
+    padding: 0px 15px;
+}
+#work, #team{background: rgb(247, 247, 247);}
+
+.text_h2 {font-weight: 300;margin-bottom: 4%; line-height: 4.5rem;}
+
+.span_h2 {font-weight: 300;color: #0aa89e;}
+
+.text_b{color: #fff;}
+
+.in{font-weight: 400 !important; font-style: normal !important;}
+
+#nav_f{
+    box-shadow: none !important;
+    -webkit-box-shadow:none !important;
+}
+
+.text_h {
+    padding: 15% 0;
+    font-size: 6.0em;
+    font-weight: 100;
+    color:white;
+}
+
+.brand-logo{
+    position: absolute;
+    color: #fff;
+    display: inline-block;
+    font-size: 2.1rem;
+    font-style: normal;
+    font-weight: 300;
+    padding: 0;
+    letter-spacing: 7px;
+}
+
+
+@media only screen and (min-width: 481px) and (max-width: 900px) {
+    #ddmenu li div.column.mayHide {
+        display: none;
+    }
+    #ddmenu ul {
+        width: 100%;
+        border-radius: 0;
+    }
+    #ddmenu li {
+        position:relative;
+      width:33.33%;
+        box-sizing:border-box;
+        text-align: left;
+        border-top:1px solid rgba(255,255,255,0.3);
+        border-right:1px solid rgba(255,255,255,0.3);
+    }
+    #ddmenu li.full-width {
+        position: relative;
+    }
+    #ddmenu div.dropdown {
+        width: auto;
+        left: 0px;
+        text-align: left;
+    }
+    #ddmenu li.full-width div.dropdown {
+        width: auto;
+    }
+    #ddmenu div.dropdown.right-aligned, #ddmenu div.dropdown.mayRight {
+        left: auto;
+        right: 0px;
+    }
+    #ddmenu li div.column {
+        width: auto;
+        border: none;
+    }
+}
+video.fullscreen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -100;
+  transform: translate(-50%, -50%);
+}
+.navbar-default{
+  background:transparent;
+  background-image:none;
+  border-color:transparent;
+  box-shadow:none;
+  position: relative;
+}
+
+.fa-facebook-official{
+  color:black;
+}
+
+.card-avatar {
+  min-height: 300px;
+}
+
+.card-avatar .waves-effect {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.card-avatar img {
+    margin-top: 20px;
+    height: 150px;
+    width: 150px;
+    border-radius: 75px;
+}
+
+.card-avatar .card-content {
+    text-align: center;
+}
+
+.card .card-content p {
+    margin: 15px 0px;
+}
+
+.card-avatar .card-content i {
+   font-size: 1.5rem;
+}
+
+.card-avatar .card-content .card-title {
+    line-height: 30px !important;
+}
+
+.cardFlip {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-transition: -webkit-transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: -webkit-transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), -webkit-transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+.cardFlip div {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 6px;
+  background: #455a64;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: box;
+  display: flex;
+  -webkit-box-pack: center;
+  -o-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -o-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-font-smoothing: antialiased;
+  color: #47525d;
+}
+.cardFlip .back {
+  -webkit-transform: rotateY(-180deg);
+  transform: rotateY(-180deg);
+}
+.cardFlip.flipped {
+  -webkit-transform: rotateY(180deg);
+  transform: rotateY(180deg);
+}
+
+.flipper {
+  height: 60%;
+  position: absolute;
+  top: 25%;
+  -webkit-perspective: 800px;
+  -ms-perspective: 800px;
+  perspective: 800px;
+  border-radius: 4px;
+  left: 25% !important;
+}
+
+.col-centered {
+  float: none;
+  margin: 0px auto;
+}
+
+.flipper:hover .cardFlip{
+  -webkit-transform: rotateY(180deg);
+  transform: rotateY(180deg);
+}
+
+.flipImage {
+  width: 200px;
+}
+
+@media (max-width: 865px) {
+  .flipper {
+  left: 15% !important;
+  width: 42%;
+  height: 42%
+}
+}
+
+@media (max-width: 600px) {
+  .flipper {
+  left: auto !important;
+  width: 20%;
+  height: 30%;
+}
+}
+
+@media (max-width: 500px) {
+  .flipper {
+  left: auto !important;
+  top: 15%;
+  width: 10%;
+  height: 30%;
+}
+}
+
+@media (max-width: 400px) {
+  .flipper {
+  left: auto !important;
+  top: 15%;
+  width: 10%;
+  height: 20%;
+}
+}
+/*responsive navbar*/
+nav select {
+  display: none;
+}
+@media (max-width: 960px) {
+  nav ul     { display: none; }
+  nav select { display: inline-block; }
+}
+
+/*responsive*/
+#nav
+{
+    /* container */
+}
+    #nav > a
+    {
+        display: none;
+    }
+    #nav li
+    {
+        position: relative;
+    }
+
+    /* first level */
+
+    #nav > ul
+    {
+        height: 3.75em;
+    }
+        #nav > ul > li
+        {
+            width: 25%;
+            height: 100%;
+            float: left;
+        }
+
+    /* second level */
+
+    #nav li ul
+    {
+        display: none;
+        position: absolute;
+        top: 100%;
+    }
+        #nav li:hover ul
+        {
+            display: block;
+        }
+
+.slicknav_menu {
+  display:none;
+}
+
+@media screen and (max-width: 40em) {
+  /* #menu is the original menu */
+  .js #menu {
+    display:none;
+  }
+
+  .js .slicknav_menu {
+    display:block;
+  }
+}

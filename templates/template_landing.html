@@ -1,171 +1,395 @@
-<html>
-<head>
-  <title>Ashioto - Footfall Re-imagined</title>
-  <link type="text/css" rel="stylesheet" href="/static/css/materialize.min.css" media="screen,projection" />
-  <link rel="stylesheet" href="/static/css/main.css">
-  <link type="text/css" rel="stylesheet" href="/static/css/font-awesome.min.css" />
+<!DOCTYPE html>
+  <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+      <title>Ashioto - Footfall Re-imagined</title>
 
-  <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-  <script type="text/javascript" src="/static/js/materialize.min.js"></script>
+       <!-- CSS  -->
+      <link href="/static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+      <!-- Font Awesome -->
+      <link href="/static/css/font-awesome.css" rel="stylesheet">
+      <!-- Skill Progress Bar -->
+      <link href="/static/css/pro-bars.css" rel="stylesheet" type="text/css" media="all" />
+      <!-- Owl Carousel -->
+      <link rel="stylesheet" href="/static/css/owl.carousel.css">
+      <!-- Default Theme CSS File-->
+      <link id="switcher" href="/static/css/themes/default-theme.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+      <!-- Main css File -->
+      <link href="/static/css/style_landing.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 
-</head>
-<body>
+      <!-- Font -->
+      <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-  <header class="site-header">
-      <div class="navbar-fixed">
-        <nav class="teal">
-          <div class="nav-wrapper">
-            <a href="#" class="brand-logo left">Ashioto - Footfall Re-imagined</a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-              <li><a href="#about" class="onNav waves-effect waves-light">Our Story</a></li>
-              <li><a href="#implementations" class="onNav waves-effect waves-light">Implementations</a></li>
-              <li><a href="#team" class="onNav waves-effect waves-light">Team</a></li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-  </header>
+    </head>
 
-  <div class="section no-pad-bot" id="index-banner">
-    <div class="container">
-      <div class="flipper center">
+    <body>
+    <link rel="stylesheet" type="text/css" href="/static/css/flipper.css">
+      <!-- BEGAIN PRELOADER -->
+     <!--  <div id="preloader">
+        <div class="progress">
+          <div class="indeterminate"></div>
+        </div>
+      </div> -->
+      <!-- END PRELOADER -->
+      <header id="header" role="banner">
+        <div class="navbar-fixed">
+          <nav>
+            <div class="container">
+              <div class="nav-wrapper">
+
+                <!-- LOGO -->
+
+                <!-- TEXT BASED LOGO -->
+                <!-- The brand-logo should be small otherwise it cannot be responsive -->
+                <a href="#!" class="brand-logo">Ashioto</a>
+
+                <!-- Image Based Logo -->
+                 <!-- <a href="index.html" class="brand-logo"><img src="/static/images/logo.jpeg" alt="logo img"></a>  -->
+                <ul class="right hide-on-med-and-down custom-nav menu-scroll">
+                  <li><a href="#about">About</a></li>
+                  <li><a href="#team">Team</a></li>
+                  <li><a href="#footer">Contact</a></li>
+                </ul>
+                <!-- For Mobile View -->
+                <ul id="slide-out" class="side-nav menu-scroll">
+                  <li><a href="#about">About</a></li>
+                   <li><a href="#team">Team</a></li>
+                  <li><a href="#footer">Contact</a></li>
+                </ul>
+                <a href="#" data-activates="slide-out" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+              </div>
+            </div>
+          </nav>
+        </div>
+        <video playsinline autoplay muted loop poster="Shoes.jpg" content="width=device-width, initial-scale=1.0" id="bgvid" class="responsive-video">
+<source src="/static/video/Shoes.webm" type="video/webm">
+<source src="/static/video/Shoes.mp4" type="video/mp4">
+</video>
+      </header>
+
+      <div class="row" style="margin: 0px;"><!--margin 0 is necessary bacause there is white space below video -->
+   <div class="s12">
+   <!--col s11 m8 l6 is necessary for responsiveness-->
+      <div class="flipper col-centered center col s11 m8 l6">
         <div class="cardFlip center">
-            <div class="front"><h1 style="color: #fff; font-weight: 200; margin-right: 20px;">You see</h1><img width="200px" src="/static/img/footprint.png" /></div>
-            <div class="back"><h1 style="color: #fff; font-weight: 200; margin-right: 20px;">We see</h1><img width="200px" src="/static/img/icon_analytics.png" /></div>
+            <div class="front"><h1 style="color: white; font-weight: 200;">You see</h1><img class="flipImage" src="/static/images/footprint.png" /></div>
+            <div class="back"><h1 style="color: white; font-weight: 200;">We see</h1><img class="flipImage" src="/static/images/icon_analytics.png" /></div>
         </div>
       </div>
+      </div>
     </div>
-  </div>
+          <!-- START ABOUT SECTION -->
+          <section id="about">
+            <div class="container">
+              <div class="row">
+                <div class="col s12">
+                  <div class="about-inner">
+                    <div class="row">
 
-  <!--About-->
-  <div class="section scrollspy" id="about">
-      <div class="container">
-          <h2 class="header text_b"> About </h2>
-          <h5 class="text_h2">
-            Ashioto was conceptualized during the 'KumbhaThon' workshop organized by MIT Media Lab in Jan 2014.<br />
-            It was held in Nashik, India to solve problems at Kumbh Mela - the world's largest crowd gathering.<br />
-            It is an intelligent crowd counting system which draws insights from foot traffic data.
-          </h5>
-      </div>
-  </div>
+                      <div class="col s12">
+                          <h3 class="title"><center>About</center></h3>
+                          <p style="font-size: 23px" align="justify">In the midst of all the chaos and disorder of Kumbh Mela, 2014, Ashioto was concieved. With about one crore devotees expected to descend on Nashik on each of the parvani days- to take a holy dip - during the Kumbh Mela, crowd management was the most challenging part of organising this mega event. Few young innovators from Nashik decided to seize this opportunity and give a solution to this unsolved challenge by leveraging technology and design. Ashioto is an intelligent crowd counting system which draws insights from foot traffic data. </p>
 
-  <!--Parallax-->
-<div class="parallax-container">
-    <div class="parallax"><img src="/static/img/kumbh_parallax.jpg"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+         <section>
+<div class="m12">
+    <div><img class="responsive-img kumbh-image" src="/static/images/kumbh_parallax.jpg"></div>
 </div>
+</section>
+            <!-- Start Experience -->
+            <section id="team">
+              <div class="container">
+                <div>
+                  <h2 class="title"><center>Team</center></h2>
+                  <div id="team-cards" class="row">
+                    <!-- Start Single Experience -->
+                    <h5 align="center" style="color: #009688">Core Team</h5>
+                    <div class="col s12 m3">
+                      <div class="card card-avatar">
+                        <div class="waves-effect waves-block waves-light">
+                          <img class="activator" src="/static/images/avatar_nilay.jpg">
+                        </div>
+                        <div class="card-content">
+                          <span class="card-title activator reveal-title">Nilay Kulkarni<i class="material-icons right">more_vert</i></span>
+                         <p><a href="#">The Code Monkey</a></p>
+                        </div>
+                        <div class="card-reveal">
+                          <span class="card-title reveal-title">Nilay Kulkarni<i class="material-icons right">close</i></span>
+                            <a href="#" class="card-subtitle">The Code Monkey</a>
+                          <p align="justify">Nilay is software head of the Ashioto.He is passionate about technology and the imapct which can be created through it.He codes and loves coffee.  </p>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Start Single Experience -->
+                    <div class="col s12 m3">
+                      <div class="card card-avatar">
+                        <div class="waves-effect waves-block waves-light">
+                          <img class="activator" src="/static/images/avatar_parikshit.jpg">
+                        </div>
+                        <div class="card-content">
+                          <span class="card-title activator reveal-title">Parikshit Jadhav<i class="material-icons right">more_vert</i></span>
+                          <p><a href="#">The Business Guy</a></p>
+                        </div>
+                        <div class="card-reveal">
+                          <span class="card-title reveal-title">Parikshit Jadhav<i class="material-icons right">close</i></span>
+                          <a href="#" class="card-subtitle">The Business Guy</a>
+                          <p align="justify">Young, enthusiastic, street smart and budding with innovative ideas - Parikshit, a maker at the core from Nashik is an Electronics graduate. He looks after the Deployment and the Engineering aspect of the project. He is passionate about engaging young minds - to think creatively, reason logically and reasoning systematically. He likes to conduct various workshops for school and college students.</p>
+                        </div>
+                      </div>
+                    </div>
 
-  <!--Implementations-->
-  <div class="section scrollspy" id="implementations">
-      <div class="container">
-          <h2 class="header text_b"> Implementations </h2>
-          <h3 class="text_h2">
-            A list of places Ashioto has been to:
-          </h3>
-          <ul>
-            <li>
-              <h4>Nashik Kumbh Mela 2015</h4>
-            </li>
-            <li>
-              <h4>Maratha Rally 2016, Nashik</h4>
-            </li>
-            <li>
-              <h4>OBC Rally 2016, Nashik</h4>
-            </li>
-          </ul>
-      </div>
-  </div>
+                    <!-- Start Single Experience -->
 
-  <!--Team-->
-  <div class="section scrollspy" id="team">
-      <div class="container">
-          <h2 class="header text_b"> Our Team </h2>
-          <div class="row">
-              <div class="col s12 m3">
-                  <div class="card card-avatar">
-                      <div class="waves-effect waves-block waves-light">
-                          <img class="activator" src="/static/img/avatar_nilay.jpg">
+                    <div class="col s12 m3">
+                      <div class="card card-avatar">
+                        <div class="waves-effect waves-block waves-light">
+                          <img class="activator" src="/static/images/avatar_narhari.jpg">
+                        </div>
+                        <div class="card-content">
+                          <span class="card-title activator reveal-title"> Narhari Chavan <i class="material-icons right">more_vert</i></span>
+                          <p><a href="#">The Electronics Wizard</a></p>
+                        </div>
+                        <div class="card-reveal">
+                          <span class="card-title reveal-title">Narhari Chavan <i class="material-icons right">close</i></span>
+                          <a href="#" class="card-subtitle">The Electronics Wizard</a>
+                          <p align="justify">Narhari, a PCB designer from Sandip Foundation, Nashik , manages the hardware units of the system. Highly skilled in his profession, on the sidelines he also prefers to spend his free time in enhancing his culinary skills and crafting.</p>
+                        </div>
                       </div>
-                      <div class="card-content">
-                          <span class="card-title activator grey-text text-darken-4">Nilay Kulkarni <br/>
-                              <small><em><a class="red-text text-darken-1" href="#">The Code Monkey</a></em></small></span>
-                          <p>
-                              <a class="teal-text text-lighten-2" target="_blank" href="https://www.facebook.com/1geek0">
-                                  <i class="fa fa-facebook-square"></i>
-                              </a>
-                              <a class="teal-text text-lighten-2" target="_blank" href="https://twitter.com/1geek0">
-                                  <i class="fa fa-twitter-square"></i>
-                              </a>
-                          </p>
+                    </div>
+                    <!-- Start Single Experience -->
+                       <div class="col s12 m3">
+                      <div class="card card-avatar">
+                        <div class="waves-effect waves-block waves-light">
+                          <img class="activator" src="/static/images/kanal.jpg">
+                        </div>
+                        <div class="card-content">
+                          <span class="card-title activator reveal-title">Kanal Chhajed<i class="material-icons right">more_vert</i></span>
+                          <p><a href="#">The Designer</a></p>
+                        </div>
+                        <div class="card-reveal">
+                          <span class="card-title reveal-title">Kanal Chhajed<i class="material-icons right">close</i></span>
+                          <a href="#" class="card-subtitle">The Designer</a>
+                          <p align="justify">Kanal is a Product Design graduate from MIT Institute of Design. A curious thinker,  she always tries to expand her design thinking by drawing inspiration from different people, cultures and the history associated with them. She believes, design should be interestingly simple, precise, fun, socially responsible and have a holistic approach to it. She brings a passion for design for social needs and design research.</p>
+                        </div>
                       </div>
-                  </div>
+                    </div>
+                    <!-- Start Single Experience -->
+                    <!-- Start Single Experience -->
+                    <!-- Start Single Experience -->
+                    <!-- Start Single Experience -->
+                  <!-- owl navigation -->
+                <!--   <div class="customNavigation">
+                    <a class="btn prev btn-floating waves-effect waves-light btn-large white"><i class="mdi-navigation-chevron-left brand-text"></i></a>
+                    <a class="btn next btn-floating waves-effect waves-light btn-large white"><i class="mdi-navigation-chevron-right brand-text"></i></a>
+                  </div> -->
+
+                 <h5 align="center" style="color: #009688">Mentors</h5>
+                 <div class="row">
+
+                    <div class="col s12 m3">
+                      <div class="card card-avatar">
+                        <div class="waves-effect waves-block waves-light">
+                          <img class="activator" src="/static/images/ramesh_raskar.jpg">
+                        </div>
+                        <div class="card-content">
+                          <span class="card-title activator reveal-title">Ramesh Raskar<i class="material-icons right">more_vert</i></span>
+                          <p><a href="#">Mentor from MIT Media Lab</a></p>
+                        </div>
+                        <div class="card-reveal">
+                          <span class="card-title reveal-title">Ramesh Raskar<i class="material-icons right">close</i></span>
+                          <a href="#" class="card-subtitle">Mentor from MIT Media Lab</a>
+                          <p align="justify">Associate Professor at Massachusetts Institute of Technology and head of the MIT Media Lab's Camera Culture research group.He holds over seventy-five patents.He received the $500K Lemelson–MIT Prize in 2016.The prize money will be used for launching REDX.io, a group platform for co-innovation.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                     <div class="col s12 m3">
+                      <div class="card card-avatar">
+                        <div class="waves-effect waves-block waves-light">
+                          <img class="activator" src="/static/images/sachin_pachorkar.jpg">
+                        </div>
+                        <div class="card-content">
+                          <span class="card-title activator reveal-title">Sachin Pachorkar<i class="material-icons right">more_vert</i></span>
+                          <p><a href="#">Mentor from Kumbhthon</a></p>
+                        </div>
+                        <div class="card-reveal">
+                          <span class="card-title reveal-title">Sachin Pachorkar<i class="material-icons right">close</i></span>
+                          <a href="#" class="card-subtitle">Mentor from Kumbhthon</a>
+                          <p align="justify">An Associate Professor of KBT College of Engineering, Department of MBA. He played a quintessential role in conceptualizing and empowering the initiative. Being an innovator himself, he was actively working from the past 10 years to inculcate innovation culture in Nashik. His endeavors in the field of grass root innovation has helped him empower several street vendors all around Maharashtra.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                      <div class="col s12 m3">
+                      <div class="card card-avatar">
+                        <div class="waves-effect waves-block waves-light">
+                          <img class="activator" src="/static/images/sandip_shinde.jpg">
+                        </div>
+                        <div class="card-content">
+                          <span class="card-title activator reveal-title">Sandip Shinde<i class="material-icons right">more_vert</i></span>
+                          <p><a href="#">Mentor from TCS and Kumbhthon</a></p>
+                        </div>
+                        <div class="card-reveal">
+                          <span class="card-title reveal-title">Sandip Shinde<i class="material-icons right">close</i></span>
+                          <a href="#" class="card-subtitle">Mentor from TCS and Kumbhthon</a>
+                          <p align="justify">Earlier Program Manager at Tata Consultancy Services Ltd. with over a decade of experience in the field of project management, now reporting directly to CTO and CEO office at TCS. Mentoring groups of innovators from the early stage of Kumbhathon. Now, focused on Kumbhathon full time since past 1 year to create impact and relationships.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                      <div class="col s12 m3">
+                      <div class="card card-avatar">
+                        <div class="waves-effect waves-block waves-light">
+                          <img class="activator" src="/static/images/mahesh_gujrathi.png">
+                        </div>
+                        <div class="card-content">
+                          <span class="card-title activator reveal-title">Mahesh Gujrathi<i class="material-icons right">more_vert</i></span>
+                          <p><a href="#">Mentor for on-ground Execution</a></p>
+                        </div>
+                        <div class="card-reveal">
+                          <span class="card-title reveal-title">Mahesh Gujrathi<i class="material-icons right">close</i></span>
+                          <a href="#" class="card-subtitle">Mentor for on-ground Execution</a>
+                          <p align="justify">Vice President in Credila which has emerged as the premier brand in Education Loan segment in India and abroad.He is having more than 18 years of experience in scaling up the business and is the force behind the sales, marketing, PR, Corporate planning and brand building activities of company which have led to the company’s exponential growth in India.He has also founding member of New Era English School in Nasik. The School has been recognized by The Week Magazine as one of the “Top 10 Most Innovative Schools in India”.It has over 3000 students. Leads the operations and collaborations for project execution at Kumbhathon.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                 <h5 align="center" style="color: #009688">Contributor/Intern</h5>
+                 <div class="row">
+                  <div class="col s12 m3">
+                      <div class="card card-avatar">
+                        <div class="waves-effect waves-block waves-light">
+                          <img class="activator" src="/static/images/smita_bari.jpg">
+                        </div>
+                        <div class="card-content">
+                          <span class="card-title activator reveal-title">Smita Bari<i class="material-icons right">more_vert</i></span>
+                          <p><a href="#">The Spider(She built our web)</a></p>
+                        </div>
+                        <div class="card-reveal">
+                          <span class="card-title reveal-title">Smita Bari<i class="material-icons right">close</i></span>
+                          <a href="#" class="card-subtitle">The Spider(She built our web)</a>
+                          <p align="justify">Smita is an IT graduate from Sandip Foundation, Nashik. She has been a valuable  contributor in Ashioto by developing the websites and collaterals. A coder at heart she also is a sports enthusiast.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                     <div class="col s12 m3">
+                      <div class="card card-avatar">
+                        <div class="waves-effect waves-block waves-light">
+                          <img class="activator" src="/static/images/girish_patil.jpg">
+                        </div>
+                        <div class="card-content">
+                          <span class="card-title activator reveal-title">Girish Patil <i class="material-icons right">more_vert</i></span>
+                          <p><a href="#">Intern</a></p>
+                        </div>
+                        <div class="card-reveal">
+                          <span class="card-title reveal-title">Girish Patil<i class="material-icons right">close</i></span>
+                          <a href="#" class="card-subtitle">Intern</a>
+                          <p align="justify">Girish is BE electronics and telecommunication engineer from Sandip Foundation, Nashik.Just started working as coder in ashioto and also interested in interfacing of hardware and pcb design.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col s12 m3">
+                      <div class="card card-avatar">
+                        <div class="waves-effect waves-block waves-light">
+                          <img class="activator" src="/static/images/avatar_dan.jpg">
+                        </div>
+                        <div class="card-content">
+                          <span class="card-title activator reveal-title">Daniel Goodman<i class="material-icons right">more_vert</i></span>
+                          <p><a href="#">Mentor from MIT Media Lab</a></p>
+                        </div>
+                        <div class="card-reveal">
+                          <span class="card-title reveal-title">Daniel Goodman<i class="material-icons right">close</i></span>
+                          <a href="#" class="card-subtitle">Mentor for Hardware</a>
+                          <p align="justify">Daniel was founding member of Open agriculture Initiative at the MIT Media Lab.and is currently working on a new venture in the San Francisco Bay Area.His research was focused on the smart, connected home and exploring how the Internet of things and sensing can be used to enhance and optimize a user’s living experience.</p>
+                        </div>
+                      </div>
+                </div>
               </div>
-              <div class="col s12 m3">
-                  <div class="card card-avatar">
-                      <div class="waves-effect waves-block waves-light">
-                          <img class="activator" src="/static/img/avatar_parikshit.jpg">
-                      </div>
-                      <div class="card-content">
-                          <span class="card-title activator grey-text text-darken-4">Parikshit Jadhav <br/>
-                              <small><em><a class="red-text text-darken-1" href="#">The Business Guy</a></em></small>
-                          </span>
-                          <p>
-                              <a class="teal-text text-lighten-2" target="_blank" href="https://www.facebook.com/parikshit.jadhav">
-                                  <i class="fa fa-facebook-square"></i>
-                              </a>
-                              <a class="teal-text text-lighten-2" target="_blank" href="https://twitter.com/ParikshitRaje">
-                                  <i class="fa fa-twitter-square"></i>
-                              </a>
-                          </p>
-                      </div>
-                  </div>
+
+                    </div>
+                 </div>
               </div>
-              <div class="col s12 m3">
-                  <div class="card card-avatar">
-                      <div class="waves-effect waves-block waves-light">
-                          <img class="activator" src="/static/img/avatar_narhari.jpg">
-                      </div>
-                      <div class="card-content">
-                          <span class="card-title activator grey-text text-darken-4">
-                              Narhari Chavan <br/>
-                              <small><em><a class="red-text text-darken-1" target="_blank" href="#">The Electronics Wizard</a></em></small></span>
-                          <p>
-                              <a class="teal-text text-lighten-2" target="_blank" href="https://www.facebook.com/narhari.chavan">
-                                  <i class="fa fa-facebook-square"></i>
-                              </a>
-                          </p>
-                      </div>
-                  </div>
-              </div>
-              <div class="col s12 m3">
-                  <div class="card card-avatar">
-                      <div class="waves-effect waves-block waves-light">
-                          <img class="activator" src="/static/img/avatar_dan.jpg">
-                      </div>
-                      <div class="card-content">
-                          <span class="card-title activator grey-text text-darken-4">Daniel Goodman<br/>
-                              <small><em><a class="red-text text-darken-1" target="_blank" href="#">The Mentor</a></em></small></span>
-                          <p>
-                              <a class="teal-text text-lighten-2" target="_blank" href="https://www.facebook.com/daniel.goodman.1232">
-                                  <i class="fa fa-facebook-square"></i>
-                              </a>
-                                <a class="teal-text text-lighten-2" target="_blank" href="https://twitter.com/d_h_goodman">
-                                  <i class="fa fa-twitter-square"></i>
-                              </a>
-                          </p>
-                      </div>
-                  </div>
-              </div>
+            </div>
           </div>
+            </section>
+
+
+          <!-- Testimonial -->
+          <!-- Start Blog -->
+
+          <!-- Start Footer -->
+          <footer id="footer" role="contentinfo">
+            <!-- Start Footer Top -->
+            <div class="footer-top">
+              <div class="container">
+                <div class="row">
+                  <div class="col s12">
+                    <div class="footer-top-inner">
+                      <h2 class="title"><center>Contact</center></h2>
+                      <div class="contact">
+                        <div class="row">
+                          </div>
+                          <div class="col s12">
+                            <div class="contact-map">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3749.822181750711!2d73.78988741426966!3d19.973979028323235!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bddeb211c03efd5%3A0xd971dae08d42c369!2sDigital+Impact+Square!5e0!3m2!1sen!2sin!4v1481123415849" width="100%" height="100%" frameborder="0" style="border:0"></iframe>
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Start Footer Bottom -->
+            <div class="footer-bottom">
+              <div class="container">
+                <div class="row">
+                  <div class="col s12">
+                    <div class="footer-inner">
+              <!--  <ul class="social_nav">
+                 <li style="font-size: 30px"><a href="#"><i class="fa fa-facebook"></i></a>
+                 <a href="#"><i class="fa fa-twitter"></i></a>
+                 <a href="#"><i class="fa fa-google-plus"></i></a>
+                 <a href="#"><i class="fa fa-linkedin"></i></a></li>
+               </ul> -->
+                      <!-- Bottom to Up Btn -->
+                      <button class="btn-floating btn-large up-btn"><i class="mdi-navigation-expand-less"></i></button>
+                     <a href="http://www.markups.io/"> Copyright © Ashioto 2016 All Rights Reserved</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </footer>
+        </main>
       </div>
-  </div>
+      <!-- jQuery Library -->
+      <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+      <!-- Materialize js -->
+      <script type="text/javascript" src="/static/js/materialize.min.js"></script>
+      <!-- Skill Progress Bar -->
+      <script src="/static/js/appear.min.js" type="text/javascript"></script>
+      <script src="/static/js/pro-bars.min.js" type="text/javascript"></script>
+      <!-- Owl slider -->
+      <script src="/static/js/owl.carousel.min.js"></script>
+      <!-- counter -->
+      <script src="/static/js/waypoints.min.js"></script>
+      <script src="/static/js/jquery.counterup.min.js"></script>
 
-
-  <script type="text/javascript">
-    $(document).ready(function(){
-      $('.scrollspy').scrollSpy();
-      $('.parallax').parallax();
-    });
-  </script>
-
-</body>
-</html>
+      <!-- Custom Js -->
+      <script src="/static/js/custom.js"></script>
+    </body>
+  </html>
