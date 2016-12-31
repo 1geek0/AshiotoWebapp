@@ -38,14 +38,16 @@ class CountHandler(tornado.web.RequestHandler):
     def post(self):
         req_body = tornado.escape.json_decode(self.request.body)
         dict_body = dict(req_body)
-        count = int(dict_body.get('count'))  # Number of People
+        outcount = int(dict_body.get('outcount'))  # Number of People exited
+        incount = int(dict_body.get('incount')) # Number of people entered
         gateID = int(dict_body.get('gateID'))  # GateID
         eventCode = dict_body.get('eventCode')  # Event Code
         times = int(dict_body.get('timestamp', time.time()))*1000  # Unix Timestamp
         count_item = {
             'gateID': gateID,
             'timestamp': times,
-            'outcount': count,
+            'outcount': outcount,
+            'incount': incount,
             'eventCode': eventCode
         }
         db.ashioto_data.insert(count_item)
