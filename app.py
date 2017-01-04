@@ -80,7 +80,7 @@ class BusDataHandler(RequestHandler):
             'latitude': latitude,
             'longitude': longitude,
         }
-        db.ashioto_data_bus.insert(bus_data_item)
+        db.ashioto_data_bus.insert(bus_data_item) # Not to be confused with ashioto_data which is for a general purpose dataset
         serve = {
             'success': True
         }
