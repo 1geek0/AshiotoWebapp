@@ -32,8 +32,11 @@ from libashioto.graphmethods import *
 from libashioto.passmethods import *
 from libashioto.flow_rate import FlowRateHandler
 
-#Stores the received count according to the event
+# Stores the received count according to the event
+
+
 class CountHandler(tornado.web.RequestHandler):
+
     @tornado.gen.coroutine
     def post(self):
         req_body = tornado.escape.json_decode(self.request.body)
@@ -41,7 +44,8 @@ class CountHandler(tornado.web.RequestHandler):
         count = int(dict_body.get('count'))  # Number of People
         gateID = int(dict_body.get('gateID'))  # GateID
         eventCode = dict_body.get('eventCode')  # Event Code
-        times = int(dict_body.get('timestamp', time.time()))*1000  # Unix Timestamp
+        times = int(dict_body.get('timestamp', time.time())) * \
+            1000  # Unix Timestamp
         count_item = {
             'gateID': gateID,
             'timestamp': times,
@@ -50,14 +54,45 @@ class CountHandler(tornado.web.RequestHandler):
         }
         db.ashioto_data.insert(count_item)
         serve = {
-            'error': False
+            'success': True
         }
         self.write(serve)
         self.finish()
 
-#Deprecated. Returns True if the requested event exists. Used only by old app
+
+class BusDataHandler(RequestHandler):
+    def post(self):
+        req_body = tornado.escape.json_decode(self.request.body)
+        dict_body = dict(req_body)
+        outcount = int(dict_body.get('outcount'))
+        incount = int(dict_body.get('incount'))
+        busID = str(dict_body.get('busID'))
+        fleetCode = str(dict_body.get('fleetCode'))
+        times = int(dict_body.get('timestamp', time.time())) * 1000
+        latitude = float(dict_body.get('latitude'))
+        longitude = float(dict_body.get('longitude'))
+        bus_data_item = {
+            'outcount': outcount,
+            'incount': incount,
+            'busID': busID,
+            'fleetCode': fleetCode,
+            'timestamp': timestamp,
+            'latitude': latitude,
+            'longitude': longitude,
+        }
+        db.ashioto_data_bus.insert(bus_data_item)
+        serve = {
+            'success': True
+        }
+        self.write(serve)
+        self.finish()
+
+# Deprecated. Returns True if the requested event exists. Used only by old app
 # TODO: remove this
+
+
 class EventCodeConfirmHandler(tornado.web.RequestHandler):
+
     @tornado.gen.coroutine
     def post(self):
         body_json = tornado.escape.json_decode(self.request.body)
@@ -73,8 +108,11 @@ class EventCodeConfirmHandler(tornado.web.RequestHandler):
             }
             self.write(response)
 
-#Gives last count and last sync time of all the gates in an event
+# Gives last count and last sync time of all the gates in an event
+
+
 class PerGate_DataProvider(tornado.web.RequestHandler):
+
     @tornado.gen.coroutine
     def get(self):
         event_code = self.get_argument('eventCode')
@@ -84,13 +122,15 @@ class PerGate_DataProvider(tornado.web.RequestHandler):
         self.write(gates_data)
         self.finish()
 
-#Serves the dashboard page
+# Serves the dashboard page
+
+
 class DashboardHandler(tornado.web.RequestHandler):
 
     def get(self, event_requested):
         if event_requested in event_codes:
             event_type = events[event_requested]['type']
-            if event_type == "public": #Directly serves page if event is public
+            if event_type == "public":  # Directly serves page if event is public
                 if event_requested == "mrally":
                     showRally(self, "mrally")
                 else:
@@ -100,10 +140,11 @@ class DashboardHandler(tornado.web.RequestHandler):
                         client_dict[event_requested] = []
                         client_dict[event_requested].append(self)
                     showDashboard(self, event_requested)
-            elif event_type == "private": #If the event is private it redirects to the login page
+            elif event_type == "private":  # If the event is private it redirects to the login page
                 if self.get_secure_cookie("user"):
                     user_email = self.get_secure_cookie("user").decode('utf-8')
-                    user_events = db.ashioto_users.find({'email': user_email})[0]['events']
+                    user_events = db.ashioto_users.find(
+                        {'email': user_email})[0]['events']
                     if event_requested in user_events:
                         showDashboard(self, event_requested)
                     else:
@@ -127,10 +168,13 @@ class LogoHandler(tornado.web.RequestHandler):
         self.set_header('Content-Length', len(image_value))
         self.write(image_value)
 
-#Handles real-time updation of the dashboard
+# Handles real-time updation of the dashboard
 # TODO: It's broken right now, needs to be fixed
+
+
 class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
     # To always allow access to websocket
+
     def check_origin(self, origin):
         return True
 
@@ -178,7 +222,8 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
             if self.time_type == "day_between":
                 self.time_one = int(message['time_one'])
                 self.time_two = int(message['time_two'])
-                print("Time One and Two" + str(self.time_one) + "\n" + str(self.time_two))
+                print("Time One and Two" + str(self.time_one) +
+                      "\n" + str(self.time_two))
             if self.time_type != "day_between":
                 bar_stats = bar_overall(self)
             else:
@@ -190,7 +235,8 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
                 "eventCode": self.eventCode
             })[0]['time_start'])
             time_difference = int((time.time() - timestamp_start) / 60)
-            resonse_dict = {"difference": time_difference, "type": "time_difference_response"}
+            resonse_dict = {"difference": time_difference,
+                            "type": "time_difference_response"}
             print("TIME: " + str(resonse_dict))
             self.write_message(resonse_dict)
 
@@ -199,18 +245,24 @@ class AshiotoWebSocketHandler(tornado.websocket.WebSocketHandler):
         client_dict[self.eventCode].remove(self)
 
 
-#This resets the time after which the dashboard will pick the entries from
-# TODO: Eliminate this altogether by making the front-end code fetch entries smartly
+# This resets the time after which the dashboard will pick the entries from
+# TODO: Eliminate this altogether by making the front-end code fetch
+# entries smartly
 class StartTimeHandler(tornado.web.RequestHandler):
+
     def get(self, eventCode):
         event = db.ashioto_events.update({"eventCode": eventCode},
-                                         {"$set": {"time_start": int(time.time())},}
+                                         {"$set": {
+                                             "time_start": int(time.time())}, }
                                          )
         self.write("KAM ZALA!!")
         print(event)
 
-#Gives the stats about current active dashboard users
+# Gives the stats about current active dashboard users
+
+
 class UserStatsHandler(tornado.web.RequestHandler):
+
     def get(self):
         stats_json = {}
         client_lengths = 0
@@ -220,7 +272,9 @@ class UserStatsHandler(tornado.web.RequestHandler):
         stats_json['Total Clients'] = str(client_lengths)
         self.write(stats_json)
 
-#Creates user for login
+# Creates user for login
+
+
 class CreateUser(RequestHandler):
     """Needs: events, email, password and type in json"""
 
@@ -231,7 +285,8 @@ class CreateUser(RequestHandler):
         user_type = request_body['type']
         user_pass_plain = request_body['pass']
         user_pass_hashed = hashpasswd(user_pass_plain)
-        user_dbitem = {'email': user_email, 'type': user_type, 'events': user_events, 'password': user_pass_hashed}
+        user_dbitem = {'email': user_email, 'type': user_type,
+                       'events': user_events, 'password': user_pass_hashed}
         try:
             db.ashioto_users.find({'email': user_email})[0]
             self.write('False')
@@ -240,7 +295,10 @@ class CreateUser(RequestHandler):
             sendConfirmEmail(user_email, user_pass_plain)
             self.write('True')
 
-#This call is triggered only from the confirmation email that is sent afer calling CreateUser
+# This call is triggered only from the confirmation email that is sent
+# afer calling CreateUser
+
+
 class ConfirmUser(RequestHandler):
     """Confirms User"""
 
@@ -252,15 +310,17 @@ class ConfirmUser(RequestHandler):
         else:
             pass
 
-#Handles everything related to authentication
+# Handles everything related to authentication
+
+
 class LoginHandler(RequestHandler):
     """Login Page"""
 
-    #Serves the login page
+    # Serves the login page
     def get(self):
         self.render("templates/template_login.html")
 
-    #Checks the email and sets auth cookie
+    # Checks the email and sets auth cookie
     def post(self):
         user_email = self.get_argument("email")
         user_pass = self.get_argument("password")
@@ -278,59 +338,73 @@ class LoginHandler(RequestHandler):
         except IndexError:
             self.write("Account doesn't exist")
 
-#Returns a list of public events
+# Returns a list of public events
+
+
 class EventsListHandler(RequestHandler):
+
     def get(self):
         self.write(listEvents())
         self.finish()
 
-#Returns a list of gates in a particular event
+# Returns a list of gates in a particular event
+
+
 class GatesListHandler(RequestHandler):
+
     def get(self):
         eventCode = self.get_argument("event")
         gatesDict = {
-        "Gates": events[eventCode]['gates']
+            "Gates": events[eventCode]['gates']
         }
         self.write(gatesDict)
         self.finish()
 
+
 class RewatDataHandler(RequestHandler):
+
     def get(self):
         rewatData = []
         dbData = db.ashioto_data.find({"eventCode": "rewat"})
         for point in dbData:
-            self.write("||Count: " + str(point['outcount']) + " Timestamp: " + datetime.datetime.fromtimestamp(point['timestamp']).strftime('%d %b %Y %I:%M:%S %p') + " ||")
+            self.write("||Count: " + str(point['outcount']) + " Timestamp: " + datetime.datetime.fromtimestamp(
+                point['timestamp']).strftime('%d %b %Y %I:%M:%S %p') + " ||")
         self.finish()
         # self.render("templates/template_rewat.html", rewatData=rewatData)
 
+
 class LandingHandler(RequestHandler):
+
     def get(self):
         self.render("templates/template_landing.html")
 
+
 class MobileAuthHandler(RequestHandler):
+
     def post(self):
         user_email = self.get_argument('email')
         user_pass = self.get_argument('pass')
         user_event = self.get_argument('event')
         try:
-            user_db = db.ashioto_users.find({'email':user_email})[0]
+            user_db = db.ashioto_users.find({'email': user_email})[0]
             user_auth = sha256_crypt.verify(user_pass, user_db['password'])
             if user_auth and (user_db['event'] == user_event or user_db['event'] == "NA"):
                 superadmin = user_db['type'] == True
-                self.write({"auth":True, "s_admin": superadmin})
+                self.write({"auth": True, "s_admin": superadmin})
             else:
-                self.write({"auth":False})
+                self.write({"auth": False})
         except IndexError as e:
-            self.write({"auth":False})
+            self.write({"auth": False})
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
     app = tornado.web.Application(
-        handlers=[ #Binds the handlers
+        handlers=[  # Binds the handlers
             (r"/", LandingHandler),
             (r"/websock", AshiotoWebSocketHandler),
             (r"/img/(?P<filename>.+\.jpg)?", LogoHandler),
             (r"/count_update", CountHandler),
+            (r"/bus_update", BusDataHandler),
             (r"/event_confirm", EventCodeConfirmHandler),
             (r"/per_gate", PerGate_DataProvider),
             (r"/dashboard/([a-zA-Z_0-9]+)", DashboardHandler),
@@ -355,7 +429,7 @@ if __name__ == '__main__':
         cookie_secret=cookie_secret
     )
     http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
-    #http_server.start(0)
-    #http_server.bind(options.port)
+    # http_server.start(0)
+    # http_server.bind(options.port)
     http_server.listen(8000)
     tornado.ioloop.IOLoop.instance().start()
