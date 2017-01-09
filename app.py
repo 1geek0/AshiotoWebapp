@@ -44,8 +44,7 @@ class CountHandler(tornado.web.RequestHandler):
         count = int(dict_body.get('count'))  # Number of People
         gateID = int(dict_body.get('gateID'))  # GateID
         eventCode = dict_body.get('eventCode')  # Event Code
-        times = int(dict_body.get('timestamp', time.time())) * \
-            1000  # Unix Timestamp
+        times = int(dict_body.get('timestamp', time.time())) * 1000  # Unix Timestamp
         count_item = {
             'gateID': gateID,
             'timestamp': times,
@@ -68,7 +67,7 @@ class BusDataHandler(RequestHandler):
         incount = int(dict_body.get('incount'))
         busID = str(dict_body.get('busID'))
         fleetCode = str(dict_body.get('fleetCode'))
-        times = int(dict_body.get('timestamp', time.time())) * 1000
+        timestamp = int(dict_body.get('timestamp', time.time())) * 1000
         latitude = float(dict_body.get('latitude'))
         longitude = float(dict_body.get('longitude'))
         bus_data_item = {
