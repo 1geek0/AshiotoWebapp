@@ -45,11 +45,17 @@ class CountHandler(tornado.web.RequestHandler):
         gateID = int(dict_body.get('gateID'))  # GateID
         eventCode = dict_body.get('eventCode')  # Event Code
         times = int(dict_body.get('timestamp', time.time())) * 1000  # Unix Timestamp
+        countdouble = int(dict_body.get('count-double')) # Double count amount
+        countoverstep = int(dict_body.get('count-overstep')) # Overstep amount
+        countnotcounted = int(dict_body.get('count-notcounted')) # Not counted amount
         count_item = {
             'gateID': gateID,
             'timestamp': times,
             'outcount': count,
-            'eventCode': eventCode
+            'eventCode': eventCode,
+            'count-double': countdouble,
+            'count-overstep': countoverstep,
+            'count-notcounted': countnotcounted
         }
         db.ashioto_data.insert(count_item)
         serve = {
