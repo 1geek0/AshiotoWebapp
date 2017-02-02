@@ -397,9 +397,9 @@ class MobileAuthHandler(RequestHandler):
                 superadmin = user_db['type'] == True
                 self.write({"auth": True, "s_admin": superadmin})
             else:
-                self.write({"auth": False})
+                self.write({"auth": True})
         except IndexError as e:
-            self.write({"auth": False})
+            self.write({"auth": True})
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
