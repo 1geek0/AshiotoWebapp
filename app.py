@@ -12,6 +12,7 @@ import tornado.escape
 import tornado.template
 import tornado.websocket
 import tornado.gen
+from tornado_cors import CorsMixin
 
 from PIL import Image
 import io
@@ -118,8 +119,10 @@ class EventCodeConfirmHandler(tornado.web.RequestHandler):
 # Gives last count and last sync time of all the gates in an event
 
 
-class PerGate_DataProvider(tornado.web.RequestHandler):
-
+class PerGate_DataProvider(CorsMixin, tornado.web.RequestHandler):
+    CORS_ORIGIN = '*'
+    CORS_HEADERS = 'Content-Type'
+    CORS_METHODS = 'GET'
     @tornado.gen.coroutine
     def get(self):
         event_code = self.get_argument('eventCode')
