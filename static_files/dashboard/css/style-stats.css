@@ -1,0 +1,107 @@
+.stat-figure {
+    font-size: 40px;
+    font-weight: 500;
+}
+
+.stat-row {
+    margin-top: 1px;
+    margin-right: 8px;
+    margin-left: 8px;
+}
+
+.stat-card-1 {
+    background-color: #43a047;
+}
+
+.stat-card-2 {
+    background-color: #e91e63;
+}
+
+.container {
+    width: 100%;
+}
+
+.stat-config-title {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.stat-huge {
+    font-size: 36px;
+    font-weight: 800;
+    color: #151d25;
+}
+
+.card-content-gate {
+    padding: 0px;
+    border-radius: 0 0 2px 2px;
+    line-height: 90px;
+    display: block;
+}
+
+body {
+    background-color: #151d25;
+}
+
+.card.larger {
+    height: auto;
+}
+
+.card.smaller {
+    height: 262px;
+}
+
+.gate-counts {
+    overflow: auto;
+    max-height: 100%;
+}
+
+.occ-card {
+    height: 36px;
+    margin: 1px;
+}
+
+.stat-title {
+    line-height: 60px;
+    font-size: 30px;
+    color: white;
+}
+
+.stat-title-small {
+    font-size: 22px;
+    color: white;
+}
+
+.stat-occ {
+    font-size: 24px;
+}
+
+.icon-large {
+    margin-bottom: 150px;
+}
+
+.counts-card-ind {
+    height: 100px;
+}
+
+.vertical-divider {
+    border-right: 1px solid #41c3ac;
+    height: 60px;
+}
+
+#countTitle {
+    line-height: 60px;
+}
+
+.dropdown-content {
+    background-color: #fff;
+    margin: 0;
+    display: none;
+    min-width: 100px;
+    height: 240%;
+    overflow-y: scroll;
+    opacity: 0;
+    position: absolute;
+    z-index: 999;
+    will-change: width, height
+}

@@ -1,0 +1,30 @@
+[type="checkbox"].filled-in:checked+label:before {
+    top: 0;
+    left: 1px;
+    width: 8px;
+    height: 13px;
+    border-top: 2px solid transparent;
+    border-left: 2px solid transparent;
+    border-right: 2px solid #000;
+    border-bottom: 2px solid #000;
+    -webkit-transform: rotateZ(37deg);
+    transform: rotateZ(37deg);
+    -webkit-transform-origin: 100% 100%;
+    transform-origin: 100% 100%
+}
+[type="checkbox"].filled-in:checked+label:after {
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #fff;
+    background-color: #fff;
+    z-index: 0
+}
+[type="checkbox"].filled-in:disabled:checked+label:after {
+    background-color: #000;
+    border-color: #000
+}
+[type="checkbox"].filled-in:disabled:not(:checked)+label:after {
+    border-color: #000;
+    background-color: #000
+}

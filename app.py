@@ -406,6 +406,12 @@ class MobileAuthHandler(RequestHandler):
         except IndexError as e:
             self.write({"auth": True})
 
+
+class ReportHandler(RequestHandler):
+    def get(self):
+        print("Rendered Reported")
+        self.render("templates/reports/basic.html")
+
 if __name__ == '__main__':
     tornado.options.parse_command_line()
     app = tornado.web.Application(
@@ -433,7 +439,8 @@ if __name__ == '__main__':
             (r"/listEvents", EventsListHandler),
             (r"/listGates", GatesListHandler),
             (r"/rewatData", RewatDataHandler),
-            (r"/mobileauth", MobileAuthHandler)
+            (r"/mobileauth", MobileAuthHandler),
+            (r"/report", ReportHandler)
         ],
         static_path=os.path.join(os.path.dirname(__file__), "static_files"),
         cookie_secret=cookie_secret

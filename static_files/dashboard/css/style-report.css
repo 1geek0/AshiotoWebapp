@@ -1,0 +1,40 @@
+html {
+    font-family: "Noto Sans", sans-serif;
+}
+
+body {
+    padding: 16px;
+}
+
+.ashioto-logo {
+    height: 150px;
+    width: 165px;
+}
+
+.report-date {
+    line-height: 40px;
+    font-weight: 400;
+    font-size: 20px;
+}
+
+.basic-info span {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+#datatable-title {
+    font-weight: 300;
+    font-size: 24px;
+}
+
+#countChart {
+    width: 100% !important;
+    display: block;
+    margin-top: 24px;
+    height: 20% !important;
+}
+
+#chartCard {
+    width: 100% !important;
+    display: flex;
+}

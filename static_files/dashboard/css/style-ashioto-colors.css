@@ -1,0 +1,51 @@
+.ashioto-color {
+    background-color: #151d25;
+}
+.ashioto-color.lighten-1 {
+    background-color: #2F373F;
+}
+.ashioto-color.lighten-2 {
+    background-color: #485058;
+}
+.ashioto-color.lighten-3 {
+    background-color: #626A72;
+}
+.ashioto-color.lighten-4 {
+    background-color: #7B838B;
+}
+.ashioto-color.lighten-5 {
+    background-color: #949CA4;
+}
+.ashioto-color.darken-1 {
+    background-color: #00040C;
+}
+.ashioto-color.tab-item {
+    background-color: #1d3141;
+}
+.ashioto-color.counts-card {
+    background-color: #182834;
+}
+.ashioto-color.stat-card {
+    background-color: #141d24;
+}
+.ashioto-color.occ-card {
+    background-color: #152633;
+}
+.ashioto-green {
+    background-color: #41c3ac;
+}
+.ashioto-green.darken-1 {
+    background-color: #3aa697;
+}
+.ashioto-green.darken-2 {
+    background-color: #338981;
+}
+.ashioto-green.darken-3 {
+    background-color: #2b6b6c;
+}
+.ashioto-green.darken-4 {
+    background-color: #244e56;
+}
+.ashioto-green-text {
+    color: #41c3ac;
+}

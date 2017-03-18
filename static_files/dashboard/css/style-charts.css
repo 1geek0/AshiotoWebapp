@@ -1,0 +1,75 @@
+.ct-series-a .ct-line {
+    stroke: #009688;
+}
+
+.ct-series-a .ct-point {
+    stroke: #009688;
+}
+
+.ct-double-octave:after,
+.ct-major-eleventh:after,
+.ct-major-second:after,
+.ct-major-seventh:after,
+.ct-major-sixth:after,
+.ct-major-tenth:after,
+.ct-major-third:after,
+.ct-major-twelfth:after,
+.ct-minor-second:after,
+.ct-minor-seventh:after,
+.ct-minor-sixth:after,
+.ct-minor-third:after,
+.ct-octave:after,
+.ct-perfect-fifth:after,
+.ct-perfect-fourth:after,
+.ct-quad-octave:after,
+.ct-square:after {
+    content: "";
+    clear: both
+}
+
+.ct-quad-octave {
+    display: block;
+    position: relative;
+    width: 100%
+}
+
+.ct-quad-octave:before {
+    display: block;
+    float: left;
+    content: "";
+    width: 0;
+    height: 0;
+    padding-bottom: 16.5%
+}
+
+.ct-quad-octave:after {
+    display: table
+}
+
+.ct-quad-octave>svg {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.ct-label {
+    fill: #fff;
+    color: #fff;
+    font-size: .75rem;
+    line-height: 1
+}
+
+.ct-grid {
+    stroke: #626A72;
+    stroke-width: 1px;
+    stroke-dasharray: 2px
+}
+
+
+/* style the svg rect */
+
+.ct-zoom-rect {
+    fill: rgba(200, 100, 100, 0.3);
+    stroke: red;
+}

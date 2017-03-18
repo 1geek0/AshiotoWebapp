@@ -1,0 +1,16 @@
+header,
+main,
+footer {
+    padding-left: 180px;
+}
+.side-nav {
+    width: 180px;
+    background-color: #16232d;
+}
+@media only screen and (max-width: 992px) {
+    header,
+    main,
+    footer {
+        padding-left: 0;
+    }
+}
