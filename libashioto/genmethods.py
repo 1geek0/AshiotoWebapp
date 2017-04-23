@@ -33,14 +33,24 @@ def gates_top(event_code, start_time):
         last = 0
         for item in query:
             count = item['outcount']
-            mega += count
+            nocount = 0
+            doublestep = 0
+            overstep = 0
+            try:
+                nocount = item['count-notcounted']
+                doublestep = item['count-double']
+                overstep = item['count-overstep']
+            except KeyError as e:
+                print(e)
+            mainCount = (count + nocount - doublestep + overstep)
+            mega += mainCount
             last = item['timestamp']
 
         index = i - 1
 
         gates.append({
             "name": str(events[event_code]['gates'][index]['name']),
-            "count": int(count),
+            "count": int(mainCount),
             "last_sync": (int(last)+19800000)/1000
         })
         i += 1
