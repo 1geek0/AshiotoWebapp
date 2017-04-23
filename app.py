@@ -27,11 +27,12 @@ from passlib.hash import sha256_crypt
 define("port", default=8000, help="run on the given port", type=int)
 
 # libashioto imports
-from libashioto.variables import client_dict
+from libashioto.variables import *
 from libashioto.genmethods import *
 from libashioto.graphmethods import *
 from libashioto.passmethods import *
 from libashioto.flow_rate import FlowRateHandler
+from libashioto.report_methods import getHourlyDayGate, getStartTimestampDay, getGateID
 
 # Stores the received count according to the event
 
@@ -409,8 +410,12 @@ class MobileAuthHandler(RequestHandler):
 
 class ReportHandler(RequestHandler):
     def get(self):
-        print("Rendered Reported")
-        self.render("templates/reports/basic.html")
+        location_name = self.get_argument("eventCode")
+        gate_name = self.get_argument("gateName")
+        startTime = float(self.get_argument("startTime"))
+        table_data = getHourlyDayGate(startTimestamp=startTime, eventCode=location_name, gateID=getGateID(gate_name, location_name))
+        print(table_data)
+        self.render("templates/reports/basic.html", location_name=location_name, gate_name=gate_name, table_data=table_data)
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
