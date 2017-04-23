@@ -414,8 +414,9 @@ class ReportHandler(RequestHandler):
         gate_name = self.get_argument("gateName")
         startTime = float(self.get_argument("startTime"))
         table_data = getHourlyDayGate(startTimestamp=startTime, eventCode=location_name, gateID=getGateID(gate_name, location_name))
+        date = datetime.datetime.fromtimestamp(startTime/1000).strftime("%d/%m/%Y")
         print(table_data)
-        self.render("templates/reports/basic.html", location_name=location_name, gate_name=gate_name, table_data=table_data)
+        self.render("templates/reports/basic.html", location_name=location_name, gate_name=gate_name, table_data=table_data, date=date)
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
