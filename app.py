@@ -47,10 +47,10 @@ class CountHandler(tornado.web.RequestHandler):
         gateID = int(dict_body.get('gateID'))  # GateID
         eventCode = dict_body.get('eventCode')  # Event Code
         times = int(dict_body.get('timestamp', time.time())) * 1000  # Unix Timestamp
-        countdouble = int(dict_body.get('count-double')) # Double count amount
-        countoverstep = int(dict_body.get('count-overstep')) # Overstep amount
-        countnotcounted = int(dict_body.get('count-notcounted')) # Not counted amount
-        volunteeremail = dict_body.get('email')
+        countdouble = int(dict_body.get('count-double', 0)) # Double count amount
+        countoverstep = int(dict_body.get('count-overstep', 0)) # Overstep amount
+        countnotcounted = int(dict_body.get('count-notcounted', 0)) # Not counted amount
+        volunteeremail = str(dict_body.get('email', ""))
         count_item = {
             'gateID': gateID,
             'timestamp': times,
