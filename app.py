@@ -50,7 +50,7 @@ class CountHandler(tornado.web.RequestHandler):
         countdouble = int(dict_body.get('count-double', 0)) # Double count amount
         countoverstep = int(dict_body.get('count-overstep', 0)) # Overstep amount
         countnotcounted = int(dict_body.get('count-notcounted', 0)) # Not counted amount
-        volunteeremail = dict_body.get('email', "")
+        volunteeremail = str(dict_body.get('email', ""))
         count_item = {
             'gateID': gateID,
             'timestamp': times,
